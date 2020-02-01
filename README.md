@@ -1,2 +1,3 @@
-# documentflow
-documentflow proj repo
+# DocumentFlow
+
+Application for work with documents and tasks.
