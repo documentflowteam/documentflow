@@ -29,9 +29,9 @@ public class DocIn implements Serializable {
     @Column(name = "reg_date")
     private LocalDateTime regDate;
 
-    @ManyToOne
-    @JoinColumn(name = "registrator_id")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "registrator_id")
+//    private User user;
 
     @ManyToOne
     @JoinColumn(name = "doc_type_id")
@@ -66,11 +66,11 @@ public class DocIn implements Serializable {
     @JoinColumn(name = "state_id")
     private State state;
 
-    @OneToOne
-    @JoinColumn(name = "doc_out_id")
-    private DocOut docOut;
+//    @OneToOne
+//    @JoinColumn(name = "doc_out_id")
+//    private DocOut docOut;
 
-    @OneToOne
-    @JoinColumn(name = "task_id")
-    private Task task;
+//    @OneToOne
+//    @JoinColumn(name = "task_id")
+//    private Task task;
 }
