@@ -1,8 +1,10 @@
 package com.documentflow.controllers;
 
-import com.documentflow.entities.DTOs.DocInDTO;
+import com.documentflow.entities.DocIn;
 import com.documentflow.services.DocInService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,8 @@ public class DocInController {
 
     @GetMapping()
     public String showIn(Model model) {
+        Page<DocIn> page = docInService.findAll(PageRequest.of(1,20));
+        model.addAttribute("page", page);
         return "docIn";
     }
 
@@ -30,11 +34,11 @@ public class DocInController {
     public String registrationDoc(
             @RequestParam(name = "id", required = false) Long id,
             Model model) {
-        DocInDTO docInDTO = new DocInDTO();
+        DocIn docIn = new DocIn();
         if (id != null) {
-            docInDTO = docInService.findById(id);
+            docIn = docInService.findById(id);
         }
-        model.addAttribute("docInDTO", docInDTO);
+        model.addAttribute("docIn", docIn);
         return "regDoc";
     }
 
