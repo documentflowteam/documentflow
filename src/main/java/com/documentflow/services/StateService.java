@@ -1,12 +1,13 @@
 package com.documentflow.services;
 
-import com.documentflow.entities.Department;
 import com.documentflow.entities.State;
 import com.documentflow.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class StateService {
 
     private StateRepository stateRepository;
