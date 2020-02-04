@@ -1,7 +1,7 @@
 package com.documentflow.model.enums;
 
 /**
- * Statuses of business process.
+ * Statuses of business process. Serves as a key for the State.
  */
 public enum BusinessKey {
 
