@@ -1,6 +1,7 @@
 package com.documentflow.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
