@@ -32,3 +32,4 @@ build/
 
 /database.properties
 /src/main/resources/database.properties
+lib/
