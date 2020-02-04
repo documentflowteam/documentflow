@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DepartmentsRepository extends JpaRepository <Department, Integer> {
+public interface DepartmentRepository extends JpaRepository <Department, Integer> {
 
     List<Department> findAllByOrderByName();
 
