@@ -1,17 +1,17 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.Department;
-import com.documentflow.repositories.DepartmentsRepository;
+import com.documentflow.repositories.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class DepartmentService {
 
-    private DepartmentsRepository departmentRepository;
+    private DepartmentRepository departmentRepository;
 
     @Autowired
-    public void setDepartmentRepository(DepartmentsRepository departmentRepository) {
+    public void setDepartmentRepository(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
 
