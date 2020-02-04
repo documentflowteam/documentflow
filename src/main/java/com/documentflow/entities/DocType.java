@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "sys_doc_types")
 public class DocType {
 
     @Id

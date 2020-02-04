@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "sys_task_types")
 public class TaskType {
 
     @Id
