@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
 @Entity
 public class State {
 
