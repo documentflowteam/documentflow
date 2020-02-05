@@ -3,9 +3,11 @@ package com.documentflow.services;
 import com.documentflow.entities.TaskType;
 import com.documentflow.repositories.TaskTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TaskTypeService {
 
     private TaskTypeRepository taskTypeRepository;
