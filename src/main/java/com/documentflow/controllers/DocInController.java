@@ -25,8 +25,8 @@ public class DocInController {
 
     @GetMapping()
     public String showIn(Model model) {
-        Page<DocIn> page = docInService.findAll(PageRequest.of(1,20));
-        model.addAttribute("page", page);
+//        Page<DocIn> page = docInService.findAll(PageRequest.of(1,20));
+//        model.addAttribute("page", page);
         return "docIn";
     }
 

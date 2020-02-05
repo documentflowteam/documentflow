@@ -29,9 +29,9 @@ public class DocIn implements Serializable {
     @Column(name = "reg_date")
     private LocalDateTime regDate;
 
-//    @ManyToOne
-//    @JoinColumn(name = "registrator_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "registrator_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "doc_type_id")

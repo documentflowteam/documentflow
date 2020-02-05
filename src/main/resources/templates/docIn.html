@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+
+    <title>DocIn</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+    <div class="col-sm-12" style="background-color:lavender; border:1px solid #000;">
+        <h5>Опиасание и выход</h5>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-sm-2" style="background-color:lavender; border:1px solid #000;">
+            <div th:replace="~{menu}" />
+        </div>
+        <div class="col-sm-10" style="background-color:lavender; border:1px solid #000;">
+            <div class="row">
+                <div class="col-sm-12" style="background-color:lavender; border:1px solid #000;">
+                    <button type="button" class="btn btn-light">Зарегитрировать</button>
+                    <button type="button" class="btn btn-light">Редактировать</button>
+                    <button type="button" class="btn btn-light">Создать поручение</button>
+                    <button type="button" class="btn btn-light">Проект ответа</button>
+                    <button type="button" class="btn btn-light">Удалить</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" style="background-color:lavender; border:1px solid #000;">
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th></th>
+                            <th>Номер</th>
+                            <th>Дата</th>
+                            <th>Тип документа</th>
+                            <th>Отправитель</th>
+                            <th>Статус</th>
+                            <th><i class="far fa-file"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input" value=""></td>
+                            <td>ВХ-ххх</td>
+                            <td>05.02.2020</td>
+                            <td>Письмо</td>
+                            <td>ООО Лисий хвост</td>
+                            <td>Зарегистрирован</td>
+                            <td><i class="far fa-file-pdf"></i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
