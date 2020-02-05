@@ -1,8 +1,10 @@
 package com.documentflow.controllers;
 
 import com.documentflow.entities.DocIn;
+import com.documentflow.entities.DocOut;
 import com.documentflow.entities.Task;
 import com.documentflow.services.DocInService;
+import com.documentflow.services.DocOutService;
 import com.documentflow.services.TaskService;
 import com.documentflow.services.TaskTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
