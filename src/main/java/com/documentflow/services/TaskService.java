@@ -20,8 +20,7 @@ public class TaskService {
     }
 
     public Task findOneById(Long id) {
-        Task task = taskRepository.getOne(id);
-        return task;
+        return taskRepository.getOne(id);
     }
 
     public Page<Task> findAll(Pageable pageable) {

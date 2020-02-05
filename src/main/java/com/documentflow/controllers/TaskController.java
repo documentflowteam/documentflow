@@ -1,6 +1,6 @@
 package com.documentflow.controllers;
 
-//import com.documentflow.entities.DocIn;
+import com.documentflow.entities.DocIn;
 import com.documentflow.entities.Task;
 import com.documentflow.services.DocInService;
 import com.documentflow.services.TaskService;
@@ -18,7 +18,7 @@ public class TaskController {
     private TaskService taskService;
     private TaskTypeService taskTypeService;
     private DocInService docInService;
-//    private DocOutService docOutService;
+    private DocOutService docOutService;
 
     @Autowired
     public void setTaskService(TaskService taskService) {
@@ -59,13 +59,13 @@ public class TaskController {
     public String showTask(Model model, @PathVariable Long id) {
         Task task = taskService.findOneById(id);
         String taskType = task.getTaskType().getBusinessKey();
-//        if (taskType.equals("EXECUTION")) {
-//            DocIn docIn = docInService.findByTask(task);
-//            model.addAttribute("docIn", docIn);
-//        } else if (taskType.equals("APPROVING")) {
-//            DocOut docOut = docOutService.findByTask(task);
-//            model.addAttribute("docOut", docOut);
-//        }
+        if (taskType.equals("EXECUTION")) {
+            DocIn docIn = docInService.findByTask(task);
+            model.addAttribute("docIn", docIn);
+        } else if (taskType.equals("APPROVING")) {
+            DocOut docOut = docOutService.findByTask(task);
+            model.addAttribute("docOut", docOut);
+        }
         model.addAttribute("task", task);
         return "task";
     }
