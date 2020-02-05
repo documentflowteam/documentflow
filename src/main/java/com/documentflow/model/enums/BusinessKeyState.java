@@ -5,7 +5,7 @@ package com.documentflow.model.enums;
  */
 public enum BusinessKeyState {
 
-    REGISTRATED,
+    REGISTARED,
     EXECUTION,
     EXECUTED,
     DELETED,
