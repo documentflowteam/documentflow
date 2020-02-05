@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import com.documentflow.entities.User;
 
 
 @Entity
@@ -28,7 +29,7 @@ public class DocOut implements Serializable {
 
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "sys_user_id")
-        private SysUser creator;
+        private User creator;
 
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "sys_doc_types_id")
@@ -36,7 +37,7 @@ public class DocOut implements Serializable {
 
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "sys_user_id")
-        private SysUser signer;
+        private User signer;
 
         @Column(name = "content")
         private String content;
