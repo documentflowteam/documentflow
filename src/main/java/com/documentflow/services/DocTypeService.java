@@ -5,9 +5,11 @@ import com.documentflow.entities.State;
 import com.documentflow.repositories.DocTypeRepository;
 import com.documentflow.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class DocTypeService {
 
     private DocTypeRepository docTypeRepository;
