@@ -29,8 +29,7 @@ public class DocOutService {
 
 
     public DocOut findOneById(Long id) {
-        DocOut docOut= docOutRepository.findOneById(id);
-        return docOut;
+        return docOutRepository.findOneById(id);
     }
 
     public List<DocOut> findAllByCreator(User creator){
