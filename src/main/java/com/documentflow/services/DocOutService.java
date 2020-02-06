@@ -19,7 +19,7 @@ public class DocOutService {
     private DocOutRepository docOutRepository;
 
     @Autowired
-    public void setDocOutRepository(DocOutRepository docInRepository) {
+    public void setDocOutRepository(DocOutRepository docOutRepository) {
         this.docOutRepository = docOutRepository;
     }
 
