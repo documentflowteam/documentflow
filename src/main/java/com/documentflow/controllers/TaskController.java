@@ -61,13 +61,13 @@ public class TaskController {
     public String showTask(Model model, @PathVariable Long id) {
         Task task = taskService.findOneById(id);
         String taskType = task.getTaskType().getBusinessKey();
-        if (taskType.equals("EXECUTION")) {
-            DocIn docIn = docInService.findByTask(task);
-            model.addAttribute("docIn", docIn);
-        } else if (taskType.equals("APPROVING")) {
-            DocOut docOut = docOutService.findByTask(task);
-            model.addAttribute("docOut", docOut);
-        }
+//        if (taskType.equals("EXECUTION")) {
+//            DocIn docIn = docInService.findByTask(task);
+//            model.addAttribute("docIn", docIn);
+//        } else if (taskType.equals("APPROVING")) {
+//            DocOut docOut = docOutService.findByTask(task);
+//            model.addAttribute("docOut", docOut);
+//        }
         model.addAttribute("task", task);
         return "task";
     }
