@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+
+    <title>DocIn</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Описание и выход</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2" >
+            <div th:replace="~{menu}" />
+        </div>
+        <div class="col-sm-10" >
+            <div class="row">
+                <div class="col-sm-12" >
+                    <a role="button" aria-pressed="true" class="btn btn-secondary" data-toggle="modal" href="#newDoc">Зарегистрировать</a>
+<!--                    <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Редактировать</a>-->
+<!--                    <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Создать поручение</a>-->
+<!--                    <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Проект ответа</a>-->
+<!--                    <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Удалить</a>-->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12" >
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Номер</th>
+                                <th>Дата</th>
+                                <th>Тип документа</th>
+                                <th>Отправитель</th>
+                                <th>Статус</th>
+                                <th><i class="far fa-file"></i></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a data-toggle="modal" href="#showDoc">ВХ-ххх</a></td>
+                                <td>05.02.2020</td>
+                                <td>Письмо</td>
+                                <td>ООО Лисий хвост</td>
+                                <td>Зарегистрирован</td>
+                                <td><i class="far fa-file-pdf"></i></td>
+                                <td>
+                                    <a href="#">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal new registration document-->
+<div class="modal fade" id="newDoc">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <form action="" method="get">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h5 class="modal-title">Входящий документ</h5>
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Дата регистрации</label>
+                        <label class="col-sm-3 col-form-label">дд.мм.гггг</label>
+                        <label class="col-sm-3 col-form-label">Регистратор</label>
+                        <label class="col-sm-3 col-form-label">Пупкин П.П.</label>
+                    </div>
+                    <div class="form-row">
+                        <label for="department" class="col-sm-3 col-form-label">Подразделение-адресат</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="department" th:name="department">
+                                <option>ИТ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="docType" class="col-sm-3 col-form-label">Тип документа</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="docType" th:name="docType">
+                                <option>письмо</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="sender" class="col-sm-3 col-form-label">Отправитель</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="sender" th:name="sender" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="outgoingNumber" class="col-sm-3 col-form-label">Исх. номер</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="outgoingNumber" th:name="outgoingNumber" />
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <label for="outgoingDate" class="col-sm-2 col-form-label">Исх. дата</label>
+                        <div class="col-sm-3">
+                            <input type="date" class="form-control" id="outgoingDate" th:name="outgoingDate" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="content" class="col-sm-3 col-form-label">Краткое Содержание</label>
+                        <div class="col-sm-9">
+                            <textarea  class="form-control" id="content" rows="4" th:name="content"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="pages" class="col-sm-3 col-form-label">Кол-во листов</label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="pages" th:name="pages" />
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <label for="appendix" class="col-sm-2 col-form-label">Приложение</label>
+                        <div class="col-sm-3">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="appendix" th:name="appendix" />
+                                <label class="custom-file-label" for="appendix">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="note" class="col-sm-3 col-form-label">Примечания</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="note" th:name="note" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Зарегистрировать</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- TODO: подумать на счёт того, чтобы схлопнуть в одну модалку формы регистрации и просмотра/редактирования -->
+<!-- Modal show/edit document-->
+<div class="modal fade" id="showDoc">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <form action="" method="get">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h5 class="modal-title">Входящий документ ВХ-ххх</h5>
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Дата регистрации</label>
+                        <label class="col-sm-3 col-form-label">дд.мм.гггг</label>
+                        <label class="col-sm-3 col-form-label">Регистратор</label>
+                        <label class="col-sm-3 col-form-label">Пупкин П.П.</label>
+                    </div>
+                    <div class="form-row">
+                        <label for="department_" class="col-sm-3 col-form-label">Подразделение-адресат</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="department_" th:name="department">
+                                <option>ИТ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="docType_" class="col-sm-3 col-form-label">Тип документа</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="docType_" th:name="docType">
+                                <option>письмо</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="sender_" class="col-sm-3 col-form-label">Отправитель</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="sender_" th:name="sender" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="outgoingNumber_" class="col-sm-3 col-form-label">Исх. номер</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="outgoingNumber_" th:name="outgoingNumber" />
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <label for="outgoingDate_" class="col-sm-2 col-form-label">Исх. дата</label>
+                        <div class="col-sm-3">
+                            <input type="date" class="form-control" id="outgoingDate_" th:name="outgoingDate" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="content_" class="col-sm-3 col-form-label">Краткое Содержание</label>
+                        <div class="col-sm-9">
+                            <textarea  class="form-control" id="content_" rows="4" th:name="content"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="pages_" class="col-sm-3 col-form-label">Кол-во листов</label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="pages_" th:name="pages" />
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <label for="appendix_" class="col-sm-2 col-form-label">Приложение</label>
+                        <div class="col-sm-3">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="appendix_" th:name="appendix" />
+                                <label class="custom-file-label" for="appendix">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="note_" class="col-sm-3 col-form-label">Примечания</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="note_" th:name="note" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <h5>Связи</h5>
+                    </div>
+                    <div class="form-row">
+                        <label for="docOut" class="col-sm-3 col-form-label">Ответ</label>
+                        <a id="docOut" href="#">ИСХ-ххх</a>
+                    </div>
+                    <div class="form-row">
+                        <label for="note_" class="col-sm-3 col-form-label">Поручение</label>
+                        <a id="task" href="#">3233245</a>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Зарегистрировать</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
