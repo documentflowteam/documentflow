@@ -26,8 +26,10 @@ public class DocOutController {
 
     @GetMapping()
     public String showAllDocOut(Model model) {
-        Page<DocOut> pageOut = docOutService.findAll(PageRequest.of(1,20));
-        model.addAttribute("pageOut", pageOut);
+
+// TODO: добавить метод findAll с такими параметрами.
+//         Page<DocOut> pageOut = docOutService.findAll(PageRequest.of(1,20));
+//         model.addAttribute("pageOut", pageOut);
         return "docOut";
     }
 
