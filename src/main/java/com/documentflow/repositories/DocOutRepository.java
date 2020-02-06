@@ -1,9 +1,14 @@
 package com.documentflow.repositories;
 
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.State;
+import com.documentflow.entities.TaskType;
+import com.documentflow.entities.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,21 +19,25 @@ public interface DocOutRepository extends JpaRepository<DocOut, Long> {
 
     DocOut findOneById(Long id);
 
-    //DocOut findOneByUserId(Long userId);
+    List<DocOut> findAllByCreator(User creator);
 
-    DocOut findByCreateDate (LocalDateTime createDate);
+    List<DocOut> findAllBySigner(User signer);
 
-    DocOut findByRegDate (LocalDateTime regDate);
+    List<DocOut> findAllByCreateDate (LocalDateTime createDate);
 
-    DocOut findByContent (String content);
+    List<DocOut> findAllByRegDate (LocalDateTime regDate);
 
-    DocOut findByAppendix (String appendix);
+    List<DocOut> findAllByContent (String content);
 
-    DocOut findByNote (String note);
+    List<DocOut> findAllByAppendix (String appendix);
 
-    DocOut findByIsGenerated (Boolean isGenerated);
+    List<DocOut> findAllByNote (String note);
 
-    DocOut findByStateId (Integer stateId);
+    List<DocOut> findAllByIsGenerated (Boolean isGenerated);
+
+    List<DocOut> findAllByState (State state);
+
+    List<DocOut> findAllByTaskType (TaskType taskType);
 
 
 }
