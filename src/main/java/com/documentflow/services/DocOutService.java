@@ -1,13 +1,13 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.State;
+import com.documentflow.entities.TaskType;
+import com.documentflow.entities.User;
 import com.documentflow.repositories.DocOutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,51 +17,60 @@ import java.util.List;
 public class DocOutService {
 
     private DocOutRepository docOutRepository;
-    private DocOut docOut;
 
     @Autowired
     public void setDocOutRepository(DocOutRepository docInRepository) {
         this.docOutRepository = docOutRepository;
     }
 
-    List<DocOut> findAll(){
+    public List<DocOut> findAll(){
         return docOutRepository.findAll();
     }
 
+
     public DocOut findOneById(Long id) {
-        return docOut = docOutRepository.findOneById(id);
+        DocOut docOut= docOutRepository.findOneById(id);
+        return docOut;
     }
 
-//    DocOut findOneByUserId(Long userId){
-//        return docOut=docOutRepository.findOneByUserId(userId);
-//    }
-
-    DocOut findByCreateDate (LocalDateTime createDate){
-        return docOut=docOutRepository.findByCreateDate(createDate);
+    public List<DocOut> findAllByCreator(User creator){
+        return docOutRepository.findAllByCreator(creator);
     }
 
-    DocOut findByRegisterDate (LocalDateTime regDate){
-        return docOut=docOutRepository.findByRegDate(regDate);
+    public List<DocOut> findAllBySigner(User signer){
+        return docOutRepository.findAllBySigner(signer);
     }
 
-    DocOut findByContent (String content){
-        return docOut=docOutRepository.findByContent(content);
+    public List<DocOut> findAllByCreateDate (LocalDateTime createDate){
+        return docOutRepository.findAllByCreateDate(createDate);
     }
 
-    DocOut findByAppendix (String appendix){
-        return docOut=docOutRepository.findByAppendix(appendix);
+    public List<DocOut> findAllByRegDate (LocalDateTime regDate){
+        return docOutRepository.findAllByRegDate(regDate);
     }
 
-    DocOut findByNote (String note){
-        return docOut=docOutRepository.findByNote(note);
+    public List<DocOut> findAllByContent (String content){
+        return docOutRepository.findAllByContent(content);
     }
 
-    DocOut findByIsGenerated (Boolean isGenerated){
-        return docOut=docOutRepository.findByIsGenerated(isGenerated);
+    public List<DocOut> findAllByAppendix (String appendix){
+        return docOutRepository.findAllByAppendix(appendix);
     }
 
-    DocOut findByStateId (Integer stateId){
-        return docOut=docOutRepository.findByStateId(stateId);
+    public List<DocOut> findAllByNote (String note){
+        return docOutRepository.findAllByNote(note);
+    }
+
+    public List<DocOut> findAllByIsGenerated (Boolean isGenerated){
+        return docOutRepository.findAllByIsGenerated(isGenerated);
+    }
+
+    public List<DocOut> findAllByState (State state){
+        return docOutRepository.findAllByState(state);
+    }
+
+    public List<DocOut> findAllByTaskType (TaskType taskType){
+        return docOutRepository.findAllByTaskType(taskType);
     }
 
 }
