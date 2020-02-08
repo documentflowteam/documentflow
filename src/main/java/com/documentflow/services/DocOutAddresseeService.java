@@ -3,6 +3,8 @@ package com.documentflow.services;
 import com.documentflow.entities.DocOutAddressee;
 import com.documentflow.repositories.DocOutAddresseeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +21,24 @@ public class DocOutAddresseeService {
         this.docOutAddresseeRepository=docOutAddresseeRepository;
     }
 
-    List<DocOutAddressee> findAll(){
-        return docOutAddresseeRepository.findAll();
+    public List<DocOutAddressee> getAllByName(){
+        return docOutAddresseeRepository.getAllByName();
     }
 
-    DocOutAddressee findOneById(Long id){
+    public List<Long> getAllById(){
+        return docOutAddresseeRepository.getAllById();
+    }
+
+    public Page<DocOutAddressee> getPageOfDocOutAddresseeByDesc(Pageable pageable) {
+        return docOutAddresseeRepository.findAll(pageable);
+    }
+
+    public DocOutAddressee findOneById(Long id){
         return docOutAddresseeRepository.findOneById(id);
     }
 
-    DocOutAddressee findOneByName(String name){
+    public DocOutAddressee findOneByName(String name){
         return docOutAddresseeRepository.findOneByName(name);
     }
+
 }

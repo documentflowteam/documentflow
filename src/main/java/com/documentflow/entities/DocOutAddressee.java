@@ -27,4 +27,9 @@ public class DocOutAddressee {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "doc_out_id")
     private DocOut docOut;
+
+    @Override
+    public String toString() {
+        return id + " " + address + " " + name;
+    }
 }

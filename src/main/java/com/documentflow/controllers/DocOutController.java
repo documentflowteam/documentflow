@@ -4,6 +4,8 @@ package com.documentflow.controllers;
 import com.documentflow.entities.DocOut;
 import com.documentflow.services.DocOutService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +28,8 @@ public class DocOutController {
     public String showAllDocOut(Model model) {
 
 // TODO: добавить метод findAll с такими параметрами.
-//         Page<DocOut> pageOut = docOutService.findAll(PageRequest.of(1,20));
-//         model.addAttribute("pageOut", pageOut);
+         Page<DocOut> pageOut = docOutService.findAll(PageRequest.of(1,20));
+         model.addAttribute("pageOut", pageOut);
         return "doc_out";
     }
 
@@ -45,7 +47,7 @@ public class DocOutController {
 
     @PostMapping("/card")
     public String registrationDocOut() {
-        return "docOut";
+        return "doc_out";
     }
 
 }
