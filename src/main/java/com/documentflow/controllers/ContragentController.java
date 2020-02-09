@@ -16,7 +16,6 @@ public class ContragentController {
     @Autowired
     private ContragentService contragentService;
 
-
     @GetMapping()
     public ModelAndView searchContragent(@RequestParam(value = "redirectUrl") String redirectUrl,
                                          @RequestParam(value = "searchName") String searchName) {
