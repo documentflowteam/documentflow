@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/contragent")
 public class ContragentController {
@@ -17,13 +19,13 @@ public class ContragentController {
     private ContragentService contragentService;
 
     @GetMapping()
-    public ModelAndView searchContragent(@RequestParam(value = "redirectUrl") String redirectUrl,
-                                         @RequestParam(value = "searchName") String searchName) {
+    public ModelAndView searchContragent(@RequestParam(value = "searchName") String searchName,
+                                         HttpServletRequest request) {
 
+        String redirectUrl = request.getHeader("referer");
         ModelAndView modelAndView = createDefaultModelAndView(redirectUrl);
 
-        //to request a list of contractors, you must provide two parameters: the url to which the response will be sent, and the search string
-        if (StringUtils.isNotEmpty(redirectUrl) && StringUtils.isNotEmpty(searchName)) {
+        if (StringUtils.isNotEmpty(searchName)) {
             modelAndView.addObject("contragents", contragentService.searchContragents(searchName));
         }
         return modelAndView;
@@ -31,5 +33,10 @@ public class ContragentController {
 
     private ModelAndView createDefaultModelAndView(String url) {
         return new ModelAndView(url);
+    }
+
+    @GetMapping("/edit")
+    public String edit(){
+        return "contragent_edit";
     }
 }
