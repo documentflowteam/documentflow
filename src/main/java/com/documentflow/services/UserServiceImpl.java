@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Setter(onMethod_ = {@Autowired})
 public class UserServiceImpl implements UserService {
-    @Setter(onMethod_ = {@Autowired})
     private UserRepository userRepository;
 
     @Override
@@ -39,5 +39,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getPageOfUsersBySpecification(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public String getInitials(User user) {
+        return user.getLastName() +
+                " " +
+                user.getFirstName().charAt(0) +
+                ". " +
+                user.getMiddleName().charAt(0) +
+                ".";
     }
 }
