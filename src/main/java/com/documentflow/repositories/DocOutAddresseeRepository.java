@@ -12,13 +12,21 @@ import java.util.List;
 @Repository
 public interface DocOutAddresseeRepository extends JpaRepository<DocOutAddressee, Long>, PagingAndSortingRepository<DocOutAddressee, Long> {
 
-    List<DocOutAddressee> getAllByName();
+    List<DocOutAddressee> getAllByName(String name);
 
-    List<Long> getAllById();
+    List<DocOutAddressee> getAllById(Long id);
 
-    DocOutAddressee findOneById(Long id);
+    List<DocOutAddressee> getAllByAddress(String address);
 
-    DocOutAddressee findOneByName(String name);
+ //   Page<DocOutAddressee> getAll(Pageable pageable);
+
+ //   DocOutAddressee findOneById(Long id);
+
+    DocOutAddressee getDocOutAddresseeByName(String name);
+
+    DocOutAddressee getDocOutAddresseeById(Long id);
 
     Page<DocOutAddressee> findAll(Pageable pageable);
+
+//    Map<Long, String> findAllByIdAndName(Long id, String name);
 }

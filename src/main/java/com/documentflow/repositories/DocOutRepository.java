@@ -2,7 +2,7 @@ package com.documentflow.repositories;
 
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.State;
-import com.documentflow.entities.TaskType;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,17 +48,6 @@ public interface DocOutRepository extends JpaRepository<DocOut, Long>, PagingAnd
       Page<DocOut> findAllByState (State state, Pageable pageable);
 
 //    List<DocOut> findAllByTaskType (TaskType taskType);
-      Page<DocOut> findAllByTaskType (TaskType taskType, Pageable pageable);
-
-
-
-
-
-
-
-
-
-
-
+      Page<DocOut> findAllByTask (Task task, Pageable pageable);
 
 }

@@ -21,12 +21,20 @@ public class DocOutAddresseeService {
         this.docOutAddresseeRepository=docOutAddresseeRepository;
     }
 
-    public List<DocOutAddressee> getAllByName(){
-        return docOutAddresseeRepository.getAllByName();
+    public List<DocOutAddressee> getAllByName(String name){
+        return docOutAddresseeRepository.getAllByName(name);
     }
 
-    public List<Long> getAllById(){
-        return docOutAddresseeRepository.getAllById();
+    public List<DocOutAddressee> getAllByAddress(String address){
+        return docOutAddresseeRepository.getAllByAddress(address);
+    }
+
+//    public Page<DocOutAddressee> getAll(Pageable pageable){
+//        return docOutAddresseeRepository.getAll(pageable);
+//    }
+
+    public List<DocOutAddressee> getAllById(Long id){
+        return docOutAddresseeRepository.getAllById(id);
     }
 
     public Page<DocOutAddressee> getPageOfDocOutAddresseeByDesc(Pageable pageable) {
@@ -34,11 +42,13 @@ public class DocOutAddresseeService {
     }
 
     public DocOutAddressee findOneById(Long id){
-        return docOutAddresseeRepository.findOneById(id);
+        return docOutAddresseeRepository.getDocOutAddresseeById(id);
     }
 
     public DocOutAddressee findOneByName(String name){
-        return docOutAddresseeRepository.findOneByName(name);
+        return docOutAddresseeRepository.getDocOutAddresseeByName(name);
     }
+
+ //   public Map<Long, String> findAllByIdAndName(Long id, String name){return docOutAddresseeRepository.findAllByIdAndName(id, name);}
 
 }

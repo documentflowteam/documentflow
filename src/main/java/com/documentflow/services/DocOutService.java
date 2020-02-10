@@ -2,7 +2,7 @@ package com.documentflow.services;
 
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.State;
-import com.documentflow.entities.TaskType;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
 import com.documentflow.repositories.DocOutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,8 +113,8 @@ public class DocOutService {
 //        return docOutRepository.findAllByTaskType(taskType);
 //    }
 
-    public Page<DocOut> findAllByTaskType (TaskType taskType, Pageable pageable){
-        return docOutRepository.findAllByTaskType(taskType, pageable);
+    public Page<DocOut> findAllByTask (Task task, Pageable pageable){
+        return docOutRepository.findAllByTask(task, pageable);
     }
 
 }

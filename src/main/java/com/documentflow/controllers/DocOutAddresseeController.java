@@ -20,46 +20,56 @@ import java.util.List;
 public class DocOutAddresseeController {
 
     private DocOutAddresseeService docOutAddresseeService;
-    private DocOutAddressee docOutAddressee;
+    private List<DocOutAddressee> allAddr;
 
     @Autowired
     public void setDocOutAddresseeService(DocOutAddresseeService docOutAddresseeService) {
         this.docOutAddresseeService = docOutAddresseeService;
     }
 
+
+
     @GetMapping()
     public Page<DocOutAddressee> showAllAddressee(Model model) {
-        return docOutAddresseeService.getPageOfDocOutAddresseeByDesc(PageRequest.of(1, 20, Sort.Direction.DESC));
+        return docOutAddresseeService.getPageOfDocOutAddresseeByDesc(PageRequest.of(1, 20, Sort.Direction.DESC, "address"));
     }
 
+    //при получении id (>0) адреса, который  уже нахолится в списке адресов, выводим этот адрес.
+    //В противном случае выводим форму для внесения нового адреса в БД.
     @GetMapping("/{id}")
     public String getAddresseeById(@RequestParam(name = "id", required = false) Long id, Model model) {
-        List<Long> allAddrById = docOutAddresseeService.getAllById();
-             if (id != null && allAddrById.contains(id)) {
-            docOutAddressee = docOutAddresseeService.findOneById(id);
-        } else return "addressee_form";
-        model.addAttribute("addressee", docOutAddressee);
-        return docOutAddressee.toString();
+       allAddr=docOutAddresseeService.getAllById(id);
+        DocOutAddressee docOutAddressee = docOutAddresseeService.findOneById(id);
+             if (id <0 && allAddr==null) {
+            return "addressee_form";
+        } else {
+                 model.addAttribute("addressee", docOutAddressee);
+                return "doc_out";
+             }
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/edit/{id}")
     public String regAddressById() {
-        return "addressee_form";
+        return "doc_out";
     }
 
+    //при получении адреса, который не null и уже нахолится в списке адресов, выводим этот адрес.
+    //В противном случае выводим форму для внесения нового адреса в БД.
     @GetMapping("/{addr}")
     public String getAddresseeByName(@RequestParam(name = "addr", required = false) String addr, Model model) {
-        List<DocOutAddressee> allAddr=docOutAddresseeService.getAllByName();
-        if (addr != null && allAddr.contains(addr)) {
-            docOutAddressee = docOutAddresseeService.findOneByName(addr);
-        } else return "addressee_form";
-        model.addAttribute("addressee", docOutAddressee);
-        return docOutAddressee.toString();
+        allAddr=docOutAddresseeService.getAllByName(addr);
+        DocOutAddressee docOutAddressee = docOutAddresseeService.findOneByName(addr);
+        if (allAddr != null ) {
+            model.addAttribute("addressee", docOutAddressee);
+            return "doc_out";
+        } else
+            return "addressee_form";
+
     }
 
-    @PostMapping("/{addr}")
+    @PostMapping("/edit/{addr}")
     public String regAddressByName() {
-        return "addressee_form";
+        return "doc_out";
     }
 
 }
