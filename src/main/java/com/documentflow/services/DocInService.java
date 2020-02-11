@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @Transactional
@@ -25,7 +27,15 @@ public class DocInService {
         return docIn;
     }
 
+    public List<DocIn> findAll() {
+        return docInRepository.findAll();
+    }
+
     public Page<DocIn> findAll(Pageable pageable) {
         return docInRepository.findAll(pageable);
+    }
+
+    public <S extends DocIn> S save(S s) {
+        return docInRepository.save(s);
     }
 }
