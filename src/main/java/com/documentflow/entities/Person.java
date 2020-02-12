@@ -39,7 +39,7 @@ public class Person implements Serializable {
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private List<Adress> adresses;
+    private List<Address> addresses;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
     private Collection<Contragent> contragents;

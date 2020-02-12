@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "adresses")
-public class Adress implements Serializable  {
+public class Address implements Serializable  {
     private static final long serialVersionUID = 2600335316131008220L;
 
     @Id

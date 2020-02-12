@@ -29,7 +29,7 @@ public class Contragent implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
-    private Adress adress;
+    private Address address;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")

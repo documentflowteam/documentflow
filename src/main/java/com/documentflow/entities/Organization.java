@@ -27,7 +27,7 @@ public class Organization implements Serializable {
     @JoinTable(name = "contragents",
         joinColumns = @JoinColumn(name = "organiztion_id"),
         inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private List<Adress> adresses;
+    private List<Address> addresses;
 
     @ManyToMany
     @JoinTable(name = "contragents",
