@@ -141,14 +141,15 @@
                         break;
                     case "company":
                         var name_company = $("div.contragent-parameters #name_company").val();
-                        var arrayEmployee = [];
-
-                        var first_name;
-                        var middle_name;
-                        var last_name;
-                        var person_position;
+                        var arrayEmployee = new Array();
 
                         $("div.contragent-contact-employee div.contragent-item-box").each(function () {
+
+                            var first_name;
+                            var middle_name;
+                            var last_name;
+                            var person_position;
+
                             $(this).children().each(function () {
 
                                 if ($(this).attr("name") === "first_name") {
