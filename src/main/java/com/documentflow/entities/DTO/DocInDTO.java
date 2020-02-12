@@ -37,12 +37,8 @@ public class DocInDTO implements Serializable {
     private String appendix;
     private String note;
     private State state;
-
-//    @OneToOne
-//    @JoinColumn(name = "doc_out_id")
-//    private DocOut docOut;
-
-//    private Task task;
+    private DocOut docOut;
+    private Task task;
 
     public DocInDTO(DocIn docIn) {
         this.id = docIn.getId();
@@ -61,6 +57,8 @@ public class DocInDTO implements Serializable {
         this.appendix = docIn.getAppendix();
         this.note = docIn.getNote();
         this.state = docIn.getState();
+        this.docOut = docIn.getDocOut();
+        this.task = docIn.getTask();
     }
 
     public DocIn convertToDocIn(DocType docType, Department department) {
@@ -83,6 +81,8 @@ public class DocInDTO implements Serializable {
         docIn.setAppendix(this.appendix);
         docIn.setNote(this.note);
         docIn.setState(this.state);
+        docIn.setDocOut(this.docOut);
+        docIn.setTask(this.task);
         return docIn;
     }
 

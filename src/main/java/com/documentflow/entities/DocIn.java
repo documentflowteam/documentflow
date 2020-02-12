@@ -66,9 +66,9 @@ public class DocIn implements Serializable {
     @JoinColumn(name = "state_id")
     private State state;
 
-//    @OneToOne
-//    @JoinColumn(name = "doc_out_id")
-//    private DocOut docOut;
+    @OneToOne
+    @JoinColumn(name = "doc_out_id")
+    private DocOut docOut;
 
     @OneToOne
     @JoinColumn(name = "task_id")
