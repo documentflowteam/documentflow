@@ -17,4 +17,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     Page<User> getPageOfUsersBySpecification(Pageable pageable);
+
+    String getInitials(User user);
 }

@@ -5,6 +5,12 @@ package com.documentflow.model.enums;
  */
 public enum BusinessKeyTask {
 
-    EXECUTION,
-    APPROVING
+    EXECUTION ("EXECUTION"), // задача на исполнение
+    APPROVING ("APPROVING"); // задача на согласование
+
+    private String name;
+
+    BusinessKeyTask(String name) {
+        this.name = name;
+    }
 }
