@@ -1,8 +1,5 @@
 package com.documentflow.model.enums;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public enum BusinessKeyRole {
 
     DOC_IN_REGISTRATION("DOC_IN_REGISTRATION"),
@@ -17,5 +14,9 @@ public enum BusinessKeyRole {
     SYS_READ("SYS_READ"),
     SYS_EDIT("SYS_EDIT");
 
-    private final String name;
+    private String name;
+
+    BusinessKeyRole(String name) {
+        this.name = name;
+    }
 }
