@@ -1,15 +1,19 @@
 package com.documentflow.entities;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.documentflow.entities.dto.ContragentDtoAddress;
+import lombok.*;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "adresses")
 public class Address implements Serializable  {
@@ -38,6 +42,15 @@ public class Address implements Serializable  {
     @Column(name = "apartrment_number")
     private Integer apartmentNumber;
 
+    public Address(@NonNull ContragentDtoAddress contragentDtoAddress) {
+        this.index = NumberUtils.toInt(contragentDtoAddress.getPostIndex());
+        this.country = contragentDtoAddress.getCountry();
+        this.city = contragentDtoAddress.getCity();
+        this.street = contragentDtoAddress.getStreet();
+        this.houseNumber = NumberUtils.toInt(contragentDtoAddress.getHouseNumber());
+        this.apartmentNumber = NumberUtils.toInt(contragentDtoAddress.getApartrmentNumber());
+    }
+
     @ManyToMany
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "address_id"),
@@ -52,8 +65,4 @@ public class Address implements Serializable  {
 
     @OneToMany(mappedBy = "adress", fetch = FetchType.LAZY)
     private Collection<Contragent> contragents;
-
-    public String toString() {
-        return String.format("id - %d, city - %s, street - %s, house_number - %d, apatrment_number - %d", id, city, street, houseNumber, apartmentNumber);
-    }
 }

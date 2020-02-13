@@ -17,7 +17,7 @@ public class ContragentDtoEmployee {
             @JsonProperty("first_name") String firstName,
             @JsonProperty("middle_name") String middleName,
             @JsonProperty("last_name") String lastName,
-            @JsonProperty("person_position") String personPosition
+            @JsonProperty("position") String personPosition
     ) {
         this.firstName = firstName;
         this.middleName = middleName;

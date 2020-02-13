@@ -56,7 +56,7 @@
                 "<label for='first_name'>Имя</label><input id='first_name' type='text' name='first_name'><br>" +
                 "<label for='middle_name'>Отчество</label><input id='middle_name' type='text' name='middle_name'><br>" +
                 "<label for='last_name'>Фамилия</label><input id='last_name' type='text' name='last_name'><br>" +
-                "<label for='person_position'>Должность</label><input id='person_position' type='text' name='person_position'><br>" +
+                "<label for='position'>Должность</label><input id='position' type='text' name='position'><br>" +
                 "</div>");
         });
 
@@ -148,7 +148,7 @@
                             var first_name;
                             var middle_name;
                             var last_name;
-                            var person_position;
+                            var position;
 
                             $(this).children().each(function () {
 
@@ -161,8 +161,8 @@
                                 if ($(this).attr("name") === "last_name") {
                                     last_name = $(this).val();
                                 }
-                                if ($(this).attr("name") === "person_position") {
-                                    person_position = $(this).val();
+                                if ($(this).attr("name") === "position") {
+                                    position = $(this).val();
                                 }
                             });
 
@@ -170,7 +170,7 @@
                                 first_name: first_name,
                                 middle_name: middle_name,
                                 last_name: last_name,
-                                person_position: person_position
+                                position: position
                             });
                         });
 

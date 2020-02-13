@@ -1,14 +1,16 @@
 package com.documentflow.entities;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "organizations")
@@ -23,10 +25,14 @@ public class Organization implements Serializable {
     @Column(name = "name")
     private String name;
 
+    public Organization(String name) {
+        this.name = name;
+    }
+
     @ManyToMany
     @JoinTable(name = "contragents",
-        joinColumns = @JoinColumn(name = "organiztion_id"),
-        inverseJoinColumns = @JoinColumn(name = "address_id"))
+            joinColumns = @JoinColumn(name = "organiztion_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addresses;
 
     @ManyToMany
@@ -37,8 +43,4 @@ public class Organization implements Serializable {
 
     @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY)
     private Collection<Contragent> contragents;
-
-    public String toString() {
-        return String.format("id - %d, name - %s", id, name);
-    }
 }

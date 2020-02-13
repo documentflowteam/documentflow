@@ -29,6 +29,12 @@ public class Person implements Serializable {
     @Column(name = "last_name")
     private String lastName;
 
+    public Person(String firstName, String middleName, String lastName){
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+    }
+
     @ManyToMany
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "person_id"),
