@@ -10,18 +10,18 @@
 </head>
 <body>
 <div th:class="contragent-main-caption">
-    <p th:text="#{contrageng.edit.caption}">
+    <p th:text="Контрагенты">
 </div>
 <div th:class="contragent-list-radio-buttons">
-    <input type="radio" name="type_person" th:value="person" th:text="#{contrageng.edit.radio.type.person.person}">
-    <input type="radio" name="type_person" th:value="company" th:text="#{contrageng.edit.radio.type.person.company}">
+    <input type="radio" name="type_person" th:value="person" th:text="Физическое лицо">
+    <input type="radio" name="type_person" th:value="company" th:text="Юридическое лицо">
 </div>
 <div th:class="contragent-parameters"></div>
 <div th:class="contragent-address"></div>
 <div th:class="contragent-contact-employee"></div>
 <div th:class="contragent-command-button">
-    <button th:name="ok" th:text="#{contrageng.edit.button.save}"/>
-    <button th:name="cancel" th:text="#{contrageng.edit.button.cancel}"/>
+    <button th:name="ok" th:text="Сохранить"/>
+    <button th:name="cancel" th:text="Отмена"/>
 </div>
 
 <script type="text/javascript">
