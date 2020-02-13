@@ -29,6 +29,7 @@ public class DocOutController {
 //         Page<DocOut> pageOut = docOutService.findAll(PageRequest.of(1,20));
 //         model.addAttribute("pageOut", pageOut);
         return "doc_out";
+  //      return "addressee_form";
     }
 
     @GetMapping("/card")

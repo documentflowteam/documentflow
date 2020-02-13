@@ -51,11 +51,11 @@ public class DocOut implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "is_genetated")
+    @Column(name = "is_generated")
     private Boolean isGenerated;
 
-    @Column(name = "number")
-    private String number;
+    @Column(name = "reg_number")
+    private String regNumber;
 
     @CreationTimestamp
     @Column(name="reg_date")

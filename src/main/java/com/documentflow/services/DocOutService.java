@@ -101,6 +101,10 @@ public class DocOutService {
         return docOutRepository.findAllByIsGenerated(isGenerated, pageable);
     }
 
+    public Page<DocOut> findAllByRegNumber (String regNumber, Pageable pageable){
+        return docOutRepository.findAllByRegNumber(regNumber, pageable);
+    }
+
 //    public List<DocOut> findAllByState (State state){
 //        return docOutRepository.findAllByState(state);
 //    }

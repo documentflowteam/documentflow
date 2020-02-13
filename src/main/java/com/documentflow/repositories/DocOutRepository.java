@@ -44,6 +44,8 @@ public interface DocOutRepository extends JpaRepository<DocOut, Long>, PagingAnd
 //    List<DocOut> findAllByIsGenerated (Boolean isGenerated);
       Page<DocOut> findAllByIsGenerated (Boolean isGenerated, Pageable pageable);
 
+      Page<DocOut> findAllByRegNumber (String regNumber, Pageable pageable);
+
 //    List<DocOut> findAllByState (State state);
       Page<DocOut> findAllByState (State state, Pageable pageable);
 
