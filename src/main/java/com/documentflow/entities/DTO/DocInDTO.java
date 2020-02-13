@@ -37,7 +37,7 @@ public class DocInDTO implements Serializable {
     private String appendix;
     private String note;
     private State state;
-    private DocOut docOut;
+//    private DocOut docOut;
     private Task task;
 
     public DocInDTO(DocIn docIn) {
@@ -47,8 +47,14 @@ public class DocInDTO implements Serializable {
         this.user = docIn.getUser();
         this.docType = docIn.getDocType();
         this.docTypeId = docIn.getDocType().getId();
+        if (this.docTypeId == null) {
+            this.docTypeId = -1;
+        }
         this.department = docIn.getDepartment();
         this.departmentId = docIn.getDepartment().getId();
+        if (this.departmentId == null) {
+            this.departmentId = -1;
+        }
         this.sender = docIn.getSender();
         this.outgoingNumber = docIn.getOutgoingNumber();
         this.outgoingDate = convertToDate(docIn.getOutgoingDate());
@@ -57,7 +63,7 @@ public class DocInDTO implements Serializable {
         this.appendix = docIn.getAppendix();
         this.note = docIn.getNote();
         this.state = docIn.getState();
-        this.docOut = docIn.getDocOut();
+//        this.docOut = docIn.getDocOut();
         this.task = docIn.getTask();
     }
 
@@ -81,7 +87,7 @@ public class DocInDTO implements Serializable {
         docIn.setAppendix(this.appendix);
         docIn.setNote(this.note);
         docIn.setState(this.state);
-        docIn.setDocOut(this.docOut);
+//        docIn.setDocOut(this.docOut);
         docIn.setTask(this.task);
         return docIn;
     }

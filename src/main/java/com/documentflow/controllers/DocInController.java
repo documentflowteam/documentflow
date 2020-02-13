@@ -48,10 +48,13 @@ public class DocInController {
         }
         model.addAttribute("currentPage", currentPage);
         Page<DocIn> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"));
-        page.map(d -> new DocInDTO(d));
-        model.addAttribute("docs", page);
+        Page<DocInDTO> pageDTOs = page.map(d -> new DocInDTO(d));
+        pageDTOs.stream().map(d -> model.addAttribute(d));
+        model.addAttribute("docs", pageDTOs);
 
         DocInDTO docIn = new DocInDTO();
+        docIn.setDepartmentId(-1);
+        docIn.setDocTypeId(-1);
         docIn.setUser(userService.getCurrentUser(1));//Заменить на релаьно авторизованного юзера
         model.addAttribute("newDocIn", docIn);
 
