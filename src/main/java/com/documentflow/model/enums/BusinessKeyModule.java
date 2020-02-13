@@ -5,7 +5,13 @@ package com.documentflow.model.enums;
  */
 public enum BusinessKeyModule {
 
-    DOCUMENTS,
-    TASKS,
-    SYS_SETTINGS
+    DOCUMENTS ("DOCUMENTS"), // документы
+    TASKS ("TASKS"), // поручения
+    SYS_SETTINGS ("SYS_SETTINGS"); // админка
+
+    private String name;
+
+    BusinessKeyModule(String name) {
+        this.name = name;
+    }
 }
