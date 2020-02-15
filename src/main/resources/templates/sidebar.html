@@ -1,0 +1,49 @@
+<body>
+    <div>
+       <div class="sidebar-sticky sideber-box">
+
+            <a href="#docs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle link-header">
+                Документы
+            </a>
+
+            <ul class="collapse elems" id="docs">
+                <li>
+                    <a th:href="@{/docs/in}">Входящие</a>
+                </li>
+                <li>
+                    <a href="#">Исходящие</a>
+                </li>
+            </ul>
+
+            <a href="#tasks" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle link-header">
+                Поручения
+            </a>
+
+            <ul class="collapse elems" id="tasks">
+                <li>
+                    <a href="#">Поручено мне</a>
+                </li>
+                <li>
+                    <a href="#">Я - автор</a>
+                </li>
+            </ul>
+
+            <a href="#sys" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle link-header">
+                Администрирование
+            </a>
+
+            <ul class="collapse elems" id="sys">
+                <li>
+                    <a href="#">Пользователи</a>
+                </li>
+                <li>
+                    <a href="/sys/departments">Подразделения</a>
+                </li>
+                <li>
+                    <a href="#">Типы документов</a>
+                </li>
+                </ul>
+
+       </div>
+    </div>
+</body>

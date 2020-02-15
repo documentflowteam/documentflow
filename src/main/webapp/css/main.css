@@ -1,0 +1,21 @@
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.sideber-box {
+    padding: 15px;
+    height: 100vh;
+    border-right: 1px solid #ebedf0;
+}
+
+.link-header, .link-header:hover {
+    text-decoration: none;
+    color: #343b5a;
+    display: block;
+}
+
+.elems {
+    padding-left: 5px;
+    list-style: none;
+}
