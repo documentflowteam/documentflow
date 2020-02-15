@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication//(scanBasePackages = {"com.documentflow"})
+@SpringBootApplication
 @PropertySource("classpath:database.properties")
 public class DocumentflowApplication extends SpringBootServletInitializer {
 
