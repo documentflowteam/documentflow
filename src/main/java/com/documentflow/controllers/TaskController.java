@@ -8,6 +8,8 @@ import com.documentflow.services.DocOutService;
 import com.documentflow.services.TaskService;
 import com.documentflow.services.TaskTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,17 +36,24 @@ public class TaskController {
 
     @GetMapping("")
     public String showAllTasks() {
-        return "redirect:/tasks/in";
+        return "redirect:/tasks/registry/in";
     }
 
-    @GetMapping("/in")
-    public String showAllInTasks(Model model) {
-        return "tasks_for_me";
-    }
-
-    @GetMapping("/out")
-    public String showAllOutTasks(Model model) {
-        return "tasks_from_me";
+    @GetMapping("/registry/{direction}")
+    public String showTasks(Model model, @PathVariable String direction) {
+        if (direction.equals("in")) {
+            List<Task> tasks = taskService.findAll(PageRequest.of(0, 10, Sort.Direction.ASC, "id")).getContent();
+            model.addAttribute("direction", direction);
+            model.addAttribute("tasks", tasks);
+            return "tasks_registry";
+        } else if (direction.equals("out")) {
+            List<Task> tasks = taskService.findAll(PageRequest.of(0, 10, Sort.Direction.ASC, "id")).getContent();
+            model.addAttribute("direction", direction);
+            model.addAttribute("tasks", tasks);
+            return "tasks_registry";
+        } else {
+            return "redirect:/tasks/registry/in";
+        }
     }
 
     @GetMapping("/card")
