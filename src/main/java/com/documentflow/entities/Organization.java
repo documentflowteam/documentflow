@@ -1,12 +1,13 @@
 package com.documentflow.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,22 +26,30 @@ public class Organization implements Serializable {
     @Column(name = "name")
     private String name;
 
-    public Organization(String name) {
+    public Organization(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
+    public Organization(String name) {
+        this(null, name);
+    }
+
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "organiztion_id"),
             inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private List<Address> addresses;
+    private List<Address> addresses = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "organiztion_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id"))
-    private List<Person> persons;
+    private List<Person> persons = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY)
-    private Collection<Contragent> contragents;
+    private List<Contragent> contragents = new ArrayList<>();
 }

@@ -1,9 +1,10 @@
 package com.documentflow.entities;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,37 +31,28 @@ public class Contragent implements Serializable {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @Column(name = "address_id")
-    private Long addressId;
-
-    @Column(name = "person_id")
-    private Long personId;
-
-    @Column(name = "organiztion_id")
-    private Long organiztionId;
-
-    public Contragent(Long personId, Long organiztionId, Long addressId, String searchName, String personPosition){
-        this.personId = personId;
-        this.organiztionId = organiztionId;
-        this.addressId = addressId;
-        this.searchName = searchName;
-        this.personPosition = personPosition;
+    public Contragent(String searchName, String personPosition) {
+        this.searchName = ObjectUtils.isEmpty(searchName) ? null : searchName.toUpperCase();
+        this.personPosition = ObjectUtils.isEmpty(personPosition) ? null : personPosition.toUpperCase();
         this.isDeleted = false;
     }
 
-    public Contragent(Long personId, String searchName, Long addressId){
-        this(personId, null, null, searchName, null);
+    public Contragent(String searchName) {
+        this(searchName, null);
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne()
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne()
     @JoinColumn(name = "person_id")
     private Person person;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne()
     @JoinColumn(name = "organiztion_id")
     private Organization organization;
 }

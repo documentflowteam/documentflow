@@ -1,11 +1,16 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.Organization;
+import com.documentflow.entities.dto.ContragentDtoParameters;
 import com.documentflow.repositories.OrganizationRepository;
+import com.documentflow.repositories.specifications.OrganizationSpecifications;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
@@ -14,13 +19,24 @@ public class OrganizationServiceImpl implements OrganizationService {
     private OrganizationRepository organizationRepository;
 
     @Override
-    public Long save(@NonNull String organizationForSave) {
+    public Organization save(@NonNull ContragentDtoParameters contragentDto) {
 
-        //TODO реализовать проверку организации в БД на предмет существования.
-        if(StringUtils.isNotEmpty(organizationForSave)){
-            Organization normalizedOrganization = new Organization(StringUtils.upperCase(organizationForSave).trim());
-            return organizationRepository.save(normalizedOrganization).getId();
+        String nameCompany = contragentDto.getNameCompany();
+        Organization organization = new Organization(nameCompany);
+        return organizationRepository.save(organization);
+    }
+
+    @Override
+    public List<Organization> findAll(String nameCompany) {
+        Specification<Organization> spec = Specification.where(null);
+        if (StringUtils.isNotEmpty(nameCompany)) {
+            spec = spec.and(OrganizationSpecifications.nameCompanyLike(nameCompany));
         }
-        return null;
+        return organizationRepository.findAll(spec);
+    }
+
+    @Override
+    public Organization update(Long id, String nameCompany) {
+        return organizationRepository.save(new Organization(id, nameCompany));
     }
 }

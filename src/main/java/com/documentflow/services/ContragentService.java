@@ -1,6 +1,7 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.Contragent;
+import com.documentflow.entities.dto.ContragentDto;
 
 import java.util.List;
 
@@ -15,11 +16,22 @@ public interface ContragentService {
     List<Contragent> searchContragents(String searchName);
 
     /**
-     * Checks the existence of an contragent in the database.
-     * If there is no contragent in the database, it adds the contragent to the database.
+     * We record the counterparty and related entities (address, employee, organization, or individual) in the database)
      *
-     * @param contragents list of contragents
-     * @return list of ID contragents
+     * @param contragentDto contragentDto
+     * @return list of contragents
      */
-    List<Long> save(List<Contragent> contragents);
+    List<Contragent> save(ContragentDto contragentDto);
+
+    /**
+     * Updating employee in the database
+     *
+     * @param id         id
+     * @param firstName  first name
+     * @param middleName middle name
+     * @param lastName   last name
+     * @param position   position
+     * @return updated person
+     */
+    Contragent updateEmployee(Long id, String firstName, String middleName, String lastName, String position);
 }

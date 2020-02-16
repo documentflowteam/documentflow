@@ -1,13 +1,34 @@
 package com.documentflow.services;
 
+import com.documentflow.entities.Organization;
+import com.documentflow.entities.dto.ContragentDtoParameters;
+
+import java.util.List;
+
 public interface OrganizationService {
 
     /**
-     * Checks the existence of an organization in the database.
-     * If there is no organization in the database, it adds the organization to the database.
+     * Adds an organization to the database
      *
      * @param organization organization
-     * @return list of ID organization
+     * @return organization
      */
-    Long save(String organization);
+    Organization save(ContragentDtoParameters organization);
+
+    /**
+     * We search for all organizations who meet the search conditions
+     *
+     * @param nameCompany name company
+     * @return list of organizations
+     */
+    List<Organization> findAll(String nameCompany);
+
+    /**
+     * Updating data in the database
+     *
+     * @param id          id
+     * @param nameCompany name company
+     * @return updated person
+     */
+    Organization update(Long id, String nameCompany);
 }

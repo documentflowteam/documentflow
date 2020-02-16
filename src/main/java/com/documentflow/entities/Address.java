@@ -1,12 +1,14 @@
 package com.documentflow.entities;
 
 import com.documentflow.entities.dto.ContragentDtoAddress;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,8 +17,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "adresses")
-public class Address implements Serializable  {
+@Table(name = "addresses")
+public class Address implements Serializable {
     private static final long serialVersionUID = 2600335316131008220L;
 
     @Id
@@ -37,32 +39,48 @@ public class Address implements Serializable  {
     private String street;
 
     @Column(name = "house_number")
-    private Integer houseNumber;
+    private String houseNumber;
 
     @Column(name = "apartrment_number")
-    private Integer apartmentNumber;
+    private String apartmentNumber;
 
-    public Address(@NonNull ContragentDtoAddress contragentDtoAddress) {
-        this.index = NumberUtils.toInt(contragentDtoAddress.getPostIndex());
-        this.country = contragentDtoAddress.getCountry();
-        this.city = contragentDtoAddress.getCity();
-        this.street = contragentDtoAddress.getStreet();
-        this.houseNumber = NumberUtils.toInt(contragentDtoAddress.getHouseNumber());
-        this.apartmentNumber = NumberUtils.toInt(contragentDtoAddress.getApartrmentNumber());
+    public Address(Long id, Integer postIndex, String country, String city, String street, String houseNumber, String apartmentNumber) {
+        this.id = id;
+        this.index = postIndex;
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.apartmentNumber = apartmentNumber;
     }
 
+    public Address(@NonNull ContragentDtoAddress contragentDtoAddress) {
+        this(
+                null,
+                NumberUtils.toInt(contragentDtoAddress.getPostIndex()),
+                ObjectUtils.isEmpty(contragentDtoAddress.getCountry()) ? null : contragentDtoAddress.getCountry().toUpperCase(),
+                ObjectUtils.isEmpty(contragentDtoAddress.getCity()) ? null : contragentDtoAddress.getCity(),
+                ObjectUtils.isEmpty(contragentDtoAddress.getStreet()) ? null : contragentDtoAddress.getStreet(),
+                contragentDtoAddress.getHouseNumber(),
+                contragentDtoAddress.getApartrmentNumber()
+        );
+    }
+
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "address_id"),
             inverseJoinColumns = @JoinColumn(name = "organiztion_id"))
-    private List<Organization> organizations;
+    private List<Organization> organizations = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "contragents",
             joinColumns = @JoinColumn(name = "address_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id"))
-    private List<Person> persons;
+    private List<Person> persons = new ArrayList<>();
 
-    @OneToMany(mappedBy = "adress", fetch = FetchType.LAZY)
-    private Collection<Contragent> contragents;
+    @JsonIgnore
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    private List<Contragent> contragents = new ArrayList<>();
 }
