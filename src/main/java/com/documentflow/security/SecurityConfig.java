@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/login?logout")
                 .permitAll()
                 .and()
                 .exceptionHandling()
