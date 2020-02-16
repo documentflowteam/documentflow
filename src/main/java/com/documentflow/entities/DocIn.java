@@ -70,7 +70,7 @@ public class DocIn implements Serializable {
 //    @JoinColumn(name = "doc_out_id")
 //    private DocOut docOut;
 
-//    @OneToOne
-//    @JoinColumn(name = "task_id")
-//    private Task task;
+    @OneToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
 }

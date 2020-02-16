@@ -5,15 +5,21 @@ package com.documentflow.model.enums;
  */
 public enum BusinessKeyState {
 
-    REGISTRATED,
-    EXECUTION,
-    EXECUTED,
-    DELETED,
-    RECALLED,
-    PROJECT,
-    APPROVING,
-    APPROVED,
-    SENT,
-    REWORK,
-    CHECKING
+    REGISTRATED ("REGISTERED"), // зарегистрирован
+    EXECUTION ("EXECUTION"), // на исполнении
+    EXECUTED ("EXECUTED"), // исполнен
+    DELETED ("DELETED"), // удалён
+    RECALLED ("RECALLED"), // отозван
+    PROJECT ("PROJECT"), // проект
+    APPROVING ("APPROVING"), // на утверждении
+    APPROVED ("APPROVED"), // утверждено
+    SENT ("SENT"), // отправлено
+    REWORK ("REWORK"), // на доработке
+    CHECKING ("CHECKING"); // на проверке
+
+    private String name;
+
+    BusinessKeyState(String name) {
+        this.name = name;
+    }
 }
