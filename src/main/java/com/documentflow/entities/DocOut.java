@@ -4,10 +4,10 @@ package com.documentflow.entities;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import com.documentflow.entities.User;
 
 
 @Entity
@@ -51,11 +51,11 @@ public class DocOut implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "is_genetated")
+    @Column(name = "is_generated")
     private Boolean isGenerated;
 
-    @Column(name = "number")
-    private String number;
+    @Column(name = "reg_number")
+    private String regNumber;
 
     @CreationTimestamp
     @Column(name="reg_date")
@@ -66,7 +66,7 @@ public class DocOut implements Serializable {
     private State state;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tasks_id")
-    private TaskType taskType;
+    @JoinColumn(name = "task_id")
+    private Task task;
 
 }

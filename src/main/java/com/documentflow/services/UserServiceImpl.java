@@ -1,17 +1,27 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.Department;
+import com.documentflow.entities.Role;
 import com.documentflow.entities.User;
 import com.documentflow.repositories.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @Setter(onMethod_ = {@Autowired})
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
@@ -37,17 +47,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getPageOfUsersBySpecification(Pageable pageable) {
+    public Page<User> getPageOfUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
     }
 
     @Override
     public String getInitials(User user) {
         return user.getLastName() +
                 " " +
-                user.getFirstName().charAt(0) +
+                user.getFirstName().toUpperCase().charAt(0) +
                 ". " +
-                user.getMiddleName().charAt(0) +
-                ".";
+                (Objects.isNull(user.getMiddleName()) ? "" : user.getMiddleName().toUpperCase().charAt(0) + ".");
+    }
+
+    @Override
+    public boolean isActive(User user) {
+        return user.isActive();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findUserByUsername(username);
+        if (user == null || !user.isActive()) {
+            throw new UsernameNotFoundException("Invalid username or password");
+        } else {
+            return new org.springframework.security.core.userdetails
+                    .User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        }
+    }
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getBusinessKey())).collect(Collectors.toList());
     }
 }

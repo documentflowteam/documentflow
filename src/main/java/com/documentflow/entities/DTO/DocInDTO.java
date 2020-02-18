@@ -92,6 +92,8 @@ public class DocInDTO implements Serializable {
         return docIn;
     }
 
+    
+    // TODO: попробовать вынести конвертилки дат в общий utils
     private LocalDateTime convertToLocalDate(Date date) {
         if (date == null) {
             return null;

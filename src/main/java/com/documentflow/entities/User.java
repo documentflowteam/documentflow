@@ -1,13 +1,12 @@
 package com.documentflow.entities;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Collection;
 
-@Getter
-@Setter
+@Data
 @Entity
 @NoArgsConstructor
 @Table(name = "sys_users")
@@ -28,13 +27,13 @@ public class User {
     private String lastName;
 
     @Column(name = "login")
-    private String login;
+    private String username;
 
     @Column(name = "pass")
     private String password;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "boss_id")
@@ -43,4 +42,10 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "sys_users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<Role> roles;
 }
