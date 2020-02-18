@@ -37,7 +37,7 @@
                        class="btn btn-secondary"
                        data-toggle="modal"
                        href="#newDoc"
-                       th:data-docIn="${newDocIn}"
+                       th:data-newDocIn="${newDocIn}"
                        th:data-docTypes="${docTypes}"
                        th:data-departments="${departments}">Зарегистрировать</a>
                 </div>
@@ -57,31 +57,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="docIn : ${docs.getContent()}">
+                            <tr th:each="docInDTO : ${docs.getContent()}">
                                 <td>
                                     <a role="button"
                                        aria-pressed="true"
                                        data-toggle="modal"
-                                       href="#newDoc"
-                                       th:text="${docIn.regNumber}"
-                                       th:data-docIn="${docIn}" />
-
-<!--                                    <button type="button"-->
-<!--                                            class="btn btn-primary"-->
-<!--                                            th:text="${docIn.regNumber}"-->
-<!--                                            th:data-docIn="${docIn}"-->
-<!--                                            data-target="#newDoc" />-->
-
-<!--                                    <button type="button"-->
-<!--                                            class="btn btn-primary"-->
-<!--                                            th:onClick="'javascript:showDoc(\'' + ${docIn} +'\');'"-->
-<!--                                            th:text="${docIn.regNumber}"/>-->
+                                       href="#showDoc"
+                                       th:text="${docInDTO.regNumber}"
+                                       th:data-docInDTO="${docInDTO}"
+                                       th:data-docTypes="${docTypes}"
+                                       th:data-departments="${departments}"/>
                                 </td>
-                                <td th:text="${docIn.regDate}" />
-                                <td th:text="${docIn.docType.name}" />
-                                <td th:text="${docIn.sender}" />
-                                <td th:text="${docIn.state.name}" />
-                                <td><i th:if="${docIn.appendix != null}" class="far fa-file-pdf"></i></td>
+                                <td th:text="${docInDTO.regDate}" />
+                                <td th:text="${docInDTO.docType.name}" />
+                                <td th:text="${docInDTO.sender}" />
+                                <td th:text="${docInDTO.state.name}" />
+                                <td><i th:if="${docInDTO.appendix != null}" class="far fa-file-pdf"></i></td>
                                 <td>
                                     <a href="#"> <!-- ссыль на метод удаления -->
                                         <i class="fas fa-trash-alt"></i>
@@ -110,27 +101,14 @@
     </div>
 </div>
 
-<script th:inline="javascript">
+<script>
 $('#newDoc').on('show.bs.modal', function (event) {
-  const button = $(event.relatedTarget)
-  const docIn = button.data('docIn')
-  const modal = $(this)
-  event.preventDefault();
+  var button = $(event.relatedTarget)
+  var newDocIn = button.data('newDocIn')
+  var docTypes = button.data('docTypes')
+  var departments = button.data('departments')
 })
 </script>
-<!--function showDoc(doc) {-->
-<!--    $(document).ready(function() {-->
-<!--        $('#newDoc').modal();-->
-<!--        $("#docIn").val(doc);-->
-<!--    });-->
-
-<!--$('button').click(function(event){-->
-<!--    var button = event.relatedTarget;-->
-<!--    var docIn = button.data('docIn');-->
-<!--    var modal = $(this);-->
-<!--    $('#newDoc').modal('show');-->
-<!--});-->
-
 
 <!-- Modal new registration document-->
 <div class="modal fade" id="newDoc">
@@ -140,7 +118,7 @@ $('#newDoc').on('show.bs.modal', function (event) {
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">×</button>
             </div>
-            <form th:action="@{/docs/in/card}" method="POST" th:object="${docIn}">
+            <form th:action="@{/docs/in/card}" method="POST" th:object="${newDocIn}">
 
                 <!-- Hidden inputs -->
                 <input th:field="*{id}" type="hidden" class="form-control">
@@ -148,26 +126,21 @@ $('#newDoc').on('show.bs.modal', function (event) {
                 <input th:field="*{user}" type="hidden" class="form-control">
                 <input th:field="*{docType}" type="hidden" class="form-control">
                 <input th:field="*{state}" type="hidden" class="form-control">
-                <input th:field="*{regNumber}" type="hidden" class="form-control">
-                <!--                <input th:field="*{docOut}" type="hidden" class="form-control">-->
-                <input th:field="*{task}" type="hidden" class="form-control">
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <div class="form-row">
-                        <h5 class="modal-title" th:text="${docIn.id == null} ? 'Входящий документ' : 'Входящий документ ' + ${regNumber} + ' ' + ${state.name}" />
-                    </div>
+                    <h5 class="modal-title">Входящий документ</h5>
                     <div class="form-row">
                         <label class="col-sm-3 col-form-label">Дата регистрации</label>
-                        <label class="col-sm-3 col-form-label" th:text="${docIn.id == null} ? ${#dates.format(#dates.createNow(), 'dd/mm/yyyy')} : ${regDate}" />
+                        <label class="col-sm-3 col-form-label" th:text="${#dates.format(#dates.createNow(), 'dd/mm/yyyy')}" />
                         <label class="col-sm-3 col-form-label">Регистратор</label>
-                        <label class="col-sm-3 col-form-label" th:text="${docIn.user.lastName}" />
+                        <label class="col-sm-3 col-form-label" th:text="${newDocIn.user.lastName}" />
                     </div>
                     <div class="form-row">
                         <label for="department" class="col-sm-3 col-form-label">Подразделение-адресат</label>
                         <div class="col-sm-9">
                             <select class="form-control" id="department" th:field="*{departmentId}">
-                                <option th:each="dep : ${departments}" th:text="${dep.name}" th:value="${dep.id}" th:selected="${dep.id == docIn.departmentId}" />
+                                <option th:each="dep : ${departments}" th:text="${dep.name}" th:value="${dep.id}"/>
                             </select>
                         </div>
                     </div>
@@ -175,7 +148,7 @@ $('#newDoc').on('show.bs.modal', function (event) {
                         <label for="docType" class="col-sm-3 col-form-label">Тип документа</label>
                         <div class="col-sm-9">
                             <select class="form-control" id="docType" th:field="*{docTypeId}">
-                                <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:selected="${docT.id == docIn.docTypeId}" />
+                                <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}"/>
                             </select>
                         </div>
                     </div>
@@ -222,19 +195,135 @@ $('#newDoc').on('show.bs.modal', function (event) {
                             <input th:field="*{note}" type="text" class="form-control" id="note" />
                         </div>
                     </div>
-                    <div th:unless="${docIn.id == null}">
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Зарегистрировать</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+$('#showDoc').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget)
+  var docInDTO = button.data('docInDTO')
+  var docTypes = button.data('docTypes')
+  var departments = button.data('departments')
+  var modal = $(this)
+})
+</script>
+
+<!-- TODO: подумать на счёт того, чтобы схлопнуть в одну модалку формы регистрации и просмотра/редактирования -->
+<!-- Modal show/edit document-->
+<div class="modal fade" id="showDoc">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <form action="@{/docs/in/card}" method="POST" th:object="${docInDTO}">
+
+                <!-- Hidden inputs -->
+                <input th:field="*{id}" type="hidden" class="form-control">
+                <input th:field="*{regDate}" type="hidden" class="form-control">
+                <input th:field="*{user}" type="hidden" class="form-control">
+                <input th:field="*{docType}" type="hidden" class="form-control">
+                <input th:field="*{state}" type="hidden" class="form-control">
+                <input th:field="*{regNumber}" type="hidden" class="form-control">
+<!--                <input th:field="*{docOut}" type="hidden" class="form-control">-->
+                <input th:field="*{task}" type="hidden" class="form-control">
+
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-row">
+                        <h5 class="modal-title" th:text="'Входящий документ ' + ${docIn.regNumber} + ' ' + ${docIn.state.name}" />
+                    </div>
+
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Дата регистрации</label>
+                        <label class="col-sm-3 col-form-label" th:text="${docIn.regDate}" />
+                        <label class="col-sm-3 col-form-label">Регистратор</label>
+                        <label class="col-sm-3 col-form-label" th:text="${docIn.user.lastName}" />
+                    </div>
+                    <div class="form-row">
+                        <label for="department_" class="col-sm-3 col-form-label">Подразделение-адресат</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="department_" th:field="*{departmentId}">
+                                <option th:each="dep : ${departments}" th:text="${dep.name}" th:value="${dep.id}" th:attr="${dep.id == docIn.departmentId} ? selected" />
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="docType_" class="col-sm-3 col-form-label">Тип документа</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="docType_" th:field="*{docTypeId}">
+                                <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:attr="${docT.id == docIn.docTypeId} ? selected" />
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="sender_" class="col-sm-3 col-form-label">Отправитель</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="sender_" th:field="sender" th:value="${docIn.sender}" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="outgoingNumber_" class="col-sm-3 col-form-label">Исх. номер</label>
+                        <div class="col-sm-2">
+                            <input th:field="outgoingNumber" type="text" class="form-control" id="outgoingNumber_" th:value="${docIn.outgoingNumber}" />
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <label for="outgoingDate_" class="col-sm-2 col-form-label">Исх. дата</label>
+                        <div class="col-sm-3">
+                            <input th:field="*{outgoingDate}" type="date" class="form-control" id="outgoingDate_" th:value="${docIn.outgoingDate}" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="content_" class="col-sm-3 col-form-label">Краткое Содержание</label>
+                        <div class="col-sm-9">
+                            <textarea  class="form-control" id="content_" rows="4" th:field="content" th:value="${docIn.content}" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="pages_" class="col-sm-3 col-form-label">Кол-во листов</label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="pages_" th:field="pages" th:value="${docIn.pages}" />
+                        </div>
+                        <div class="col-sm-2"></div>
+                        <label for="appendix_" class="col-sm-2 col-form-label">Приложение</label>
+                        <div class="col-sm-3">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="appendix_" th:field="appendix" th:value="${docIn.appendix}" />
+                                <label th:if="${docIn.appendix}" class="custom-file-label" for="appendix">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="note_" class="col-sm-3 col-form-label">Примечания</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="note_" th:field="${docIn.note}" />
+                        </div>
+                    </div>
+                    <div th:unless="${docIn.id}">
                         <h5>Связи</h5>
 
-                        <!--                        <div class="form-row" th:if="${docIn.docOut}">-->
-                        <!--                            <label for="docOut" class="col-sm-3 col-form-label">Ответ</label>-->
-                        <!--                            <a id="docOut" href="#" th:text="${docIn.docOut.regNumber}" />-->
-                        <!--                        </div>-->
-                        <div class="form-row" th:unless="${newDocIn.task == null}">
-                            <label for="task" class="col-sm-3 col-form-label">Поручение</label>
+<!--                        <div class="form-row" th:if="${docIn.docOut}">-->
+<!--                            <label for="docOut" class="col-sm-3 col-form-label">Ответ</label>-->
+<!--                            <a id="docOut" href="#" th:text="${docIn.docOut.regNumber}" />-->
+<!--                        </div>-->
+                        <div class="form-row" th:if="${docIn.task}">
+                            <label for="note_" class="col-sm-3 col-form-label">Поручение</label>
                             <a id="task" href="#" th:text="${docIn.task.id}" /> <!-- добавить ссыль на нужный метод -->
                         </div>
                     </div>
                 </div>
+
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Зарегистрировать</button>
