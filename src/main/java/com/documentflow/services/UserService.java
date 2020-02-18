@@ -25,5 +25,6 @@ public interface UserService extends UserDetailsService {
 
     boolean isActive(User user);
 
-//    boolean save(SystemUser systemUser);
+    boolean isExistsUsername(String username);
+
 }
