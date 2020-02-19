@@ -30,4 +30,7 @@ public interface UserService extends UserDetailsService {
     User saveOrUpdate(User user);
 
 //    boolean save(SystemUser systemUser);
+
+    boolean isExistsUsername(String username);
+
 }

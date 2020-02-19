@@ -29,6 +29,16 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
+    public boolean isExistsUsername(String username) {
+        return userRepository.existsUserByUsername(username);
+    }
+
+    public User saveOrUpdate(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
     public User getCurrentUser(int userId) {
         return userRepository.findOneById(userId);
     }
@@ -86,11 +96,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsername(username);
-        if (user == null || !user.isActive()) {
-            throw new UsernameNotFoundException("Invalid username or password");
-        } else {
-            return new org.springframework.security.core.userdetails
-                    .User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        checkUser(user);
+        return new org.springframework.security.core.userdetails
+                .User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+
+    }
+
+    private void checkUser(User user) {
+        if (user == null) {
+            throw new UsernameNotFoundException("invalid username or password");
+        }
+        if (!user.isActive()) {
+            throw new RuntimeException("user isn't active");//custom exception need
         }
     }
 
