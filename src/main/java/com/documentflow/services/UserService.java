@@ -25,5 +25,9 @@ public interface UserService extends UserDetailsService {
 
     boolean isActive(User user);
 
+    User findOneById(int id);
+
+    User saveOrUpdate(User user);
+
 //    boolean save(SystemUser systemUser);
 }

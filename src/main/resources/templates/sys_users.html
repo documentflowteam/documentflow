@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Справочник пользователей</title>
+
+    <!-- custom  -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div id="header-div">
+        <div th:replace="~{header}" />
+    </div>
+
+<div class="wrapper">
+
+    <div id="menu">
+        <div th:replace="~{sidebar}" />
+    </div>
+
+    <div id="content" class="container-fluid">
+
+        <div class="d-flex py-2"> <!-- Меню над таблицей -->
+            <form action="/sys/users/card/" method="get">
+                <button type="submit" class="btn btn-success">Создать</button>
+            </form>
+
+        </div>
+
+        <div id="mainTable"> <!-- Основная таблица реестра -->
+            <table class="table table-bordered table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                        <th>Подразделение</th>
+                        <th>Логин</th>
+                        <th>Активно?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:attr="data-document-id=${user.id}" th:each="user : ${users}">
+                        <td><a th:href="@{'/sys/users/card/' + ${user.id}}" th:text="${user.id}"></a></td>
+                        <td th:text="${user.lastName}"/>
+                        <td th:text="${user.firstName}"/>
+                        <td th:text="${user.middleName}"/>
+                        <td th:text="${user.department.name}"/>
+                        <td th:text="${user.username}"/>
+                        <td>
+                            <i th:if="${user.isActive()}" class="fas fa-check"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
