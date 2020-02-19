@@ -39,11 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .anyRequest().authenticated()
+                .antMatchers("/docs/**").hasAnyRole("DOC_IN_READ", "DOC_OUT_READ")
+                .antMatchers("/tasks/**").hasRole("TASKS_READ")
+                .antMatchers("/sys/**").hasRole("SYS_READ")
+                .antMatchers("/profile/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/docs/in", false)
+                .defaultSuccessUrl("/profile", true)
                 .loginProcessingUrl("/perform_login").permitAll()
                 .and()
                 .logout()
@@ -51,10 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/login?logout")
-                .permitAll()
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/403");
+                .permitAll();
+
     }
 
     @Bean
