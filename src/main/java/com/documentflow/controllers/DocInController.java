@@ -1,10 +1,7 @@
 package com.documentflow.controllers;
 
+import com.documentflow.entities.*;
 import com.documentflow.entities.DTO.DocInDTO;
-import com.documentflow.entities.Department;
-import com.documentflow.entities.DocIn;
-import com.documentflow.entities.DocType;
-import com.documentflow.entities.State;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import com.documentflow.utils.DocInUtils;
@@ -12,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -51,31 +49,28 @@ public class DocInController {
         Page<DocInDTO> pageDTOs = page.map(d -> new DocInDTO(d));
         model.addAttribute("docs", pageDTOs);
 
-        DocInDTO docIn = new DocInDTO();
-        docIn.setDepartmentId(-1);
-        docIn.setDocTypeId(-1);
-        docIn.setUser(userService.getCurrentUser(1));//Заменить на релаьно авторизованного юзера
-        model.addAttribute("newDocIn", docIn);
-
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
         model.addAttribute("departments", departmentService.findAllDepartments());
         return "docIn";
     }
 
-//    @GetMapping("/card")
-//    public String registrationDoc(
-//            @RequestParam(name = "id", required = false) Long id,
-//            Model model) {
-//        DocIn docIn = new DocIn();
+    @ResponseBody
+    @RequestMapping("/card/{id}")
+    public DocInDTO getCard(@PathVariable("id") Long id, Model model) {
+        DocInDTO docIn = new DocInDTO(docInService.findById(id));
+//        DocInDTO docIn = new DocInDTO();
+//        docIn.setDepartmentId(-1);
+//        docIn.setDocTypeId(-1);
+//        docIn.setUser(userService.getCurrentUser(1));//Заменить на релаьно авторизованного юзера
 //        if (id != null) {
-//            docIn = docInService.findById(id);
+//            docIn = new DocInDTO(docInService.findById(id));
 //        }
-//        model.addAttribute("docIn", docIn);
-//        return "regDoc";
-//    }
+        return docIn;
+    }
 
     @PostMapping("/card")
-    public String registrationDoc(@ModelAttribute(name = "newDocIn") DocInDTO docInDTO) {
+    public String registrationDoc(@ModelAttribute(name = "doc") DocInDTO docInDTO) {
+        System.out.println(docInDTO.toString());
         DocIn docIn = docInDTO.convertToDocIn(docTypeService.getDocTypeById(docInDTO.getDocTypeId()),
                 departmentService.getDepartmentById(docInDTO.getDepartmentId()));
         docIn.setRegNumber(docInUtils.getRegNumber());
