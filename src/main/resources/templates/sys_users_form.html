@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Создание пользователя</title>
+
+    <!-- custom  -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div id="header-div">
+        <div th:replace="~{header}" />
+    </div>
+
+<div class="wrapper">
+
+    <div id="menu">
+        <div th:replace="~{sidebar}" />
+    </div>
+
+    <div id="content" class="container-fluid">
+
+        <div class="d-flex py-2"></div> <!-- Меню над таблицей -->
+
+        <div class="container-fluid text-center">
+            <div class="row content">
+                <div class="col-sm-8 text-left">
+                    <form th:action="'/sys/users/card/submit'" th:object="${user}" method="post">
+
+                        <input type="hidden" name="id" th:value="${user.id}"/>
+
+                          <div class="form-group">
+                            <label for="lastName">Фамилия</label>
+                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="firstName">Имя</label>
+                            <input type="text" class="form-control" id="lastName" th:field="*{firstName}" required>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="middleName">Отчество</label>
+                            <input type="text" class="form-control" id="lastName" th:field="*{middleName}">
+                          </div>
+
+                          <div class="form-group">
+                              <label for="department">Подразделение</label>
+                              <input type="hidden" th:name="${user.department}" th:value="${user.department}"/>
+                              <select id="department" th:field="${user.department}" class="form-control">
+                                  <option th:each="department : ${departments}"
+                                          th:value="${department.id}"
+                                          th:text="${department.name}"
+                                          th:selected="${department == user.department}"/>
+                              </select>
+                          </div>
+
+                          <div class="form-group">
+                              <label for="department">Руководитель</label>
+                              <input type="hidden" th:name="${user.boss}" th:value="${user.boss}"/>
+                              <select id="department" th:field="${user.boss}" class="form-control">
+                                  <option th:value=null>Отсутствует</option>
+                                  <option th:each="userFromList : ${usersList}"
+                                          th:value="${userFromList.id}"
+                                          th:text="${userFromList.lastName} + ' ' + ${userFromList.firstName}"
+                                          th:selected="${userFromList == user.boss}"/>
+                              </select>
+                          </div>
+
+                          <div class="form-group">
+                            <label for="username">Логин</label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}">
+                          </div>
+
+                          <!-- TODO: убрать поле с вводом пароля при создании, оно должно быть у пользователя в ЛК-->
+                          <div class="form-group">
+                            <label for="pass">Пароль (ВРЕМЕННО :) для отладки)</label>
+                            <input type="text" class="form-control" id="pass" th:name="*{password}" value="" required>
+                          </div>
+
+                          <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="isActive" th:field="*{active}">
+                            <label class="form-check-label" for="isActive">Активен</label>
+                          </div>
+
+                          <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
