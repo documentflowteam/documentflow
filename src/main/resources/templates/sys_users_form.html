@@ -46,12 +46,12 @@
 
                           <div class="form-group">
                             <label for="firstName">Имя</label>
-                            <input type="text" class="form-control" id="lastName" th:field="*{firstName}" required>
+                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
                           </div>
 
                           <div class="form-group">
                             <label for="middleName">Отчество</label>
-                            <input type="text" class="form-control" id="lastName" th:field="*{middleName}">
+                            <input type="text" class="form-control" id="middleName" th:field="*{middleName}">
                           </div>
 
                           <div class="form-group">
@@ -66,9 +66,9 @@
                           </div>
 
                           <div class="form-group">
-                              <label for="department">Руководитель</label>
+                              <label for="boss">Руководитель</label>
                               <input type="hidden" th:name="${user.boss}" th:value="${user.boss}"/>
-                              <select id="department" th:field="${user.boss}" class="form-control">
+                              <select id="boss" th:field="${user.boss}" class="form-control">
                                   <option th:value=null>Отсутствует</option>
                                   <option th:each="userFromList : ${usersList}"
                                           th:value="${userFromList.id}"
