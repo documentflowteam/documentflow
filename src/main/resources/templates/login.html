@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Login Page</title>
+    <title>Авторизация</title>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -12,25 +12,39 @@
 </head>
 
 <body>
-<div>
-    <div class="mainbox col-md-3 col-md-offset-2 col-sm-6 col-sm-offset-2" id="loginbox" style="margin-top: 50px;">
+<div class="login-parent" style="
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: auto;">
+    <div class="mainbox col-md-3 col-md-offset-2 col-sm-6 col-sm-offset-2" id="login-box" style="
+    width: 360px;
+    height: 450px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <div class="panel-title">Sign In</div>
+                <div class="panel-title">Авторизация</div>
             </div>
-            <div class="panel-body" style="padding-top: 30px">
+            <div class="panel-body" style="padding-top: 30px;">
                 <form class="form-horizontal" method="POST" th:action="@{/perform_login}">
                     <div class="form-group">
                         <div class="col-xs-15">
                             <div>
                                 <div th:if="${param.error} != null">
                                     <div class="alert alert-danger col-xs-offset-1 col-xs-10">
-                                        Invalid username and password.
+                                        Неправильный логин или пароль.
                                     </div>
                                 </div>
                                 <div th:if="${param.logout} != null">
                                     <div class="alert alert-success col-xs-offset-1 col-xs-10">
-                                        You have been logged out.
+                                        Вы вышли из системы.
                                     </div>
                                 </div>
                             </div>
@@ -38,15 +52,15 @@
                     </div>
                     <div class="input-group" style="margin-bottom: 25px">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input class="form-control" name="username" placeholder="username" type="text">
+                        <input class="form-control" name="username" placeholder="логин" type="text">
                     </div>
                     <div class="input-group" style="margin-bottom: 25px">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input class="form-control" name="password" placeholder="password" type="password">
+                        <input class="form-control" name="password" placeholder="пароль" type="password">
                     </div>
                     <div class="form-group" style="margin-top: 10px">
                         <div class="col-sm-6 controls">
-                            <button class="btn btn-success" type="submit">Login</button>
+                            <button class="btn btn-success" type="submit">Войти</button>
                         </div>
                     </div>
                 </form>
