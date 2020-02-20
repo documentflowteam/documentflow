@@ -12,7 +12,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     Page<User> findAll(Pageable pageable);
 
-    List<User> findAll();
+    List<User> findAllByOrderByLastNameAsc();
 
     User findOneById(int id);
 
