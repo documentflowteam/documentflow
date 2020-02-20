@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByLastNameAsc();
     }
 
     @Override
@@ -80,6 +80,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isActive(User user) {
         return user.isActive();
+    }
+
+    @Override
+    public User findOneById(int id) {
+        return userRepository.findOneById(id);
+    }
+
+    // TODO: вынести дефолтный пароль в application.properties, подставлять его, если у пользователя нет пароля
+    public User saveOrUpdate(User user) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     @Override
