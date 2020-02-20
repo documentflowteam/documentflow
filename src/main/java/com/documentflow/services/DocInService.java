@@ -39,4 +39,7 @@ public class DocInService {
         return docInRepository.save(s);
     }
 
+    public void deleteById(Long aLong) {
+        docInRepository.deleteById(aLong);
+    }
 }

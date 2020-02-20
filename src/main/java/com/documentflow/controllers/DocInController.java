@@ -49,7 +49,6 @@ public class DocInController {
         model.addAttribute("currentPage", currentPage);
         Page<DocIn> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"));
         Page<DocInDTO> pageDTOs = page.map(d -> new DocInDTO(d));
-        pageDTOs.stream().map(d -> model.addAttribute(d));
         model.addAttribute("docs", pageDTOs);
 
         DocInDTO docIn = new DocInDTO();
@@ -87,7 +86,9 @@ public class DocInController {
         return "redirect:/docs/in";
     }
 
-//    @GetMapping("/del")
-//    public void delete() {
-//    }
+    @GetMapping("/del")
+    public String delete(Long id) {
+        docInService.deleteById(id);
+        return "redirect:/docs/in";
+    }
 }

@@ -1,9 +1,11 @@
 package com.documentflow.entities.DTO;
 
 import com.documentflow.entities.*;
+import com.documentflow.utils.DocInUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
