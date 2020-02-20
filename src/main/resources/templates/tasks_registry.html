@@ -69,7 +69,7 @@
                         <td th:text="${task.taskName}"/>
                         <td th:text="${task.state.name}"/>
                         <td class="text-center">
-                            <a class="fas fa-eye" href="#"></a>
+                            <a class="fas fa-eye" th:href="@{'/tasks/card/'+${task.id}}"></a>
                         </td>
                     </tr>
                 </tbody>
