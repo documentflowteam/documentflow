@@ -39,14 +39,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/docs/**").hasAnyRole("DOC_IN_READ", "DOC_OUT_READ")
+                .antMatchers("/docs/in/**").hasAnyRole("DOC_IN_READ")
+                .antMatchers("/docs/out/**").hasAnyRole("DOC_OUT_READ")
                 .antMatchers("/tasks/**").hasRole("TASKS_READ")
                 .antMatchers("/sys/**").hasRole("SYS_READ")
                 .antMatchers("/profile/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/profile", true)
+                .defaultSuccessUrl("/profile", false)
                 .loginProcessingUrl("/perform_login").permitAll()
                 .and()
                 .logout()
