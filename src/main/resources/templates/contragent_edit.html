@@ -21,13 +21,15 @@
     <input type="radio" name="type_person" th:value="address" th:text="'Адрес'">
     <input type="radio" name="type_person" th:value="employee" th:text="'Контактное лицо'">
 </div>
-<div th:class="contragent-edit-box"></div>
-<div th:class="contragent-table-found-values"></div>
-<div th:class="contragent-command-button">
-    <button th:name="verify" th:text="'Проверить'"></button>
-    <button th:name="ok" th:text="'Сохранить'" disabled="disabled"></button>
-    <button th:name="cancel" th:text="'Отмена'"></button>
+<div th:class="contragent-search-panel">
+    <div th:class="contragent-edit-box"></div>
+    <div th:class="contragent-command-button">
+        <button th:name="verify" th:text="'Поиск'"></button>
+        <button th:name="ok" th:text="'Сохранить'" disabled="disabled"></button>
+        <button th:name="cancel" th:text="'Отмена'"></button>
+    </div>
 </div>
+<div th:class="contragent-table-found-values"></div>
 
 <script th:type="'text/javascript'">
     $("div.contragent-list-radio-buttons input[type='radio']").on('click', function () {
@@ -122,7 +124,8 @@
                     "    </tbody>" +
                     "</table>");
                 break;
-        }
+        };
+        $("div.contragent-search-panel").css('display', 'flex');
     });
 
     $("div.contragent-command-button button[name='cancel']").on('click', function () {

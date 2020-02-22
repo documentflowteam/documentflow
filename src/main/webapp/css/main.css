@@ -26,3 +26,18 @@
     border: burlywood solid 3px;
     border-radius: 10px;
 }
+
+.contragent-search-panel {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.contragent-command-button {
+
+    flex-grow: 1;
+}
+
+.contragent-edit-box {
+    flex-grow: 1;
+}
