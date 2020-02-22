@@ -72,8 +72,8 @@ public class Address implements Serializable {
                 null,
                 NumberUtils.toInt(contragentDtoAddress.getPostIndex()),
                 ObjectUtils.isEmpty(contragentDtoAddress.getCountry()) ? null : contragentDtoAddress.getCountry().toUpperCase(),
-                ObjectUtils.isEmpty(contragentDtoAddress.getCity()) ? null : contragentDtoAddress.getCity(),
-                ObjectUtils.isEmpty(contragentDtoAddress.getStreet()) ? null : contragentDtoAddress.getStreet(),
+                ObjectUtils.isEmpty(contragentDtoAddress.getCity()) ? null : contragentDtoAddress.getCity().toUpperCase(),
+                ObjectUtils.isEmpty(contragentDtoAddress.getStreet()) ? null : contragentDtoAddress.getStreet().toUpperCase(),
                 contragentDtoAddress.getHouseNumber(),
                 contragentDtoAddress.getApartrmentNumber()
         );

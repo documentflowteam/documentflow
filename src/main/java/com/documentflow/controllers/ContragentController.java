@@ -91,7 +91,7 @@ public class ContragentController {
             throw new IllegalArgumentException("Last name is empty");
         }
 
-        return personService.findAll(firstName, middleName, lastName);
+        return personService.findAll(firstName.toUpperCase(), middleName.toUpperCase(), lastName.toUpperCase());
     }
 
     @PostMapping("/edit/person")
@@ -124,7 +124,7 @@ public class ContragentController {
         if (StringUtils.isEmpty(street)) {
             throw new IllegalArgumentException("Street is empty");
         }
-        return addressService.findAll(postIndex, country, city, street, houseNumber, apartrmentNumber);
+        return addressService.findAll(postIndex, country.toUpperCase(), city.toUpperCase(), street.toUpperCase(), houseNumber.toUpperCase(), apartrmentNumber.toUpperCase());
     }
 
     @PostMapping("/edit/address")

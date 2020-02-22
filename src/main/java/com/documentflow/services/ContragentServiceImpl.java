@@ -67,9 +67,6 @@ public class ContragentServiceImpl implements ContragentService {
             case PERSON:
                 Person person = personService.save(contragentDto.getParameters());
                 List<Address> addressesPerson = addressService.save(contragentDto.getAddress());
-                if (ObjectUtils.isEmpty(addressesPerson)) {
-                    throw new NotFoundAddressException();
-                }
                 String searchStringPerson = ContragentUtils.createSearchName(person.getFirstName(), person.getMiddleName(), person.getLastName());
                 List<Contragent> contragentsPerson = addressesPerson.stream()
                         .map(address -> {
