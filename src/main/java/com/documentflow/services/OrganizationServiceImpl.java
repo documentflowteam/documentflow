@@ -4,19 +4,28 @@ import com.documentflow.entities.Organization;
 import com.documentflow.entities.dto.ContragentDtoParameters;
 import com.documentflow.repositories.OrganizationRepository;
 import com.documentflow.repositories.specifications.OrganizationSpecifications;
+import com.documentflow.services.exceptions.NotFoundIdException;
+import com.documentflow.services.exceptions.NotFoundOrganizationException;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrganizationServiceImpl implements OrganizationService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private ContragentService contragentService;
 
     @Override
     public Organization save(@NonNull ContragentDtoParameters contragentDto) {
@@ -27,16 +36,62 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Organization> findAll(String nameCompany) {
         Specification<Organization> spec = Specification.where(null);
         if (StringUtils.isNotEmpty(nameCompany)) {
             spec = spec.and(OrganizationSpecifications.nameCompanyLike(nameCompany));
         }
-        return organizationRepository.findAll(spec);
+        return organizationRepository.findAll(spec).stream()
+                .filter(organization -> {
+                    return organization.getContragents().stream()
+                            .anyMatch(contragent -> !contragent.getIsDeleted());
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Organization update(Long id, String nameCompany) {
-        return organizationRepository.save(new Organization(id, nameCompany));
+    public Organization update(Organization org) {
+
+        if (org.getId() == null) {
+            throw new NotFoundIdException();
+        }
+
+        Optional<Organization> optionalOrganization = organizationRepository.findById(org.getId());
+
+        if (!optionalOrganization.isPresent()) {
+            throw new NotFoundOrganizationException();
+        }
+
+        Organization organization = optionalOrganization.get();
+
+        String oldNameOrganization = organization.getName();
+        String newNameOrganization = org.getName();
+
+        organization.setName(newNameOrganization);
+
+        organization.getContragents().forEach(contragent -> {
+            String oldSearchName = contragent.getSearchName();
+            String newSearchName = oldSearchName.replace(oldNameOrganization, newNameOrganization);
+            contragent.setSearchName(newSearchName);
+            contragentService.save(contragent);
+        });
+
+        return organizationRepository.save(organization);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+        Optional<Organization> organizationOptional = organizationRepository.findById(id);
+        if (!organizationOptional.isPresent()) {
+            throw new NotFoundOrganizationException();
+        }
+        Organization organization = organizationOptional.get();
+
+        organization.getContragents().forEach(contragent -> {
+            contragent.setIsDeleted(true);
+            contragentService.save(contragent);
+        });
     }
 }

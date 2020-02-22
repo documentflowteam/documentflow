@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Contragent add</title>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -198,10 +200,14 @@
                     }
 
                     $.ajax({
-                        type: "POST",
-                        url: "http://localhost:8090/contragent/add",
-                        datatype: "application/json",
-                        contentType: "application/json",
+                        method: "POST",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                            xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+                        },
+                        url: 'http://localhost:8090/contragent/add',
+                        datatype: 'application/json',
+                        contentType: 'application/json',
                         data: JSON.stringify(json_for_send),
                         success: function () {
                             alert("Информация добавлена в справочник")

@@ -1,12 +1,15 @@
 package com.documentflow.entities;
 
 import com.documentflow.entities.dto.ContragentDtoAddress;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +33,15 @@ public class Address implements Serializable {
     private Integer index;
 
     @Column(name = "country")
+    @NotBlank(message = "Country can not be empty")
     private String country;
 
     @Column(name = "city")
+    @NotBlank(message = "City can not be empty")
     private String city;
 
     @Column(name = "street")
+    @NotBlank(message = "Street can not be empty")
     private String street;
 
     @Column(name = "house_number")
@@ -44,7 +50,14 @@ public class Address implements Serializable {
     @Column(name = "apartrment_number")
     private String apartmentNumber;
 
-    public Address(Long id, Integer postIndex, String country, String city, String street, String houseNumber, String apartmentNumber) {
+    @JsonCreator
+    public Address(@JsonProperty("id") Long id,
+                   @JsonProperty("post_index") Integer postIndex,
+                   @JsonProperty("country") String country,
+                   @JsonProperty("city") String city,
+                   @JsonProperty("street") String street,
+                   @JsonProperty("house_number") String houseNumber,
+                   @JsonProperty("apartrment_number") String apartmentNumber) {
         this.id = id;
         this.index = postIndex;
         this.country = country;
@@ -81,6 +94,6 @@ public class Address implements Serializable {
     private List<Person> persons = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<Contragent> contragents = new ArrayList<>();
 }

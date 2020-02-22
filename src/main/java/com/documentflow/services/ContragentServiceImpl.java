@@ -7,6 +7,9 @@ import com.documentflow.entities.Person;
 import com.documentflow.entities.dto.ContragentDto;
 import com.documentflow.repositories.ContragentRepository;
 import com.documentflow.repositories.specifications.ContragentSpecifications;
+import com.documentflow.services.exceptions.NotFoundAddressException;
+import com.documentflow.services.exceptions.NotFoundIdException;
+import com.documentflow.utils.ContragentUtils;
 import lombok.NonNull;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +42,15 @@ public class ContragentServiceImpl implements ContragentService {
     private PersonService personService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Contragent> searchContragents(@NonNull String searchName) {
+
         Specification<Contragent> spec = Specification.where(null);
         spec = spec.and(ContragentSpecifications.nameCompanyLike(searchName));
-        return contragentRepository.findAll(spec);
+
+        return contragentRepository.findAll(spec).stream()
+                .filter(item -> !item.getIsDeleted())
+                .collect(Collectors.toList());
     }
 
     public static void main(String[] args) {
@@ -60,9 +68,9 @@ public class ContragentServiceImpl implements ContragentService {
                 Person person = personService.save(contragentDto.getParameters());
                 List<Address> addressesPerson = addressService.save(contragentDto.getAddress());
                 if (ObjectUtils.isEmpty(addressesPerson)) {
-                    throw new RuntimeException("Не указан адрес");
+                    throw new NotFoundAddressException();
                 }
-                String searchStringPerson = person.getFirstName() + person.getMiddleName() + person.getLastName();
+                String searchStringPerson = ContragentUtils.createSearchName(person.getFirstName(), person.getMiddleName(), person.getLastName());
                 List<Contragent> contragentsPerson = addressesPerson.stream()
                         .map(address -> {
                             Contragent contragent = new Contragent(searchStringPerson);
@@ -73,7 +81,6 @@ public class ContragentServiceImpl implements ContragentService {
                             return contragent;
                         })
                         .collect(Collectors.toList());
-
                 contragents.addAll(contragentRepository.saveAll(contragentsPerson));
                 break;
             case COMPANY:
@@ -82,14 +89,13 @@ public class ContragentServiceImpl implements ContragentService {
                 Map<Person, String> employees = personService.save(contragentDto.getEmployee());
                 List<Contragent> contragentsOrganization = new ArrayList<>();
                 if (ObjectUtils.isEmpty(addressesOrganization)) {
-                    throw new RuntimeException("Не указан адрес");
+                    throw new NotFoundAddressException();
                 } else if (!ObjectUtils.isEmpty(employees)) {
                     addressesOrganization.forEach(
                             address -> {
                                 employees.forEach(
                                         (employee, position) -> {
-                                            String searchStringOrganization = employee.getFirstName() + employee.getMiddleName() +
-                                                    employee.getLastName() + position + organization.getName();
+                                            String searchStringOrganization = ContragentUtils.createSearchName(employee.getFirstName(), employee.getMiddleName(), employee.getLastName(), position, organization.getName());
                                             Contragent contragent = new Contragent(searchStringOrganization, position);
                                             contragent.setAddress(address);
                                             contragent.setPerson(employee);
@@ -120,20 +126,39 @@ public class ContragentServiceImpl implements ContragentService {
     @Override
     public Contragent updateEmployee(Long id, String firstName, String middleName, String lastName, String position) {
 
+        if (id == null) {
+            throw new NotFoundIdException();
+        }
+
         Contragent contragent = contragentRepository.findById(id).get();
 
-        firstName = firstName.toUpperCase();
-        middleName = middleName.toUpperCase();
-        lastName = lastName.toUpperCase();
-        position = position.toUpperCase();
+        StringBuilder oldPartOfTheString = new StringBuilder();
+        if (contragent.getPerson() != null) {
+            Person person = contragent.getPerson();
+            oldPartOfTheString.append(person.getFirstName());
+            oldPartOfTheString.append(person.getMiddleName());
+            oldPartOfTheString.append(person.getLastName());
+        }
+        if (contragent.getPersonPosition() != null) {
+            oldPartOfTheString.append(contragent.getPersonPosition());
+        }
+        String newPartOfTheString = ContragentUtils.createSearchName(firstName, middleName, lastName, position);
+        String oldSearchName = contragent.getSearchName();
+        String newSearchName = oldSearchName.replace(oldPartOfTheString, newPartOfTheString);
 
         contragent.setPersonPosition(position);
-        contragent.setSearchName(firstName + middleName + lastName + position + contragent.getOrganization().getName());
+        contragent.setSearchName(newSearchName);
+
         Person person = contragent.getPerson();
         person.setFirstName(firstName);
         person.setMiddleName(middleName);
         person.setLastName(lastName);
         contragent.setPerson(person);
+        return contragentRepository.save(contragent);
+    }
+
+    @Override
+    public Contragent save(Contragent contragent) {
         return contragentRepository.save(contragent);
     }
 }

@@ -31,14 +31,15 @@ public interface AddressService {
     /**
      * Updating data in the database
      *
-     * @param id               id
-     * @param postIndex        post index
-     * @param country          country
-     * @param city             city
-     * @param street           street
-     * @param houseNumber      house number
-     * @param apartrmentNumber apartrment number
+     * @param address address
      * @return updated address
      */
-    Address update(Long id, Integer postIndex, String country, String city, String street, String houseNumber, String apartrmentNumber);
+    Address update(Address address);
+
+    /**
+     * Delete data by id
+     *
+     * @param id of the item to delete
+     */
+    void delete(Long id);
 }

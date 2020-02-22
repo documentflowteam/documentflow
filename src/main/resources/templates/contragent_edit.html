@@ -2,7 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Contragent add</title>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Contragent edit</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -30,10 +32,9 @@
     $("div.contragent-list-radio-buttons input[type='radio']").on('click', function () {
         const mainInputs = $("div.contragent-edit-box");
         const tableHeader = $("div.contragent-table-found-values");
-        mainInputs.data("key", "");
         tableHeader.empty();
         mainInputs.empty();
-        $("div.contragent-command-button button[name='ok']").attr("disabled", "disabled");
+        disabledCommandButton();
 
         switch ($(this).val()) {
             case "person":
@@ -124,8 +125,7 @@
     });
 
     $("div.contragent-command-button button[name='cancel']").on('click', function () {
-        $("div.contragent-edit-box").data("key", "");
-        $("div.contragent-command-button button[name='ok']").attr("disabled", "disabled");
+        disabledCommandButton();
         $("div.contragent-table-found-values table tbody").empty();
         $.each($("div.contragent-edit-box input"), function (key, value) {
             value.value = '';
@@ -133,8 +133,12 @@
     });
 
     $("div.contragent-command-button button[name='ok']").on('click', function () {
+
+        let typeEntity = $("div.contragent-list-radio-buttons input:checked").val();
+        let url = 'http://localhost:8090/contragent/edit/' + typeEntity;
         let json_for_send;
-        switch ($("div.contragent-list-radio-buttons input:checked").val()) {
+
+        switch (typeEntity) {
             case "person":
                 json_for_send = {
                     id: $("div.contragent-edit-box").data("key"),
@@ -142,13 +146,7 @@
                     middle_name: $("div.contragent-edit-box #middle_name").val(),
                     last_name: $("div.contragent-edit-box #last_name").val()
                 };
-                $.post("http://localhost:8090/contragent/edit/person", json_for_send)
-                    .done(function () {
-                        alert("Данные успешно обновлены");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
+                sendPostRequestToServer(url, json_for_send);
                 break;
             case "address":
                 json_for_send = {
@@ -160,26 +158,14 @@
                     house_number: $("div.contragent-edit-box #house_number").val(),
                     apartrment_number: $("div.contragent-edit-box #apartrment_number").val()
                 };
-                $.post("http://localhost:8090/contragent/edit/address", json_for_send)
-                    .done(function () {
-                        alert("Данные успешно обновлены");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
+                sendPostRequestToServer(url, json_for_send);
                 break;
             case "company":
                 json_for_send = {
                     id: $("div.contragent-edit-box").data("key"),
                     name_company: $("div.contragent-edit-box #name_company").val()
                 };
-                $.post("http://localhost:8090/contragent/edit/company", json_for_send)
-                    .done(function () {
-                        alert("Данные успешно обновлены");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
+                sendPostRequestToServer(url, json_for_send);
                 break;
             case "employee":
                 json_for_send = {
@@ -189,26 +175,21 @@
                     last_name: $("div.contragent-edit-box #last_name").val(),
                     position: $("div.contragent-edit-box #position").val()
                 };
-
-                $.post("http://localhost:8090/contragent/edit/employee", json_for_send)
-                    .done(function () {
-                        alert("Данные успешно обновлены");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
+                sendPostRequestToServer(url, json_for_send);
                 break;
         }
     });
 
     $("div.contragent-command-button button[name='verify']").on('click', function () {
 
+        let typeEntity = $("div.contragent-list-radio-buttons input:checked").val();
+        let url = 'http://localhost:8090/contragent/edit/' + typeEntity;
         let json_for_send;
 
         $("div.contragent-table-found-values table tbody").empty();
         $("div.contragent-command-button button[name='ok']").attr("disabled", "disabled");
 
-        switch ($("div.contragent-list-radio-buttons input:checked").val()) {
+        switch (typeEntity) {
             case "person":
                 json_for_send = {
                     first_name: $("div.contragent-edit-box #first_name").val(),
@@ -216,16 +197,20 @@
                     last_name: $("div.contragent-edit-box #last_name").val()
                 };
 
-                $.get("http://localhost:8090/contragent/edit/person", json_for_send)
+                $.get(url, json_for_send)
                     .done(function (data) {
                         $.each(data, function (key, value) {
                             $("div.contragent-table-found-values table tbody").append(
                                 "<tr>" +
                                 "<td id='id'>" + value.id + "</td>" +
-                                "<td id='first_name'>" + value.firstName + "</td>" +
-                                "<td id='middle_name'>" + value.middleName + "</td>" +
-                                "<td id='last_name'>" + value.lastName + "</td>" +
-                                "<td><button name='edit_button'>Редактировать</button></td>" +
+                                "<td id='first_name'>" + value.first_name + "</td>" +
+                                "<td id='middle_name'>" + value.middle_name + "</td>" +
+                                "<td id='last_name'>" + value.last_name + "</td>" +
+                                "<td>" +
+                                "<button name='edit_button'>Редактировать</button>" +
+                                "<br>" +
+                                "<button name='delete_button'>Удалить</button>" +
+                                "</td>" +
                                 "</tr>"
                             );
                         });
@@ -237,6 +222,13 @@
                             $("div.contragent-edit-box input[id='last_name']").val($(this).parent().parent().children("#last_name").text());
                             $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
                         });
+
+                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                            if (confirm("Вы действительно хотите удалить запись?")) {
+                                url = url + '/' + $(this).parent().parent().children("#id").text();
+                                sendDeleteRequestToServer(url, $(this).parent().parent());
+                            }
+                        });
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         alert(jQuery.parseJSON(jqXHR.responseText).message);
@@ -252,7 +244,7 @@
                     apartrment_number: $("div.contragent-edit-box #apartrment_number").val()
                 };
 
-                $.get("http://localhost:8090/contragent/edit/address", json_for_send)
+                $.get(url, json_for_send)
                     .done(function (data) {
                         $.each(data, function (key, value) {
                             $("div.contragent-table-found-values table tbody").append(
@@ -262,9 +254,13 @@
                                 "<td id='country'>" + value.country + "</td>" +
                                 "<td id='city'>" + value.city + "</td>" +
                                 "<td id='street'>" + value.street + "</td>" +
-                                "<td id='house_number'>" + value.houseNumber + "</td>" +
-                                "<td id='apartrment_number'>" + value.apartmentNumber + "</td>" +
-                                "<td><button name='edit_button'>Редактировать</button></td>" +
+                                "<td id='house_number'>" + value.house_number + "</td>" +
+                                "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
+                                "<td>" +
+                                "<button name='edit_button'>Редактировать</button>" +
+                                "<br>" +
+                                "<button name='delete_button'>Удалить</button>" +
+                                "</td>" +
                                 "</tr>"
                             );
                         });
@@ -279,6 +275,13 @@
                             $("div.contragent-edit-box input[id='apartrment_number']").val($(this).parent().parent().children("#apartrment_number").text());
                             $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
                         });
+
+                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                            if (confirm("Вы действительно хотите удалить запись?")) {
+                                url = url + '/' + $(this).parent().parent().children("#id").text();
+                                sendDeleteRequestToServer(url, $(this).parent().parent());
+                            }
+                        });
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         alert(jQuery.parseJSON(jqXHR.responseText).message);
@@ -289,14 +292,18 @@
                 json_for_send = {
                     name_company: $("div.contragent-edit-box #name_company").val()
                 };
-                $.get("http://localhost:8090/contragent/edit/company", json_for_send)
+                $.get(url, json_for_send)
                     .done(function (data) {
                         $.each(data, function (key, value) {
                             $("div.contragent-table-found-values table tbody").append(
                                 "<tr>" +
                                 "<td id='id'>" + value.id + "</td>" +
-                                "<td id='name_company'>" + value.name + "</td>" +
-                                "<td><button name='edit_button'>Редактировать</button></td>" +
+                                "<td id='name_company'>" + value.name_company + "</td>" +
+                                "<td>" +
+                                "<button name='edit_button'>Редактировать</button>" +
+                                "<br>" +
+                                "<button name='delete_button'>Удалить</button>" +
+                                "</td>" +
                                 "</tr>"
                             );
                         });
@@ -305,6 +312,13 @@
                             $("div.contragent-edit-box").data("key", $(this).parent().parent().children("#id").text());
                             $("div.contragent-edit-box input[id='name_company']").val($(this).parent().parent().children("#name_company").text());
                             $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
+                        });
+
+                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                            if (confirm("Вы действительно хотите удалить запись?")) {
+                                url = url + '/' + $(this).parent().parent().children("#id").text();
+                                sendDeleteRequestToServer(url, $(this).parent().parent());
+                            }
                         });
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
@@ -318,7 +332,7 @@
                     last_name: $("div.contragent-edit-box #last_name").val(),
                     position: $("div.contragent-edit-box #position").val()
                 };
-                $.get("http://localhost:8090/contragent/edit/employee", json_for_send)
+                $.get(url, json_for_send)
                     .done(function (data) {
                         $.each(data, function (key, value) {
                             $("div.contragent-table-found-values table tbody").append(
@@ -328,7 +342,11 @@
                                 "<td id='middle_name'>" + value.middle_name + "</td>" +
                                 "<td id='last_name'>" + value.last_name + "</td>" +
                                 "<td id='position'>" + value.position + "</td>" +
-                                "<td><button name='edit_button'>Редактировать</button></td>" +
+                                "<td>" +
+                                "<button name='edit_button'>Редактировать</button>" +
+                                "<br>" +
+                                "<button name='delete_button'>Удалить</button>" +
+                                "</td>" +
                                 "</tr>"
                             );
                         });
@@ -341,6 +359,13 @@
                             $("div.contragent-edit-box input[id='position']").val($(this).parent().parent().children("#position").text());
                             $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
                         });
+
+                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                            if (confirm("Вы действительно хотите удалить запись?")) {
+                                url = url + '/' + $(this).parent().parent().children("#id").text();
+                                sendDeleteRequestToServer(url, $(this).parent().parent());
+                            }
+                        });
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         alert(jQuery.parseJSON(jqXHR.responseText).message);
@@ -349,6 +374,49 @@
                 break;
         }
     });
+
+    function sendPostRequestToServer(url, json_for_send) {
+        $.ajax({
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: url,
+            datatype: 'application/json',
+            contentType: 'application/json',
+            data: JSON.stringify(json_for_send),
+            success: function () {
+                alert("Данные успешно обновлены");
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        });
+    }
+
+    function sendDeleteRequestToServer(url, linkTrElementToDelete) {
+        $.ajax({
+            method: "DELETE",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "DELETE");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: url,
+            success: function () {
+                alert("Данные успешно удалены");
+                linkTrElementToDelete.remove();
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        });
+    }
+
+    function disabledCommandButton() {
+        $("div.contragent-edit-box").data("key", "");
+        $("div.contragent-command-button button[name='ok']").attr("disabled", "disabled");
+    }
 </script>
 </body>
 </html>

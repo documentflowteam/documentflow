@@ -38,11 +38,15 @@ public interface PersonService {
     /**
      * Updating data in the database
      *
-     * @param id         id
-     * @param firstName  first name
-     * @param middleName middle name
-     * @param lastName   last name
+     * @param person person
      * @return updated person
      */
-    Person update(Long id, String firstName, String middleName, String lastName);
+    Person update(Person person);
+
+    /**
+     * Delete data by id
+     *
+     * @param id of the item to delete
+     */
+    void delete(Long id);
 }

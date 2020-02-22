@@ -26,9 +26,15 @@ public interface OrganizationService {
     /**
      * Updating data in the database
      *
-     * @param id          id
-     * @param nameCompany name company
-     * @return updated person
+     * @param organization organization
+     * @return updated organization
      */
-    Organization update(Long id, String nameCompany);
+    Organization update(Organization organization);
+
+    /**
+     * Delete data by id
+     *
+     * @param id of the item to delete
+     */
+    void delete(Long id);
 }

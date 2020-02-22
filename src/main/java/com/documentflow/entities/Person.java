@@ -1,12 +1,15 @@
 package com.documentflow.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +34,15 @@ public class Person implements Serializable {
     private String middleName;
 
     @Column(name = "last_name")
+    @NotBlank(message = "Last name can no be empty")
     private String lastName;
 
-    public Person(Long id, String firstName, String middleName, String lastName) {
+    @JsonCreator
+    public Person(
+            @JsonProperty("id") Long id,
+            @JsonProperty("first_name") String firstName,
+            @JsonProperty("middle_name") String middleName,
+            @JsonProperty("last_name") String lastName) {
         this.id = id;
         this.firstName = ObjectUtils.isEmpty(firstName) ? null : firstName.toUpperCase();
         this.middleName = ObjectUtils.isEmpty(middleName) ? null : middleName.toUpperCase();
@@ -59,6 +68,6 @@ public class Person implements Serializable {
     private List<Address> addresses = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contragent> contragents = new ArrayList<>();
 }

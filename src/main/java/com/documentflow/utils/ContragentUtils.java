@@ -5,6 +5,10 @@ import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.entities.dto.ContragentDtoParameters;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class ContragentUtils {
@@ -27,5 +31,13 @@ public class ContragentUtils {
                 (employee.getMiddleName() == null || employee.getMiddleName().trim().isEmpty()) &&
                         (employee.getLastName() == null || employee.getLastName().trim().isEmpty())
         );
+    }
+
+    public static String createSearchName(@NonNull String... values) {
+        return Arrays.stream(values)
+                .peek(item -> item = item.replace(" ", ""))
+                .filter(StringUtils::isNotEmpty)
+                .peek(item -> item = item.toUpperCase())
+                .collect(Collectors.joining());
     }
 }

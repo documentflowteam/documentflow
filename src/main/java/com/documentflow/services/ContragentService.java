@@ -34,4 +34,12 @@ public interface ContragentService {
      * @return updated person
      */
     Contragent updateEmployee(Long id, String firstName, String middleName, String lastName, String position);
+
+    /**
+     * Update contragent
+     *
+     * @param contragent contragent with changed data that needs to be saved
+     * @return updated contragent
+     */
+    Contragent save(Contragent contragent);
 }

@@ -14,12 +14,13 @@ import com.documentflow.utils.ContragentUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,7 +78,7 @@ public class ContragentController {
         if (contragentService.save(contragentDto).isEmpty()) {
             throw new RuntimeException("Неизвестное состояние");
         }
-        return "{\"result\":\"SUCCESS\"}";
+        return null;
     }
 
     @GetMapping("/edit/person")
@@ -87,7 +88,7 @@ public class ContragentController {
                                   @RequestParam(name = "last_name") String lastName) {
 
         if (StringUtils.isEmpty(lastName)) {
-            throw new RuntimeException("Last name is empty");
+            throw new IllegalArgumentException("Last name is empty");
         }
 
         return personService.findAll(firstName, middleName, lastName);
@@ -95,17 +96,14 @@ public class ContragentController {
 
     @PostMapping("/edit/person")
     @ResponseBody
-    public Person editPerson(@RequestParam(name = "id") Long id,
-                             @RequestParam(name = "first_name", required = false) String firstName,
-                             @RequestParam(name = "middle_name", required = false) String middleName,
-                             @RequestParam(name = "last_name") String lastName) {
+    public Person editPerson(@Valid @RequestBody Person person) {
+        return personService.update(person);
+    }
 
-        checkId(id);
-        if (StringUtils.isEmpty(lastName)) {
-            throw new RuntimeException("Last name is empty");
-        }
-
-        return personService.update(id, firstName, middleName, lastName);
+    @DeleteMapping("/edit/person/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePerson(@PathVariable("id") Long id) {
+        personService.delete(id);
     }
 
     @GetMapping("/edit/address")
@@ -117,27 +115,28 @@ public class ContragentController {
                                     @RequestParam(name = "house_number", required = false) String houseNumber,
                                     @RequestParam(name = "apartrment_number", required = false) String apartrmentNumber) {
 
-        if (StringUtils.isEmpty(country) || StringUtils.isEmpty(city) || StringUtils.isEmpty(street)) {
-            throw new RuntimeException("Country/City/Street is empty");
+        if (StringUtils.isEmpty(country)) {
+            throw new IllegalArgumentException("Country is empty");
+        }
+        if (StringUtils.isEmpty(city)) {
+            throw new IllegalArgumentException("City is empty");
+        }
+        if (StringUtils.isEmpty(street)) {
+            throw new IllegalArgumentException("Street is empty");
         }
         return addressService.findAll(postIndex, country, city, street, houseNumber, apartrmentNumber);
     }
 
     @PostMapping("/edit/address")
     @ResponseBody
-    public Address editAddress(@RequestParam(name = "id") Long id,
-                               @RequestParam(name = "post_index", required = false) Integer postIndex,
-                               @RequestParam(name = "country") String country,
-                               @RequestParam(name = "city") String city,
-                               @RequestParam(name = "street") String street,
-                               @RequestParam(name = "house_number", required = false) String houseNumber,
-                               @RequestParam(name = "apartrment_number", required = false) String apartrmentNumber) {
+    public Address editAddress(@Valid @RequestBody Address address) {
+        return addressService.update(address);
+    }
 
-        checkId(id);
-        if (StringUtils.isEmpty(country) || StringUtils.isEmpty(city) || StringUtils.isEmpty(street)) {
-            throw new RuntimeException("Country/City/Street is empty");
-        }
-        return addressService.update(id, postIndex, country, city, street, houseNumber, apartrmentNumber);
+    @DeleteMapping("/edit/address/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAddress(@PathVariable("id") long id) {
+        addressService.delete(id);
     }
 
     @GetMapping("/edit/company")
@@ -145,21 +144,21 @@ public class ContragentController {
     public List<Organization> getOrganization(@RequestParam(name = "name_company") String nameCompany) {
 
         if (StringUtils.isEmpty(nameCompany)) {
-            throw new RuntimeException("Company name is empty");
+            throw new IllegalArgumentException("Company name is empty");
         }
         return organizationService.findAll(nameCompany);
     }
 
     @PostMapping("/edit/company")
     @ResponseBody
-    public Organization editOrganization(@RequestParam(name = "id") Long id,
-                                         @RequestParam(name = "name_company") String nameCompany) {
+    public Organization editOrganization(@Valid @RequestBody Organization organization) {
+        return organizationService.update(organization);
+    }
 
-        checkId(id);
-        if (StringUtils.isEmpty(nameCompany)) {
-            throw new RuntimeException("Company name is empty");
-        }
-        return organizationService.update(id, nameCompany);
+    @DeleteMapping("/edit/company/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteOrganization(@PathVariable("id") long id) {
+        organizationService.delete(id);
     }
 
     @GetMapping("/edit/employee")
@@ -167,15 +166,15 @@ public class ContragentController {
     public List<ContragentDtoEmployee> getEmployee(@RequestParam(name = "first_name", required = false) String firstName,
                                                    @RequestParam(name = "middle_name", required = false) String middleName,
                                                    @RequestParam(name = "last_name") String lastName,
-                                                   @RequestParam(name = "position", required = false) String position, HttpServletResponse response) {
+                                                   @RequestParam(name = "position", required = false) String position) {
 
         if (StringUtils.isEmpty(lastName)) {
             throw new RuntimeException("Last name is empty");
         }
 
         //the order of arguments is important
-        String searchString = firstName + middleName + lastName + position;
-        List<Contragent> contragents = contragentService.searchContragents(searchString.toUpperCase());
+        String searchString = ContragentUtils.createSearchName(firstName, middleName, lastName, position);
+        List<Contragent> contragents = contragentService.searchContragents(searchString);
 
         return contragents.stream()
                 .filter(contragent -> contragent.getOrganization() != null)
@@ -198,16 +197,18 @@ public class ContragentController {
                                    @RequestParam(name = "last_name") String lastName,
                                    @RequestParam(name = "position", required = false) String position) {
 
-        checkId(id);
+        if (ObjectUtils.isEmpty(id)) {
+            throw new RuntimeException("ID is empty");
+        }
         if (StringUtils.isEmpty(lastName)) {
             throw new RuntimeException("Last name is empty");
         }
         return contragentService.updateEmployee(id, firstName, middleName, lastName, position);
     }
 
-    private void checkId(Long id) {
-        if (ObjectUtils.isEmpty(id)) {
-            throw new RuntimeException("ID is empty");
-        }
+    @DeleteMapping("/edit/employee/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEmployee(@PathVariable("id") long id) {
+        personService.delete(id);
     }
 }
