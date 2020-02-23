@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class ContragentDtoAddress {
 
+    private String id;
     private String postIndex;
     private String country;
     private String city;
@@ -16,6 +17,7 @@ public class ContragentDtoAddress {
 
     @JsonCreator
     public ContragentDtoAddress(
+            @JsonProperty("id") String id,
             @JsonProperty("post_index") String postIndex,
             @JsonProperty("country") String country,
             @JsonProperty("city") String city,
@@ -23,6 +25,7 @@ public class ContragentDtoAddress {
             @JsonProperty("house_number") String houseNumber,
             @JsonProperty("apartrment_number") String apartrmentNumber
     ) {
+        this.id = id;
         this.postIndex = postIndex;
         this.country = country;
         this.city = city;

@@ -1,11 +1,11 @@
 package com.documentflow.entities;
 
 import com.documentflow.entities.dto.ContragentDtoAddress;
+import com.documentflow.utils.ContragentUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.*;
@@ -20,6 +20,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "addresses")
 public class Address implements Serializable {
     private static final long serialVersionUID = 2600335316131008220L;
@@ -71,9 +72,9 @@ public class Address implements Serializable {
         this(
                 null,
                 NumberUtils.toInt(contragentDtoAddress.getPostIndex()),
-                ObjectUtils.isEmpty(contragentDtoAddress.getCountry()) ? null : contragentDtoAddress.getCountry().toUpperCase(),
-                ObjectUtils.isEmpty(contragentDtoAddress.getCity()) ? null : contragentDtoAddress.getCity().toUpperCase(),
-                ObjectUtils.isEmpty(contragentDtoAddress.getStreet()) ? null : contragentDtoAddress.getStreet().toUpperCase(),
+                ContragentUtils.toUpperCase(contragentDtoAddress.getCountry()),
+                ContragentUtils.toUpperCase(contragentDtoAddress.getCity()),
+                ContragentUtils.toUpperCase(contragentDtoAddress.getStreet()),
                 contragentDtoAddress.getHouseNumber(),
                 contragentDtoAddress.getApartrmentNumber()
         );

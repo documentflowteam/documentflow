@@ -32,12 +32,3 @@
     flex-direction: row;
     justify-content: space-between;
 }
-
-.contragent-command-button {
-
-    flex-grow: 1;
-}
-
-.contragent-edit-box {
-    flex-grow: 1;
-}
