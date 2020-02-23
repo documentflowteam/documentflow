@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -38,21 +39,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .anyRequest().authenticated()
+                .antMatchers("/docs/in/**").hasAnyRole("DOC_IN_READ")
+                .antMatchers("/docs/out/**").hasAnyRole("DOC_OUT_READ")
+                .antMatchers("/tasks/**").hasRole("TASKS_READ")
+                .antMatchers("/sys/**").hasRole("SYS_READ")
+                .antMatchers("/profile/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/docs/in", false)
+                .defaultSuccessUrl("/profile", false)
                 .loginProcessingUrl("/perform_login").permitAll()
                 .and()
                 .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .logoutUrl("/perform_logout")
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/403.html");
+                .logoutSuccessUrl("/login?logout")
+                .permitAll();
+
     }
 
     @Bean
