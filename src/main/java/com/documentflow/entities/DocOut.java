@@ -1,18 +1,20 @@
 package com.documentflow.entities;
 
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 @Entity
 @Table(name = "doc_out")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class DocOut implements Serializable {
 
@@ -25,7 +27,7 @@ public class DocOut implements Serializable {
 
     @CreationTimestamp
     @Column(name="create_date")
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "creator_id")
@@ -54,12 +56,12 @@ public class DocOut implements Serializable {
     @Column(name = "is_generated")
     private Boolean isGenerated;
 
-    @Column(name = "reg_number")
-    private String regNumber;
+    @Column(name = "number")
+    private String number;
 
     @CreationTimestamp
     @Column(name="reg_date")
-    private LocalDateTime regDate;
+    private LocalDate regDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "state_id")
@@ -69,4 +71,23 @@ public class DocOut implements Serializable {
     @JoinColumn(name = "task_id")
     private Task task;
 
+
+    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state) {
+        this.creator = creator;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.state = state;
+    }
 }
+
+//        User creator=docOutDTO.getCreator();
+//        User signer=docOutDTO.getSigner();
+//        String content = docOutDTO.getContent();
+//        Integer pages=docOutDTO.getPages();
+//        String appendix = docOutDTO.getAppendix();
+//        String note = docOutDTO.getNote();
+//        State state = docOutDTO.getState();
+//        DocOut docOut=new DocOut();

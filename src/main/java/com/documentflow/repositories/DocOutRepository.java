@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Repository
 public interface DocOutRepository extends JpaRepository<DocOut, Long>, PagingAndSortingRepository<DocOut, Long> {
@@ -20,36 +20,45 @@ public interface DocOutRepository extends JpaRepository<DocOut, Long>, PagingAnd
 
     DocOut findOneById(Long id);
 
- //   List<DocOut> findAllByCreator(User creator);
     Page<DocOut> findAllByCreator(User creator, Pageable pageable);
 
-//    List<DocOut> findAllBySigner(User signer);
     Page<DocOut> findAllBySigner(User signer, Pageable pageable);
 
-//    List<DocOut> findAllByCreateDate (LocalDateTime createDate);
-    Page<DocOut> findAllByCreateDate (LocalDateTime createDate, Pageable pageable);
+    Page<DocOut> findAllByCreateDate (LocalDate createDate, Pageable pageable);
 
-//    List<DocOut> findAllByRegDate (LocalDateTime regDate);
-    Page<DocOut> findAllByRegDate (LocalDateTime regDate, Pageable pageable);
+    Page<DocOut> findAllByRegDate (LocalDate regDate, Pageable pageable);
 
-//    List<DocOut> findAllByContent (String content);
       Page<DocOut> findAllByContent (String content, Pageable pageable);
 
-//    List<DocOut> findAllByAppendix (String appendix);
       Page<DocOut> findAllByAppendix (String appendix, Pageable pageable);
 
-//    List<DocOut> findAllByNote (String note);
       Page<DocOut> findAllByNote (String note, Pageable pageable);
 
-//    List<DocOut> findAllByIsGenerated (Boolean isGenerated);
       Page<DocOut> findAllByIsGenerated (Boolean isGenerated, Pageable pageable);
 
-      Page<DocOut> findAllByRegNumber (String regNumber, Pageable pageable);
+      Page<DocOut> findAllByNumber (String number, Pageable pageable);
 
-//    List<DocOut> findAllByState (State state);
       Page<DocOut> findAllByState (State state, Pageable pageable);
 
-//    List<DocOut> findAllByTaskType (TaskType taskType);
       Page<DocOut> findAllByTask (Task task, Pageable pageable);
+
+ //    <S extends DocOut> S save(S var1);
+//
+//      default DocOut update(DocOut docOut){
+//          this.getCreator() = creator;
+//          this.signer = signer;
+//          this.content = content;
+//          this.pages = pages;
+//          this.appendix = appendix;
+//          this.note = note;
+//          this.state = state;
+//      }
+
+      void deleteById(Long id);
+
+      void delete(DocOut docOut);
+
+      User getByCreator(User user);
+
 
 }
