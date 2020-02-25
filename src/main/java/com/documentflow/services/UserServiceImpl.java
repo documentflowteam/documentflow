@@ -87,12 +87,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findOneById(id);
     }
 
-    // TODO: вынести дефолтный пароль в application.properties, подставлять его, если у пользователя нет пароля
-    public User saveOrUpdate(User user) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsername(username);
