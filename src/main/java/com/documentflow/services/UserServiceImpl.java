@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,17 @@ import java.util.stream.Collectors;
 @Setter(onMethod_ = {@Autowired})
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Override
+    public boolean isExistsUsername(String username) {
+        return userRepository.existsUserByUsername(username);
+    }
+
+    public User saveOrUpdate(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
 
     @Override
     public User getCurrentUser(int userId) {
@@ -43,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByLastNameAsc();
     }
 
     @Override
@@ -71,13 +83,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findOneById(int id) {
+        return userRepository.findOneById(id);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsername(username);
-        if (user == null || !user.isActive()) {
-            throw new UsernameNotFoundException("Invalid username or password");
-        } else {
-            return new org.springframework.security.core.userdetails
-                    .User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        checkUser(user);
+        return new org.springframework.security.core.userdetails
+                .User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+
+    }
+
+    private void checkUser(User user) {
+        if (user == null) {
+            throw new UsernameNotFoundException("invalid username or password");
+        }
+        if (!user.isActive()) {
+            throw new RuntimeException("user isn't active");//custom exception need
         }
     }
 
