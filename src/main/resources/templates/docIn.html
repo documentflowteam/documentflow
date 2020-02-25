@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-
     <title>DocIn</title>
 
     <link rel="stylesheet" type="text/css" href="/css/main.css">
@@ -12,27 +11,20 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
 </head>
-
 <body>
-<div class="container-fluid">
-    <div class="w-100">
-        <nav class="navbar navbar-expand-xl navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-book-dead"></i>
-                Документооборот
-            </a>
-        </nav>
-    </div>
 
-    <div class="row">
-        <div class="col-sm-2" >
-            <div th:replace="~{sidebar}" />
-        </div>
-        <div class="col-sm-10" >
+<div id="header-div">
+    <div th:replace="~{header}" />
+</div>
+
+<div class="wrapper">
+    <div id="menu">
+        <div th:replace="~{sidebar}" />
+    </div>
+    <div class="container-fluid">
+        <div class="col-sm-12" >
             <div class="row">
                 <div class="col-sm-12" >
                     <a role="button"
@@ -40,7 +32,7 @@
                        class="btn btn-secondary"
                        data-toggle="modal"
                        href="#showDoc"
-                       th:data-doc="${newDocIn}">Зарегистрировать</a>
+                       th:onclick="'javascript:openModal(-1);'">Зарегистрировать</a>
                 </div>
             </div>
             <div class="row">
@@ -60,12 +52,6 @@
                         <tbody>
                             <tr th:each="docIn : ${docs.getContent()}">
                                 <td>
-<!--                                    <a role="button"-->
-<!--                                       aria-pressed="true"-->
-<!--                                       data-toggle="modal"-->
-<!--                                       href="#showDoc"-->
-<!--                                       th:text="${docIn.regNumber}"-->
-<!--                                       th:data-doc="${docIn}" />-->
                                     <a role="button"
                                        aria-pressed="true"
                                        data-toggle="modal"
@@ -74,12 +60,16 @@
                                        th:onclick="'javascript:openModal(\'' + ${docIn.id} + '\');'" />
                                 </td>
                                 <td th:text="${#dates.format(docIn.regDate, 'yyyy-MM-dd')}" />
-                                <td th:text="${docIn.docType.name}" />
+                                <td th:text="${docIn.docTypeName}" />
                                 <td th:text="${docIn.sender}" />
-                                <td th:text="${docIn.state.name}" />
+                                <td th:text="${docIn.stateName}" />
                                 <td><i th:if="${docIn.appendix != null}" class="far fa-file-pdf"></i></td>
                                 <td>
-                                    <a href="#"> <!-- ссыль на метод удаления -->
+                                    <a role="button"
+                                       aria-pressed="true"
+                                       data-toggle="modal"
+                                       href="#delDoc"
+                                       th:onclick="'javascript:deleteDoc(\'' + ${docIn.id} + '\');'">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </td>
@@ -90,13 +80,13 @@
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
                             <li class="page-item" th:classappend="${!(docs.getNumber() > 0) ? 'disabled' : ''}">
-                                <a th:class="page-link" th:href="@{'/docs/in?currentPage=' + ${docs.getNumber()}}" th:text="prev"/>
+                                <a th:class="page-link" th:href="@{'/docs/in?currentPage=' + ${docs.getNumber()}}" th:text="Пред."/>
                             </li>
                             <li class="page-item" th:classappend="${docs.getNumber() + 1 == i ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, docs.getTotalPages())}">
                                 <a class="page-link" th:href="@{'/docs/in?currentPage=' + ${i}}" th:text=${i} />
                             </li>
                             <li class="page-item" th:classappend="${!(docs.getNumber() < docs.getTotalPages() - 1) ? 'disabled' : ''}">
-                                <a th:class="page-link" th:href="@{'/docs/in?currentPage=' + ${docs.getNumber() + 2} }" th:text="next"/>
+                                <a th:class="page-link" th:href="@{'/docs/in?currentPage=' + ${docs.getNumber() + 2} }" th:text="След."/>
                             </li>
                         </ul>
                     </nav>
@@ -105,55 +95,6 @@
         </div>
     </div>
 </div>
-
-<!--<script th:inline="javascript">-->
-<!--function showDoc(doc) {-->
-<!--    $(document).ready(function() {-->
-<!--        $('#newDoc').modal();-->
-<!--        $("#docIn").val(doc);-->
-<!--    });-->
-<!--</script>-->
-
-<!--<script th:inline="javascript">-->
-<!--$('button').click(function(event){-->
-<!--    var button = event.relatedTarget;-->
-<!--    var docIn = button.data('docIn');-->
-<!--    var modal = $(this);-->
-<!--    $('#newDoc').modal('show');-->
-<!--});-->
-<!--</script>-->
-
-<!--<script th:inline="javascript">-->
-<!--$(document).ready(function(){-->
-<!--    $(".eBtn").on('click', function(){-->
-<!--        var doc = button.data('doc')-->
-<!--        var modal = $(this)-->
-<!--        modal.find('.docForm #id').val(doc.id)-->
-<!--        modal.find('.docForm #regDateH').val(doc.regDate)-->
-<!--        modal.find('.docForm #user').val(doc.user)-->
-<!--        modal.find('.docForm #docType').val(doc.docType)-->
-<!--        modal.find('.docForm #state').val(doc.state)-->
-<!--        modal.find('.docForm #regNumber').val(doc.regNumber)-->
-<!--        modal.find('.docForm #taskH').val(doc.taskH)-->
-<!--        modal.find('.docForm #regDate').text(doc.regDate)-->
-<!--        modal.find('.docForm #lastName').text(doc.user.lastName)-->
-<!--        modal.find('.docForm #departmentId').val(doc.departmentId)-->
-<!--        modal.find('.docForm #docTypeId').val(doc.docTypeId)-->
-<!--        modal.find('.docForm #sender').val(doc.sender)-->
-<!--        modal.find('.docForm #outgoingNumber').val(doc.outgoingNumber)-->
-<!--        modal.find('.docForm #outgoingDate').val(doc.outgoingDate)-->
-<!--        modal.find('.docForm #content').text(doc.content)-->
-<!--        modal.find('.docForm #pages').val(doc.pages)-->
-<!--        modal.find('.docForm #appendix').val(doc.appendix)-->
-<!--        modal.find('.docForm #note').val(doc.note)-->
-<!--        modal.find('.docForm #task').text(doc.task)-->
-
-<!--        modal.find('#titleM').text('Входящий документ ')-->
-
-<!--        $('#newDoc').modal();-->
-<!--    });-->
-<!--});-->
-<!--</script>-->
 
 <script th:inline="javascript">
     $.dateCut = function(date) {
@@ -171,70 +112,92 @@
         return date;
     };
 
+    function deleteDoc(id){
+        $.ajax({
+            url: "/docs/in/card/" + id,
+            success: function (doc) {
+                $('#delTitle').text('Входящий документ №:' + doc.regNumber + ' будет удален, вы настаиваете на удалении?');
+                $('#delId').val(doc.id);
+            }
+        });
+    }
+
     function openModal(id){
         $.ajax({
             url: "/docs/in/card/" + id,
             success: function (doc) {
-                $('#titleM').text('Входящий документ ' + doc.regNumber + ' ' + doc.state.name);
+                if (doc.id == null) {
+                    $('#titleM').text('Входящий документ');
+                    $('#regDateT').text($.dateCut(new Date()));
+                } else {
+                    $('#titleM').text('Входящий документ №:' + doc.regNumber + ' ' + doc.stateName);
+                    $('#regDate').val(doc.regDate);
+                    $('#regDateT').text($.dateCut(doc.regDate));
+                    $('#outgoingDate').val($.dateCut(doc.outgoingDate));
+                    $('#communication').text('Связи');
+                }
                 $('#id').val(doc.id);
-                $('#regDateH').val(doc.regDate);
-                $('#user').val(doc.user);
-<!--                $('#docType').val(doc.docType);-->
-<!--                $('#state').val(doc.state);-->
+                $('#stateId').val(doc.stateId);
                 $('#regNumber').val(doc.regNumber);
-                $('#taskH').val(doc.task);
-                $('#regDate').text($.dateCut(doc.regDate));
-<!--                $('#regDate').text(doc.regDate);-->
-                $('#lastName').text(doc.user.lastName);
+                $('#userId').val(doc.userId);
+                $('#userFIO').text(doc.userFIO);
                 $('#departmentId').val(doc.departmentId);
                 $('#docTypeId').val(doc.docTypeId);
                 $('#sender').val(doc.sender);
                 $('#outgoingNumber').val(doc.outgoingNumber);
-                $('#outgoingDate').val($.dateCut(doc.outgoingDate));
-<!--                $('#outgoingDate').val(doc.outgoingDate);-->
                 $('#content').text(doc.content);
                 $('#pages').val(doc.pages);
                 $('#appendix').val(doc.appendix);
                 $('#note').val(doc.note);
-                $('#task').text(doc.task.taskName);
-
-
-<!--              $("#showDoc").modal("show");-->
+                if (doc.taskId != null) {
+                    $('#taskLabel').text('Поручение ');
+                    $('#taskT').text(doc.taskId);
+                    $('#taskId').val(doc.taskId);
+                }
+<!--                if (doc.docOutId != null) {-->
+<!--                    $('#docOutLabel').text('Ответ ');-->
+<!--                    $('#docOutIdT').text(doc.docOutId);-->
+<!--                    $('#docOutId').val(doc.docOutId);-->
+<!--                }-->
             }
         });
     }
 </script>
 
-<!--<script th:inline="javascript">-->
-<!--$('#showDoc').on('show.bs.modal', function (event) {-->
+<!-- Modal delete document-->
+<div class="modal fade"
+     id="delDoc"
+     tabindex="-1"
+     aria-hidden="true"
+     data-backdrop="static"
+     data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form th:action="@{/docs/in/del}" method="POST" id="delForm">
 
-<!--    var button = $(event.relatedTarget)-->
-<!--    var doc = button.data('doc')-->
-<!--    var modal = $(this)-->
+                    <!-- Hidden inputs -->
+                    <input id="delId" name="id" type="hidden" class="form-control">
 
-<!--    modal.find('.modal-title #titleM').text('Входящий документ ')-->
+                    <div class="form-row">
+                        <h5 class="modal-title" id="delTitle"></h5>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" form="delForm">Удалить</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+            </div>
 
-<!--    modal.find('.docForm #id').val(doc.id)-->
-<!--    modal.find('.docForm #regDateH').val(doc.regDate)-->
-<!--    modal.find('.docForm #user').val(doc.user)-->
-<!--    modal.find('.docForm #docType').val(doc.docType)-->
-<!--    modal.find('.docForm #state').val(doc.state)-->
-<!--    modal.find('.docForm #regNumber').val(doc.regNumber)-->
-<!--    modal.find('.docForm #taskH').val(doc.taskH)-->
-<!--    modal.find('.docForm #regDate').text(doc.regDate)-->
-<!--    modal.find('.docForm #lastName').text(doc.user.lastName)-->
-<!--    modal.find('.docForm #departmentId').val(doc.departmentId)-->
-<!--    modal.find('.docForm #docTypeId').val(doc.docTypeId)-->
-<!--    modal.find('.docForm #sender').val(doc.sender)-->
-<!--    modal.find('.docForm #outgoingNumber').val(doc.outgoingNumber)-->
-<!--    modal.find('.docForm #outgoingDate').val(doc.outgoingDate)-->
-<!--    modal.find('.docForm #content').text(doc.content)-->
-<!--    modal.find('.docForm #pages').val(doc.pages)-->
-<!--    modal.find('.docForm #appendix').val(doc.appendix)-->
-<!--    modal.find('.docForm #note').val(doc.note)-->
-<!--    modal.find('.docForm #task').text(doc.task)-->
-<!--})-->
-<!--</script>-->
+        </div>
+    </div>
+</div>
 
 <!-- Modal edit document-->
 <div class="modal fade"
@@ -255,23 +218,22 @@
 
                     <!-- Hidden inputs -->
                     <input id="id" name="id" type="hidden" class="form-control">
-                    <input id="regDateH" name="regDate" type="hidden" class="form-control">
-                    <input id="user" name="user" type="hidden" class="form-control">
-                    <input id="docType" name="docType" type="hidden" class="form-control">
-                    <input id="state" name="state" type="hidden" class="form-control">
+                    <input id="userId" name="userId" type="hidden" class="form-control">
+                    <input id="stateId" name="stateId" type="hidden" class="form-control">
                     <input id="regNumber" name="regNumber" type="hidden" class="form-control">
-                    <!--                <input id="docOut" name="docOut" type="hidden" class="form-control">-->
-                    <input id="taskH" name="task" type="hidden" class="form-control">
+                    <input id="regDate" name="regDate" type="hidden" class="form-control">
+                    <input id="taskId" name="taskId" type="hidden" class="form-control">
+<!--                    <input id="docOutId" name="docOutId" type="hidden" class="form-control">-->
 
                     <div class="form-row">
                         <h5 class="modal-title" id="titleM"></h5>
                     </div>
                     <div class="form-row">
                         <label class="col-sm-3 col-form-label">Дата регистрации</label>
-<!--                        <label class="col-sm-3 col-form-label" th:text="${docIn.id == null} ? ${#dates.format(#dates.createNow(), 'dd/mm/yyyy')} : ${regDate}" />-->
-                        <label class="col-sm-3 col-form-label" id="regDate" name="regDate" />
-                        <label class="col-sm-3 col-form-label">Регистратор</label>
-                        <label class="col-sm-3 col-form-label" id="lastName" name="lastName" />
+                        <label class="col-sm-2 col-form-label" id="regDateT" name="regDateT"></label>
+                        <div class="col-sm-2"></div>
+                        <label class="col-sm-2 col-form-label">Регистратор</label>
+                        <label class="col-sm-3 col-form-label" id="userFIO" name="userFIO"></label>
                     </div>
                     <div class="form-row">
                         <label for="departmentId" class="col-sm-3 col-form-label">Подразделение-адресат</label>
@@ -332,23 +294,23 @@
                             <input name="note" type="text" class="form-control" id="note" />
                         </div>
                     </div>
-                    <div> <!--th:unless="${docIn.id == null}"-->
-                        <h5>Связи</h5>
+                    <div>
+                        <h5 id="communication"></h5>
 
-                        <!--                        <div class="form-row" th:if="${docIn.docOut}">-->
-                        <!--                            <label for="docOut" class="col-sm-3 col-form-label">Ответ</label>-->
-                        <!--                            <a id="docOut" href="#" th:text="${docIn.docOut.regNumber}" />-->
-                        <!--                        </div>-->
-                        <div class="form-row" > <!--th:unless="${newDocIn.task == null}"-->
-                            <label for="task" class="col-sm-3 col-form-label">Поручение</label>
-                            <a id="task" href="#" name="task"></a> <!-- добавить ссыль на нужный метод -->
+<!--                        <div class="form-row">-->
+<!--                            <label id="docOutLabel" for="docOutIdT" class="col-sm-3 col-form-label"></label>-->
+<!--                            <a id="docOutIdT" href="#" name="docOutIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
+<!--                        </div>-->
+                        <div class="form-row" >
+                            <label id="taskLabel" for="taskId" class="col-sm-3 col-form-label"></label>
+                            <a id="taskT" href="#" name="taskT"></a> <!-- добавить ссыль на нужный метод -->
                         </div>
                     </div>
                 </form>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" form="docForm">Зарегистрировать</button>
+                <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
             </div>
 

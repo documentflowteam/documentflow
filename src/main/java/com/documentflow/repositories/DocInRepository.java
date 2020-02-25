@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface DocInRepository extends JpaRepository<DocIn, Long> {
 
     DocIn findByTask(Task task);
+    DocIn findFirstByOrderByIdDesc();
 }

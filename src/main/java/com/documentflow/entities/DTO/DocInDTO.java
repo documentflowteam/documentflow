@@ -24,10 +24,10 @@ public class DocInDTO implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date regDate;
-    private User user;
-    private DocType docType;
+    private Integer userId;
+    private String userFIO;
     private Integer docTypeId;
-    private Department department;
+    private String docTypeName;
     private Integer departmentId;
     private String sender;
     private String outgoingNumber;
@@ -38,75 +38,28 @@ public class DocInDTO implements Serializable {
     private Integer pages;
     private String appendix;
     private String note;
-    private State state;
-//    private DocOut docOut;
-    private Task task;
+    private String stateName;
+    private Integer stateId;
+//    private Long docOutId;
+    private Long taskId;
 
-    public DocInDTO(DocIn docIn) {
-        this.id = docIn.getId();
-        this.regNumber = docIn.getRegNumber();
-        this.regDate = convertToDate(docIn.getRegDate());
-        this.user = docIn.getUser();
-        this.docType = docIn.getDocType();
-        this.docTypeId = docIn.getDocType().getId();
-        if (this.docTypeId == null) {
-            this.docTypeId = -1;
-        }
-        this.department = docIn.getDepartment();
-        this.departmentId = docIn.getDepartment().getId();
-        if (this.departmentId == null) {
-            this.departmentId = -1;
-        }
-        this.sender = docIn.getSender();
-        this.outgoingNumber = docIn.getOutgoingNumber();
-        this.outgoingDate = convertToDate(docIn.getOutgoingDate());
-        this.content = docIn.getContent();
-        this.pages = docIn.getPages();
-        this.appendix = docIn.getAppendix();
-        this.note = docIn.getNote();
-        this.state = docIn.getState();
-//        this.docOut = docIn.getDocOut();
-        this.task = docIn.getTask();
-    }
-
-    public DocIn convertToDocIn(DocType docType, Department department) {
-        DocIn docIn = new DocIn();
-        docIn.setId(this.id);
-        docIn.setRegNumber(this.regNumber);
-        docIn.setRegDate(convertToLocalDate(this.regDate));
-        docIn.setUser(this.user);
-        if (this.docTypeId != docType.getId() || this.docType == null) {
-            docIn.setDocType(docType);
-        }
-        if (this.departmentId != department.getId() || this.department == null) {
-            docIn.setDepartment(department);
-        }
-        docIn.setSender(this.sender);
-        docIn.setOutgoingNumber(this.outgoingNumber);
-        docIn.setOutgoingDate(convertToLocalDate(this.outgoingDate));
-        docIn.setContent(this.content);
-        docIn.setPages(this.pages);
-        docIn.setAppendix(this.appendix);
-        docIn.setNote(this.note);
-        docIn.setState(this.state);
-//        docIn.setDocOut(this.docOut);
-        docIn.setTask(this.task);
-        return docIn;
-    }
-
-    
-    // TODO: попробовать вынести конвертилки дат в общий utils
-    private LocalDateTime convertToLocalDate(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return new Timestamp(date.getTime()).toLocalDateTime();
-    }
-
-    private Date convertToDate(LocalDateTime date) {
-        if (date == null) {
-            return null;
-        }
-        return Timestamp.valueOf(date);
+    public DocInDTO(Long id, String regNumber, Date regDate, Integer userId, String userFIO, Integer docTypeId, String docTypeName, Integer departmentId, String sender, String outgoingNumber, Date outgoingDate, String content, Integer pages, String appendix, String note, String stateName, Integer stateId) {
+        this.id = id;
+        this.regNumber = regNumber;
+        this.regDate = regDate;
+        this.userId = userId;
+        this.userFIO = userFIO;
+        this.docTypeId = docTypeId;
+        this.docTypeName = docTypeName;
+        this.departmentId = departmentId;
+        this.sender = sender;
+        this.outgoingNumber = outgoingNumber;
+        this.outgoingDate = outgoingDate;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.stateName = stateName;
+        this.stateId = stateId;
     }
 }

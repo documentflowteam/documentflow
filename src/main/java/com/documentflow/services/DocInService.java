@@ -47,4 +47,8 @@ public class DocInService {
     public DocIn findByTask(Task task) {
         return docInRepository.findByTask(task);
     }
+
+    public DocIn findFirstByOrderByIdDesc() {
+        return docInRepository.findFirstByOrderByIdDesc();
+    }
 }

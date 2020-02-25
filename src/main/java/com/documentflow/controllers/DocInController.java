@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/docs/in")
@@ -21,20 +22,16 @@ public class DocInController {
     private DocInService docInService;
     private DocTypeService docTypeService;
     private DepartmentService departmentService;
-    private UserService userService;
     private DocInUtils docInUtils;
-    private StateService stateService;
 
     @Autowired
     public DocInController(DocInService docInService, DocTypeService docTypeService,
                            DepartmentService departmentService, UserService userService,
-                           DocInUtils docInUtils, StateService stateService) {
+                           DocInUtils docInUtils) {
         this.docInService = docInService;
         this.docTypeService = docTypeService;
         this.departmentService = departmentService;
-        this.userService = userService;
         this.docInUtils = docInUtils;
-        this.stateService = stateService;
     }
 
     @GetMapping()
@@ -45,10 +42,8 @@ public class DocInController {
             currentPage = 1;
         }
         model.addAttribute("currentPage", currentPage);
-        Page<DocIn> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"));
-        Page<DocInDTO> pageDTOs = page.map(d -> new DocInDTO(d));
-        model.addAttribute("docs", pageDTOs);
-
+        Page<DocInDTO> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate")).map(d -> docInUtils.convertToDTO(d));
+        model.addAttribute("docs", page);
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
         model.addAttribute("departments", departmentService.findAllDepartments());
         return "docIn";
@@ -56,34 +51,23 @@ public class DocInController {
 
     @ResponseBody
     @RequestMapping("/card/{id}")
-    public DocInDTO getCard(@PathVariable("id") Long id, Model model) {
-        DocInDTO docIn = new DocInDTO(docInService.findById(id));
-//        DocInDTO docIn = new DocInDTO();
-//        docIn.setDepartmentId(-1);
-//        docIn.setDocTypeId(-1);
-//        docIn.setUser(userService.getCurrentUser(1));//Заменить на релаьно авторизованного юзера
-//        if (id != null) {
-//            docIn = new DocInDTO(docInService.findById(id));
-//        }
-        return docIn;
+    public DocInDTO getCard(@PathVariable("id") Long id, Principal principal) {
+        return docInUtils.getDocIn(id, principal.getName());
     }
 
     @PostMapping("/card")
-    public String registrationDoc(@ModelAttribute(name = "doc") DocInDTO docInDTO) {
-        System.out.println(docInDTO.toString());
-        DocIn docIn = docInDTO.convertToDocIn(docTypeService.getDocTypeById(docInDTO.getDocTypeId()),
-                departmentService.getDepartmentById(docInDTO.getDepartmentId()));
-        docIn.setRegNumber(docInUtils.getRegNumber());
-        State state = stateService.getStateById(1);//Переключиться на BusinessKey когда он заработает.
-//        State state = stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString());
-        docIn.setState(state);
+    public String regEditDoc(@ModelAttribute(name = "doc") DocInDTO docInDTO) {
+        DocIn docIn = docInUtils.convertFromDTO(docInDTO);
+        if (docIn.getId() == null) {
+            docIn.setRegNumber(docInUtils.getRegNumber());
+        }
         docInService.save(docIn);
         return "redirect:/docs/in";
     }
 
-    @GetMapping("/del")
-    public String delete(Long id) {
-        docInService.deleteById(id);
+    @PostMapping("/del")
+    public String delete(@ModelAttribute(name = "doc") DocInDTO docInDTO) {
+        docInService.deleteById(docInDTO.getId());
         return "redirect:/docs/in";
     }
 }

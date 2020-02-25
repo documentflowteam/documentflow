@@ -1,15 +1,19 @@
 package com.documentflow.entities;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "sys_task_types")
-public class TaskType {
+public class TaskType implements Serializable {
+    private static final long serialVersionUID = -3132602854653537863L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
