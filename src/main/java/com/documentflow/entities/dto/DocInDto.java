@@ -1,22 +1,17 @@
-package com.documentflow.entities.DTO;
+package com.documentflow.entities.dto;
 
-import com.documentflow.entities.*;
-import com.documentflow.utils.DocInUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocInDTO implements Serializable {
+public class DocInDto implements Serializable {
     private static final long serialVersionUID = -3933271279839435794L;
 
     private Long id;
@@ -43,7 +38,7 @@ public class DocInDTO implements Serializable {
 //    private Long docOutId;
     private Long taskId;
 
-    public DocInDTO(Long id, String regNumber, Date regDate, Integer userId, String userFIO, Integer docTypeId, String docTypeName, Integer departmentId, String sender, String outgoingNumber, Date outgoingDate, String content, Integer pages, String appendix, String note, String stateName, Integer stateId) {
+    public DocInDto(Long id, String regNumber, Date regDate, Integer userId, String userFIO, Integer docTypeId, String docTypeName, Integer departmentId, String sender, String outgoingNumber, Date outgoingDate, String content, Integer pages, String appendix, String note, String stateName, Integer stateId) {
         this.id = id;
         this.regNumber = regNumber;
         this.regDate = regDate;

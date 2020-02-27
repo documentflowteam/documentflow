@@ -63,3 +63,7 @@
     margin: auto;
 }
 
+.inline {
+    display: flex;
+}
+

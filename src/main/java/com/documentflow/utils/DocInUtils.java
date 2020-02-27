@@ -1,9 +1,8 @@
 package com.documentflow.utils;
 
-import com.documentflow.entities.DTO.DocInDTO;
+import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.User;
-import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,8 +48,8 @@ public class DocInUtils {
         return regNumber;
     }
 
-    public DocInDTO getDocIn(Long id, String login) {
-        DocInDTO docIn = new DocInDTO();
+    public DocInDto getDocIn(Long id, String login) {
+        DocInDto docIn = new DocInDto();
         if (id > 0) {
             docIn = convertToDTO(docInService.findById(id));
         } else {
@@ -80,39 +79,39 @@ public class DocInUtils {
                 user.getMiddleName().substring(0, 1);
     }
 
-    public DocIn convertFromDTO(DocInDTO docInDTO) {
+    public DocIn convertFromDTO(DocInDto docInDto) {
         DocIn docIn = new DocIn(
-                docInDTO.getId(),
-                docInDTO.getRegNumber(),
-                convertToLocalDate(docInDTO.getRegDate()),
-                userService.findOneById(docInDTO.getUserId()),
-                docTypeService.getDocTypeById(docInDTO.getDocTypeId()),
-                departmentService.getDepartmentById(docInDTO.getDepartmentId()),
-                docInDTO.getSender(),
-                docInDTO.getOutgoingNumber(),
-                convertToLocalDate(docInDTO.getOutgoingDate()),
-                docInDTO.getContent(),
-                docInDTO.getPages(),
-                docInDTO.getAppendix(),
-                docInDTO.getNote()
+                docInDto.getId(),
+                docInDto.getRegNumber(),
+                convertToLocalDate(docInDto.getRegDate()),
+                userService.findOneById(docInDto.getUserId()),
+                docTypeService.getDocTypeById(docInDto.getDocTypeId()),
+                departmentService.getDepartmentById(docInDto.getDepartmentId()),
+                docInDto.getSender(),
+                docInDto.getOutgoingNumber(),
+                convertToLocalDate(docInDto.getOutgoingDate()),
+                docInDto.getContent(),
+                docInDto.getPages(),
+                docInDto.getAppendix(),
+                docInDto.getNote()
         );
-//        if (docInDTO.getDocOutId() != null) {
-//            docIn.setDocOut(docOutService.findOneById(docInDTO.getDocOutId()));
+//        if (docInDto.getDocOutId() != null) {
+//            docIn.setDocOut(docOutService.findOneById(docInDto.getDocOutId()));
 //        }
-        if (docInDTO.getStateId() != null) {
-            docIn.setState(stateService.getStateById(docInDTO.getStateId()));
+        if (docInDto.getStateId() != null) {
+            docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
 //            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
             docIn.setState(stateService.getStateById(1));
         }
-        if (docInDTO.getTaskId() != null) {
-            docIn.setTask(taskService.findOneById(docInDTO.getTaskId()));
+        if (docInDto.getTaskId() != null) {
+            docIn.setTask(taskService.findOneById(docInDto.getTaskId()));
         }
         return docIn;
     }
 
-    public DocInDTO convertToDTO(DocIn docIn) {
-        DocInDTO docInDTO = new DocInDTO(
+    public DocInDto convertToDTO(DocIn docIn) {
+        DocInDto docInDto = new DocInDto(
                 docIn.getId(),
                 docIn.getRegNumber(),
                 convertToDate(docIn.getRegDate()),
@@ -132,11 +131,11 @@ public class DocInUtils {
                 docIn.getState().getId()
         );
 //        if (docIn.getDocOut() != null) {
-//            docInDTO.setDocOutId(docIn.getDocOut().getId());
+//            docInDto.setDocOutId(docIn.getDocOut().getId());
 //        }
         if (docIn.getTask() != null) {
-            docInDTO.setTaskId(docIn.getTask().getId());
+            docInDto.setTaskId(docIn.getTask().getId());
         }
-        return docInDTO;
+        return docInDto;
     }
 }

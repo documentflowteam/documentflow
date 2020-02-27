@@ -50,6 +50,30 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <form th:action="@{/docs/in}" method="GET">
+                                    <td><input th:value="${param.regNumber != null} ? ${param.regNumber}" class="form-control" th:name="regNumber" type="text"></td>
+                                    <td class="inline">
+                                        <input th:value="${param.regDateMin != null} ? ${param.regDateMin}" class="form-control" th:name="regDateMin" type="date">
+                                        <input th:value="${param.regDateMax != null} ? ${param.regDateMax}" class="form-control" th:name="regDateMax" type="date">
+                                    </td>
+                                    <td>
+                                        <select class="form-control" th:name="docTypeId">
+                                            <option th:text="' '" th:value="null"/>
+                                            <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:selected="${{param.docTypeId}} == ${{docT.id}}" />
+                                        </select>
+                                    </td>
+                                    <td><input th:value="${param.sender != null} ? ${param.sender}" class="form-control" th:name="sender" type="text"></td>
+                                    <td>
+                                        <select class="form-control" th:name="stateId">
+                                            <option th:text="' '" th:value="null"/>
+                                            <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                    <td><button type="submit" class="btn btn-primary">Применить</button></td>
+                                </form>
+                            </tr>
                             <tr th:each="docIn : ${docs.getContent()}">
                                 <td>
                                     <a role="button"
@@ -96,7 +120,10 @@
     </div>
 </div>
 
+
+<!--После добавления всех скриптов вынести в отдельный файл-->
 <script th:inline="javascript">
+
     $.dateCut = function(date) {
         var d = new Date(date);
         var day = d.getDate();
@@ -134,7 +161,6 @@
                     $('#regDate').val(doc.regDate);
                     $('#regDateT').text($.dateCut(doc.regDate));
                     $('#outgoingDate').val($.dateCut(doc.outgoingDate));
-                    $('#communication').text('Связи');
                 }
                 $('#id').val(doc.id);
                 $('#stateId').val(doc.stateId);
@@ -149,6 +175,9 @@
                 $('#pages').val(doc.pages);
                 $('#appendix').val(doc.appendix);
                 $('#note').val(doc.note);
+                if (doc.taskId != null || doc.docOutId != null) {
+                    $('#communication').text('Связи');
+                }
                 if (doc.taskId != null) {
                     $('#taskLabel').text('Поручение ');
                     $('#taskT').text(doc.taskId);
@@ -239,7 +268,7 @@
                         <label for="departmentId" class="col-sm-3 col-form-label">Подразделение-адресат</label>
                         <div class="col-sm-9">
                             <select class="form-control" id="departmentId" name="departmentId">
-                                <option th:each="dep : ${departments}" th:text="${dep.name}" th:value="${dep.id}"  /> <!--th:selected="${dep.id == docIn.departmentId}"-->
+                                <option th:each="dep : ${departments}" th:text="${dep.name}" th:value="${dep.id}"  />
                             </select>
                         </div>
                     </div>
@@ -247,7 +276,7 @@
                         <label for="docTypeId" class="col-sm-3 col-form-label">Тип документа</label>
                         <div class="col-sm-9">
                             <select class="form-control" id="docTypeId" name="docTypeId">
-                                <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}"  /> <!--th:selected="${docT.id == docIn.docTypeId}"-->
+                                <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}"  />
                             </select>
                         </div>
                     </div>
