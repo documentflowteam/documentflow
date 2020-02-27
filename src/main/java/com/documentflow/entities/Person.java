@@ -1,12 +1,12 @@
 package com.documentflow.entities;
 
+import com.documentflow.utils.ContragentUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.ObjectUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -44,9 +44,9 @@ public class Person implements Serializable {
             @JsonProperty("middle_name") String middleName,
             @JsonProperty("last_name") String lastName) {
         this.id = id;
-        this.firstName = ObjectUtils.isEmpty(firstName) ? null : firstName.toUpperCase();
-        this.middleName = ObjectUtils.isEmpty(middleName) ? null : middleName.toUpperCase();
-        this.lastName = ObjectUtils.isEmpty(lastName) ? null : lastName.toUpperCase();
+        this.firstName = ContragentUtils.toUpperCase(firstName);
+        this.middleName = ContragentUtils.toUpperCase(middleName);
+        this.lastName = ContragentUtils.toUpperCase(lastName);
     }
 
     public Person(String firstName, String middleName, String lastName) {

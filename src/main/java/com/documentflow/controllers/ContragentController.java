@@ -5,11 +5,13 @@ import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Organization;
 import com.documentflow.entities.Person;
 import com.documentflow.entities.dto.ContragentDto;
+import com.documentflow.entities.dto.ContragentDtoBindAddressAndEmployee;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.services.AddressService;
 import com.documentflow.services.ContragentService;
 import com.documentflow.services.OrganizationService;
 import com.documentflow.services.PersonService;
+import com.documentflow.exceptions.NotFoundIdException;
 import com.documentflow.utils.ContragentUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,16 +71,13 @@ public class ContragentController {
 
     @PostMapping("/add")
     @ResponseBody
-    public String addNewContragent(@RequestBody ContragentDto contragentDto) {
+    public List<Contragent> addNewContragent(@RequestBody ContragentDto contragentDto) {
 
         if (ContragentUtils.isEmpty(contragentDto.getParameters())) {
-            throw new RuntimeException("Не заполнены основные параметры контрагента");
+            throw new IllegalArgumentException("Не заполнены основные параметры контрагента");
         }
 
-        if (contragentService.save(contragentDto).isEmpty()) {
-            throw new RuntimeException("Неизвестное состояние");
-        }
-        return null;
+        return contragentService.save(contragentDto);
     }
 
     @GetMapping("/edit/person")
@@ -106,6 +105,33 @@ public class ContragentController {
         personService.delete(id);
     }
 
+    @DeleteMapping("/edit/person/address/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePersonAddress(@PathVariable("id") Long id) {
+        contragentService.delete(id);
+    }
+
+    @PostMapping("edit/person/address")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Address addNewAddressToPerson(@Valid @RequestBody Address address) {
+
+        if (ObjectUtils.isEmpty(address.getId())) {
+            throw new NotFoundIdException();
+        }
+        //ВНИМАНИЕ. В полученном объекте типа Address в поле ID хранится ID объекта типа Person
+        Long idPerson = address.getId();
+        address.setId(0L);
+        return contragentService.bindAddressWithPerson(idPerson, address);
+    }
+
+    @GetMapping("/edit/person/{id:[\\d]+}/address")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<Address> getAddressToPerson(@PathVariable("id") Long id) {
+        return personService.getAddresses(id);
+    }
+
     @GetMapping("/edit/address")
     @ResponseBody
     public List<Address> getAddress(@RequestParam(name = "post_index", required = false) String postIndex,
@@ -124,7 +150,7 @@ public class ContragentController {
         if (StringUtils.isEmpty(street)) {
             throw new IllegalArgumentException("Street is empty");
         }
-        return addressService.findAll(postIndex, country.toUpperCase(), city.toUpperCase(), street.toUpperCase(), houseNumber.toUpperCase(), apartrmentNumber.toUpperCase());
+        return addressService.findAll(postIndex, country.toUpperCase(), city.toUpperCase(), street.toUpperCase(), houseNumber, apartrmentNumber);
     }
 
     @PostMapping("/edit/address")
@@ -147,6 +173,71 @@ public class ContragentController {
             throw new IllegalArgumentException("Company name is empty");
         }
         return organizationService.findAll(nameCompany);
+    }
+
+    @GetMapping("/edit/company/{id:[\\d]+}/address")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<Address> getAddressToCompany(@PathVariable("id") Long id) {
+        return organizationService.getAddresses(id);
+    }
+
+    @PostMapping("edit/company/address")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Address addNewAddressToCompany(@Valid @RequestBody Address address) {
+
+        if (ObjectUtils.isEmpty(address.getId())) {
+            throw new NotFoundIdException();
+        }
+        //ВНИМАНИЕ. В полученном объекте типа Address в поле ID хранится ID объекта типа Organization
+        Long idOrganization = address.getId();
+        address.setId(0L);
+        return contragentService.bindAddressWithOrganization(idOrganization, address);
+    }
+
+    @PostMapping("edit/company/employee")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ContragentDtoEmployee addNewEmployeeToCompany(@Valid @RequestBody ContragentDtoEmployee employee) {
+
+        if (ObjectUtils.isEmpty(employee.getId())) {
+            throw new NotFoundIdException();
+        }
+        //ВНИМАНИЕ. В полученном объекте типа ContragentDtoEmployee в поле ID хранится ID объекта типа Organization
+        Long idOrganization = Long.valueOf(employee.getId());
+        return contragentService.bindEmployeeWithOrganization(idOrganization, employee);
+    }
+
+    @PostMapping("edit/company/employee_and_address")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ContragentDtoBindAddressAndEmployee addNewEmployeeAndAddressToCompany(@Valid @RequestBody ContragentDtoBindAddressAndEmployee addressAndEmployee) {
+
+        if (ObjectUtils.isEmpty(addressAndEmployee.getId())) {
+            throw new NotFoundIdException();
+        }
+        return contragentService.bindEmployeeWithAddress(addressAndEmployee);
+    }
+
+
+    @GetMapping("/edit/company/{id:[\\d]+}/employee")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<ContragentDtoEmployee> getEmployeeToCompany(@PathVariable("id") Long id) {
+        return organizationService.getEmployees(id);
+    }
+
+    @DeleteMapping("/edit/company/address/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCompanyAddress(@PathVariable("id") Long id) {
+        contragentService.delete(id);
+    }
+
+    @DeleteMapping("/edit/company/employee/{id:[\\d]+}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCompanyEmployee(@PathVariable("id") Long id) {
+        contragentService.delete(id);
     }
 
     @PostMapping("/edit/company")
@@ -175,7 +266,6 @@ public class ContragentController {
         //the order of arguments is important
         String searchString = ContragentUtils.createSearchName(firstName, middleName, lastName, position);
         List<Contragent> contragents = contragentService.searchContragents(searchString);
-
         return contragents.stream()
                 .filter(contragent -> contragent.getOrganization() != null)
                 .map(contragent -> {
@@ -191,24 +281,20 @@ public class ContragentController {
 
     @PostMapping("/edit/employee")
     @ResponseBody
-    public Contragent editEmployee(@RequestParam(name = "id") Long id,
-                                   @RequestParam(name = "first_name", required = false) String firstName,
-                                   @RequestParam(name = "middle_name", required = false) String middleName,
-                                   @RequestParam(name = "last_name") String lastName,
-                                   @RequestParam(name = "position", required = false) String position) {
+    public Contragent editEmployee(@RequestBody ContragentDtoEmployee employee) {
 
-        if (ObjectUtils.isEmpty(id)) {
+        if (ObjectUtils.isEmpty(employee.getId())) {
             throw new RuntimeException("ID is empty");
         }
-        if (StringUtils.isEmpty(lastName)) {
+        if (StringUtils.isEmpty(employee.getLastName())) {
             throw new RuntimeException("Last name is empty");
         }
-        return contragentService.updateEmployee(id, firstName, middleName, lastName, position);
+        return contragentService.updateEmployee(employee);
     }
 
     @DeleteMapping("/edit/employee/{id:[\\d]+}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteEmployee(@PathVariable("id") long id) {
-        personService.delete(id);
+        contragentService.delete(id);
     }
 }

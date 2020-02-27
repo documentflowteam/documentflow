@@ -2,10 +2,10 @@ package com.documentflow.services;
 
 import com.documentflow.entities.Address;
 import com.documentflow.entities.dto.ContragentDtoAddress;
+import com.documentflow.exceptions.NotFoundAddressException;
+import com.documentflow.exceptions.NotFoundIdException;
 import com.documentflow.repositories.AddressRepository;
 import com.documentflow.repositories.specifications.AddressSpecifications;
-import com.documentflow.services.exceptions.NotFoundAddressException;
-import com.documentflow.services.exceptions.NotFoundIdException;
 import com.documentflow.utils.ContragentUtils;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,11 @@ public class AddressServiceImpl implements AddressService {
             throw new NotFoundAddressException();
         }
         return addressRepository.saveAll(addresses);
+    }
+
+    @Override
+    public Address save(Address address) {
+        return addressRepository.save(address);
     }
 
     @Override
@@ -84,9 +89,9 @@ public class AddressServiceImpl implements AddressService {
             throw new NotFoundAddressException();
         }
 
-        String newCountry = adr.getCountry().toUpperCase();
-        String newCity = adr.getCity().toUpperCase();
-        String newStreet = adr.getStreet().toUpperCase();
+        String newCountry = ContragentUtils.toUpperCase(adr.getCountry());
+        String newCity = ContragentUtils.toUpperCase(adr.getCity());
+        String newStreet = ContragentUtils.toUpperCase(adr.getStreet());
 
         Address address = optionalAddress.get();
         address.setIndex(adr.getIndex());

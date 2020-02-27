@@ -1,11 +1,14 @@
 package com.documentflow.services;
 
+import com.documentflow.entities.Address;
+import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Organization;
+import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.entities.dto.ContragentDtoParameters;
+import com.documentflow.exceptions.NotFoundIdException;
+import com.documentflow.exceptions.NotFoundOrganizationException;
 import com.documentflow.repositories.OrganizationRepository;
 import com.documentflow.repositories.specifications.OrganizationSpecifications;
-import com.documentflow.services.exceptions.NotFoundIdException;
-import com.documentflow.services.exceptions.NotFoundOrganizationException;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    public Organization find(Long id) {
+        Optional<Organization> optionalOrganization = organizationRepository.findById(id);
+        if (!optionalOrganization.isPresent()) {
+            throw new NotFoundOrganizationException();
+        }
+        return optionalOrganization.get();
+    }
+
+    @Override
     public Organization update(Organization org) {
 
         if (org.getId() == null) {
@@ -93,5 +105,57 @@ public class OrganizationServiceImpl implements OrganizationService {
             contragent.setIsDeleted(true);
             contragentService.save(contragent);
         });
+    }
+
+    @Override
+    public List<Address> getAddresses(Long id) {
+
+        Optional<Organization> optionalOrganization = organizationRepository.findById(id);
+        if (!optionalOrganization.isPresent()) {
+            throw new NotFoundOrganizationException();
+        }
+
+        Organization organization = optionalOrganization.get();
+
+        //берем список записей, которые не помечены как удаленные
+        List<Contragent> contragents = organization.getContragents().stream()
+                .filter(contragent -> !contragent.getIsDeleted() && contragent.getAddress() != null)
+                .collect(Collectors.toList());
+        return contragents.stream()
+                //меняем ID адреса на ID контрагента, чтобы на фронте можно было удалить запись
+                .map(contragent -> new Address(contragent.getId(),
+                        contragent.getAddress().getIndex(),
+                        contragent.getAddress().getCountry(),
+                        contragent.getAddress().getCity(),
+                        contragent.getAddress().getStreet(),
+                        contragent.getAddress().getHouseNumber(),
+                        contragent.getAddress().getApartmentNumber()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ContragentDtoEmployee> getEmployees(Long id) {
+
+        Optional<Organization> optionalOrganization = organizationRepository.findById(id);
+        if (!optionalOrganization.isPresent()) {
+            throw new NotFoundOrganizationException();
+        }
+
+        Organization organization = optionalOrganization.get();
+
+        //берем список записей, которые не помечены как удаленные и в которых присутствует сущность персоны
+        List<Contragent> contragents = organization.getContragents().stream()
+                .filter(contragent -> !contragent.getIsDeleted())
+                .filter(contragent -> contragent.getPerson() != null)
+                .collect(Collectors.toList());
+        return contragents.stream()
+                .map(contragent -> new ContragentDtoEmployee(contragent.getId().toString(),
+                        contragent.getPerson().getFirstName(),
+                        contragent.getPerson().getMiddleName(),
+                        contragent.getPerson().getLastName(),
+                        contragent.getPersonPosition())
+                )
+                .collect(Collectors.toList());
     }
 }
