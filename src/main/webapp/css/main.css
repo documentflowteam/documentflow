@@ -41,6 +41,7 @@
     flex-grow: 1;
 }
 
+/*login */
 .login-parent {
     width: 100%;
     height: 100%;
@@ -60,3 +61,4 @@
     left: 0;
     margin: auto;
 }
+/*end login*/
