@@ -78,16 +78,28 @@ public class DocOutService {
 
 
     public DocOut save(DocOutDTO docOutDTO) {
-        User creator=docOutDTO.getCreator();
-        User signer=docOutDTO.getSigner();
-        String content = docOutDTO.getContent();
-        Integer pages=docOutDTO.getPages();
-        String appendix = docOutDTO.getAppendix();
-        String note = docOutDTO.getNote();
-        State state = docOutDTO.getState();
-
-        DocOut docOut=new DocOut(creator, signer, content, pages, appendix, note, state);
+        DocOut docOut=new DocOut();
+        docOut.setCreator(docOutDTO.getCreator());
+        docOut.setSigner(docOutDTO.getSigner());
+        docOut.setDocType(docOutDTO.getDocType());
+        docOut.setContent(docOutDTO.getContent());
+        docOut.setPages(docOutDTO.getPages());
+        docOut.setIsGenerated(docOutDTO.getIsGenerated());
+        docOut.setAppendix(docOutDTO.getAppendix());
+        docOut.setNote(docOutDTO.getNote());
         return docOutRepository.save(docOut);
+
+
+//        User creator=docOutDTO.getCreator();
+//        User signer=docOutDTO.getSigner();
+//        String content = docOutDTO.getContent();
+//        Integer pages=docOutDTO.getPages();
+//        String appendix = docOutDTO.getAppendix();
+//        String note = docOutDTO.getNote();
+//        State state = docOutDTO.getState();
+//
+//        DocOut docOut=new DocOut(creator, signer, content, pages, appendix, note, state);
+  //          return docOutRepository.save(docOut);
     }
 
     public void deleteById (Long id){
@@ -100,14 +112,14 @@ public class DocOutService {
 
     public DocOut update(DocOutDTO docOutDTO){
         DocOut docOut=docOutDTO.convertToDocOut();
-        docOut.setCreator(docOutDTO.getCreator());
-        docOut.setSigner(docOutDTO.getSigner());
-        docOut.setDocType(docOutDTO.getDocType());
-        docOut.setContent(docOutDTO.getContent());
-        docOut.setPages(docOutDTO.getPages());
-        docOut.setIsGenerated(docOutDTO.getIsGenerated());
-        docOut.setAppendix(docOutDTO.getAppendix());
-        docOut.setNote(docOutDTO.getNote());
+//        docOut.setCreator(docOutDTO.getCreator());
+//        docOut.setSigner(docOutDTO.getSigner());
+//        docOut.setDocType(docOutDTO.getDocType());
+//        docOut.setContent(docOutDTO.getContent());
+//        docOut.setPages(docOutDTO.getPages());
+//        docOut.setIsGenerated(docOutDTO.getIsGenerated());
+//        docOut.setAppendix(docOutDTO.getAppendix());
+//        docOut.setNote(docOutDTO.getNote());
         return docOutRepository.save(docOut);
     }
 

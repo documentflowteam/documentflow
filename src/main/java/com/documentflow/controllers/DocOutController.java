@@ -4,6 +4,7 @@ package com.documentflow.controllers;
 import com.documentflow.entities.DTO.DocOutDTO;
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.State;
+import com.documentflow.entities.User;
 import com.documentflow.services.*;
 import com.documentflow.utils.DocOutUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 @Controller
 @RequestMapping("/docs/out")
 public class DocOutController {
 
     private DocOutService docOutService;
+    private DocInService docInService;
     private DocTypeService docTypeService;
     private UserServiceImpl userService;
     private DocOutUtils docOutUtils;
@@ -61,18 +64,55 @@ public class DocOutController {
         //      return "addressee_form";
     }
 
+//    @RequestMapping(value = "/card", method = RequestMethod.POST)
+//    public String userCardSubmit(@ModelAttribute DocOutDTO docOutDTO) {
+//        docOutService.save(docOutDTO);
+//        return "redirect:/docs/out";
+//    }
 
-    @PostMapping("/card")
-    public String registrationDoc(@RequestParam(name = "newDocOut") DocOutDTO docOutDTO) {
-        DocOut docOut = docOutDTO.convertToDocOut();
-        docOut.setNumber(docOutUtils.getRegOutNumber());
-        State state = stateService.getStateById(1);
-        //        State state = stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString());
-        docOut.setState(state);
+
+    @RequestMapping(value = "/card")
+    public ModelAndView editCard(@PathVariable DocOutDTO docOutDTO) {
+        ModelAndView result = new ModelAndView("doc_out");
+ //       DocOut docOut=docOutDTO.convertToDocOut();
+        result.addObject("creators", userService.getAllUsers());
+        result.addObject("docType", docTypeService.findAllDocTypes());
+        result.addObject("signer", userService.getAllUsers());
+        return result;
+    }
+
+//    @PostMapping("/card")
+//    public String createNewDocOut(@RequestParam(name = "newDocOut") DocOutDTO docOutDTO) {
+//        DocOut docOut=new DocOut();
+//        docOut.setCreateDate(docOutDTO.getCreateDate());
+//        docOut.setCreator(docOutDTO.getCreator());
+//        docOut.setDocType(docOutDTO.getDocType());
+//        docOut.setSigner(docOutDTO.getSigner());
+
+
+//        docOutService.save(docOutDTO);
+//        return "redirect:/docs/out";
+//    }
+
+    @RequestMapping(value = "/card", method = RequestMethod.POST)
+    public String userCardSubmit(@ModelAttribute DocOutDTO docOutDTO) {
         docOutService.save(docOutDTO);
         return "redirect:/docs/out";
     }
 
+//    @GetMapping("/edit")
+//    public DocOut getDocOut(@RequestParam(name = "editDocOut") DocOutDTO docOutDTO) {
+////        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
+//        docOutService.update(docOutDTO);
+//        return "redirect:/docs/out";
+//    }
+
+    @PostMapping("/edit")
+    public String editDocOut(@RequestParam(name = "editDocOut") DocOutDTO docOutDTO) {
+//        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
+            docOutService.update(docOutDTO);
+         return "redirect:/docs/out";
+    }
 
     @PostMapping("/delete")
     public String deleteDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
