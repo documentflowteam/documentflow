@@ -2,10 +2,10 @@ package com.documentflow.services;
 
 import com.documentflow.entities.Organization;
 import com.documentflow.entities.dto.ContragentDtoParameters;
+import com.documentflow.exceptions.NotFoundIdException;
+import com.documentflow.exceptions.NotFoundOrganizationException;
 import com.documentflow.repositories.OrganizationRepository;
 import com.documentflow.repositories.specifications.OrganizationSpecifications;
-import com.documentflow.services.exceptions.NotFoundIdException;
-import com.documentflow.services.exceptions.NotFoundOrganizationException;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
