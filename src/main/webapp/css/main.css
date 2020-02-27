@@ -20,7 +20,6 @@
     list-style: none;
 }
 
-
 .contragent-item-box {
     margin: 10px;
     padding: 5px;
@@ -35,7 +34,6 @@
 }
 
 .contragent-command-button {
-
     flex-grow: 1;
 }
 
@@ -63,5 +61,4 @@
     left: 0;
     margin: auto;
 }
-
 /*end login*/

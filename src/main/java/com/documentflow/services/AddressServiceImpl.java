@@ -44,6 +44,11 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public Address save(Address address) {
+        return addressRepository.save(address);
+    }
+
+    @Override
     public List<Address> findAll(String postIndex, String country, String city, String street, String houseNumber, String apartrmentNumber) {
         Specification<Address> spec = Specification.where(null);
         if (!ObjectUtils.isEmpty(postIndex)) {
@@ -84,9 +89,9 @@ public class AddressServiceImpl implements AddressService {
             throw new NotFoundAddressException();
         }
 
-        String newCountry = adr.getCountry().toUpperCase();
-        String newCity = adr.getCity().toUpperCase();
-        String newStreet = adr.getStreet().toUpperCase();
+        String newCountry = ContragentUtils.toUpperCase(adr.getCountry());
+        String newCity = ContragentUtils.toUpperCase(adr.getCity());
+        String newStreet = ContragentUtils.toUpperCase(adr.getStreet());
 
         Address address = optionalAddress.get();
         address.setIndex(adr.getIndex());

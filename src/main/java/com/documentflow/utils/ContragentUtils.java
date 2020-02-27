@@ -35,9 +35,22 @@ public class ContragentUtils {
 
     public static String createSearchName(@NonNull String... values) {
         return Arrays.stream(values)
-                .peek(item -> item = item.replace(" ", ""))
+                .map(item -> item = item.replace(" ", ""))
                 .filter(StringUtils::isNotEmpty)
-                .peek(item -> item = item.toUpperCase())
+                .map(item -> item = item.toUpperCase())
                 .collect(Collectors.joining());
+    }
+
+    public static Address normalizeAddress(Address address) {
+
+        address.setCountry(address.getCountry().toUpperCase());
+        address.setCity(address.getCity().toUpperCase());
+        address.setStreet(address.getStreet().toUpperCase());
+
+        return address;
+    }
+
+    public static String toUpperCase(String string) {
+        return string != null ? string.toUpperCase() : null;
     }
 }

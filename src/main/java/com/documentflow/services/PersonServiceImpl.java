@@ -1,5 +1,7 @@
 package com.documentflow.services;
 
+import com.documentflow.entities.Address;
+import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Person;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.entities.dto.ContragentDtoParameters;
@@ -34,12 +36,17 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Person save(@NonNull ContragentDtoParameters contragentDto) {
 
-        String firstName = contragentDto.getFirstName() != null ? contragentDto.getFirstName().toUpperCase() : null;
-        String middleName = contragentDto.getMiddleName() != null ? contragentDto.getMiddleName().toUpperCase() : null;
-        String lastName = contragentDto.getLastName() != null ? contragentDto.getLastName().toUpperCase() : null;
+        String firstName = ContragentUtils.toUpperCase(contragentDto.getFirstName());
+        String middleName = ContragentUtils.toUpperCase(contragentDto.getMiddleName());
+        String lastName = ContragentUtils.toUpperCase(contragentDto.getLastName());
 
         Person personWithoutId = new Person(firstName, middleName, lastName);
         return personRepository.save(personWithoutId);
+    }
+
+    @Override
+    public Person save(Person person) {
+        return personRepository.save(person);
     }
 
     @Override
@@ -54,6 +61,15 @@ public class PersonServiceImpl implements PersonService {
                         },
                         ContragentDtoEmployee::getPersonPosition
                 ));
+    }
+
+    @Override
+    public Person find(Long id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (!optionalPerson.isPresent()) {
+            throw new NotFoundPersonException();
+        }
+        return optionalPerson.get();
     }
 
     @Override
@@ -95,9 +111,9 @@ public class PersonServiceImpl implements PersonService {
         String oldMiddleName = person.getMiddleName();
         String oldLastName = person.getLastName();
 
-        String newFirstName = StringUtils.isNotEmpty(per.getFirstName()) ? per.getFirstName().toUpperCase() : null;
-        String newMiddleName = StringUtils.isNotEmpty(per.getMiddleName()) ? per.getMiddleName().toUpperCase() : null;
-        String newLastName = StringUtils.isNotEmpty(per.getLastName()) ? per.getLastName().toUpperCase() : null;
+        String newFirstName = ContragentUtils.toUpperCase(per.getFirstName());
+        String newMiddleName = ContragentUtils.toUpperCase(per.getMiddleName());
+        String newLastName = ContragentUtils.toUpperCase(per.getLastName());
 
         String oldFIO = oldFirstName + oldMiddleName + oldLastName;
         String newFIO = newFirstName + newMiddleName + newLastName;
@@ -130,5 +146,32 @@ public class PersonServiceImpl implements PersonService {
             contragent.setIsDeleted(true);
             contragentService.save(contragent);
         });
+    }
+
+    @Override
+    public List<Address> getAddresses(Long id) {
+
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        if (!optionalPerson.isPresent()) {
+            throw new NotFoundPersonException();
+        }
+
+        Person person = optionalPerson.get();
+
+        //берем список записей, которые не помечены как удаленные
+        List<Contragent> contragents = person.getContragents().stream()
+                .filter(contragent -> !contragent.getIsDeleted())
+                .collect(Collectors.toList());
+        return contragents.stream()
+                //меняем ID адреса на ID контрагента, чтобы на фронте можно было удалить запись
+                .map(contragent -> new Address(contragent.getId(),
+                        contragent.getAddress().getIndex(),
+                        contragent.getAddress().getCountry(),
+                        contragent.getAddress().getCity(),
+                        contragent.getAddress().getStreet(),
+                        contragent.getAddress().getHouseNumber(),
+                        contragent.getAddress().getApartmentNumber()
+                ))
+                .collect(Collectors.toList());
     }
 }

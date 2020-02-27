@@ -16,6 +16,14 @@ public interface AddressService {
     List<Address> save(ContragentDtoAddress[] addresses);
 
     /**
+     * Add address to the database
+     *
+     * @param address address
+     * @return address with id
+     */
+    Address save(Address address);
+
+    /**
      * We search for all addresses who meet the search conditions
      *
      * @param postIndex        post index
