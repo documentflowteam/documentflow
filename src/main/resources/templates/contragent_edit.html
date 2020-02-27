@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
 <div th:class="contragent-main-caption">
@@ -20,31 +23,815 @@
     <input type="radio" name="type_person" th:value="company" th:text="'Компания'">
     <input type="radio" name="type_person" th:value="address" th:text="'Адрес'">
     <input type="radio" name="type_person" th:value="employee" th:text="'Контактное лицо'">
-</div>
-<div th:class="contragent-search-panel">
-    <div th:class="contragent-edit-box"></div>
-    <div th:class="contragent-command-button">
-        <button th:name="verify" th:text="'Поиск'"></button>
-        <button th:name="ok" th:text="'Сохранить'" disabled="disabled"></button>
-        <button th:name="cancel" th:text="'Отмена'"></button>
+    <div th:class="contragent-search-panel">
+        <div th:class="contragent-command-button">
+            <button th:name="search" th:text="'Поиск'"></button>
+            <button th:name="cancel" th:text="'Очистить'"></button>
+        </div>
     </div>
 </div>
 <div th:class="contragent-table-found-values"></div>
-
+<div th:class="dialog-person" title="Введите параметры поиска">
+    <label for='first_name_person'>Имя</label><input id='first_name_person' type='text' name='first_name'><br>
+    <label for='middle_name_person'>Отчество</label><input id='middle_name_person' type='text' name='middle_name'><br>
+    <label for='last_name_person'>Фамилия</label><input id='last_name_person' type='text' name='last_name'><br>
+</div>
+<div th:class="dialog-address" title="Введите параметры поиска">
+    <label for='post_index'>Почтовый индекс</label><input id='post_index' type='text' name='post_index'><br>
+    <label for='country'>Страна</label><input id='country' type='text' name='country'><br>
+    <label for='city'>Город</label><input id='city' type='text' name='city'><br>
+    <label for='street'>Улица</label><input id='street' type='text' name='street'><br>
+    <label for='house_number'>Номер дома</label><input id='house_number' type='text' name='house_number'><br>
+    <label for='apartrment_number'>Номер квартиры</label><input id='apartrment_number' type='text'
+                                                                name='apartrment_number'><br>
+</div>
+<div th:class="dialog-company" title="Введите параметры поиска">
+    <label for='name_company'>Наименование компании</label><input id='name_company' type='text' name='name_company'>
+</div>
+<div th:class="dialog-employee" title="Введите параметры поиска">
+    <label for='first_name_employee'>Имя</label><input id='first_name_employee' type='text' name='first_name'><br>
+    <label for='middle_name_employee'>Отчество</label><input id='middle_name_employee' type='text'
+                                                             name='middle_name'><br>
+    <label for='last_name_employee'>Фамилия</label><input id='last_name_employee' type='text' name='last_name'><br>
+    <label for='position_employee'>Должность</label><input id='position_employee' type='text' name='position'><br>
+</div>
+<div th:class="dialog-edit-address" title="Редактирование адреса">
+    <label for='edit_post_index'>Почтовый индекс</label><input id='edit_post_index' type='text' name='post_index'><br>
+    <label for='edit_country'>Страна</label><input id='edit_country' type='text' name='country'><br>
+    <label for='edit_city'>Город</label><input id='edit_city' type='text' name='city'><br>
+    <label for='edit_street'>Улица</label><input id='edit_street' type='text' name='street'><br>
+    <label for='edit_house_number'>Номер дома</label><input id='edit_house_number' type='text' name='house_number'><br>
+    <label for='edit_apartrment_number'>Номер квартиры</label><input id='edit_apartrment_number' type='text'
+                                                                     name='apartrment_number'><br>
+</div>
+<div th:class="dialog-edit-employee" title="Редактирование контактного лица">
+    <label for='edit_first_name_employee'>Имя</label><input id='edit_first_name_employee' type='text' name='first_name'><br>
+    <label for='edit_middle_name_employee'>Отчество</label><input id='edit_middle_name_employee' type='text'
+                                                                  name='middle_name'><br>
+    <label for='edit_last_name_employee'>Фамилия</label><input id='edit_last_name_employee' type='text'
+                                                               name='last_name'><br>
+    <label for='edit_position_employee'>Должность</label><input id='edit_position_employee' type='text' name='position'><br>
+</div>
+<div th:class="dialog-edit-person" title="Редактирование персоны">
+    <label for='edit_first_name_person'>Имя</label><input id='edit_first_name_person' type='text' name='first_name'><br>
+    <label for='edit_middle_name_person'>Отчество</label><input id='edit_middle_name_person' type='text'
+                                                                name='middle_name'><br>
+    <label for='edit_last_name_person'>Фамилия</label><input id='edit_last_name_person' type='text'
+                                                             name='last_name'><br>
+    <table class="table table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Почтовый индекс</th>
+            <th>Страна</th>
+            <th>Город</th>
+            <th>Улица</th>
+            <th>Номер дома</th>
+            <th>Номер квартиры</th>
+            <th>Команда</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div th:class="dialog-add-address-person" title="Добавить адрес">
+    <label for='add_post_index_person'>Почтовый индекс</label><input id='add_post_index_person' type='text'
+                                                                     name='post_index'><br>
+    <label for='add_country_person'>Страна</label><input id='add_country_person' type='text' name='country'><br>
+    <label for='add_city_person'>Город</label><input id='add_city_person' type='text' name='city'><br>
+    <label for='add_street_person'>Улица</label><input id='add_street_person' type='text' name='street'><br>
+    <label for='add_house_number_person'>Номер дома</label><input id='add_house_number_person' type='text'
+                                                                  name='house_number'><br>
+    <label for='add_apartrment_number_person'>Номер квартиры</label><input id='add_apartrment_number_person' type='text'
+                                                                           name='apartrment_number'><br>
+</div>
+<div th:class="dialog-add-address-company" title="Добавить адрес">
+    <label for='add_post_index_company'>Почтовый индекс</label><input id='add_post_index_company' type='text'
+                                                                      name='post_index'><br>
+    <label for='add_country_company'>Страна</label><input id='add_country_company' type='text' name='country'><br>
+    <label for='add_city_company'>Город</label><input id='add_city_company' type='text' name='city'><br>
+    <label for='add_street_company'>Улица</label><input id='add_street_company' type='text' name='street'><br>
+    <label for='add_house_number_company'>Номер дома</label><input id='add_house_number_company' type='text'
+                                                                   name='house_number'><br>
+    <label for='add_apartrment_number_company'>Номер квартиры</label><input id='add_apartrment_number_company'
+                                                                            type='text'
+                                                                            name='apartrment_number'><br>
+</div>
+<div th:class="dialog-add-employee-company" title="Добавить контактное лицо">
+    <label for='add_first_name_employee_company'>Имя</label><input id='add_first_name_employee_company' type='text'
+                                                                   name='first_name'><br>
+    <label for='add_middle_name_employee_company'>Отчество</label><input id='add_middle_name_employee_company'
+                                                                         type='text'
+                                                                         name='middle_name'><br>
+    <label for='add_last_name_employee_company'>Фамилия</label><input id='add_last_name_employee_company' type='text'
+                                                                      name='last_name'><br>
+    <label for='add_position_employee_company'>Должность</label><input id='add_position_employee_company' type='text'
+                                                                       name='position'><br>
+</div>
+<div th:class="dialog-add-employee-address-company" title="Добавить контактное лицо + адрес">
+    <fieldset>
+        <legend>Контактное лицо</legend>
+        <label for='and_first_name_employee_company'>Имя</label><input id='and_first_name_employee_company' type='text'
+                                                                       name='first_name'><br>
+        <label for='and_middle_name_employee_company'>Отчество</label><input id='and_middle_name_employee_company'
+                                                                             type='text'
+                                                                             name='middle_name'><br>
+        <label for='and_last_name_employee_company'>Фамилия</label><input id='and_last_name_employee_company'
+                                                                          type='text'
+                                                                          name='last_name'><br>
+        <label for='and_position_employee_company'>Должность</label><input id='and_position_employee_company'
+                                                                           type='text' name='position'><br>
+    </fieldset>
+    <fieldset>
+        <legend>Адрес</legend>
+        <label for='and_post_index_company'>Почтовый индекс</label><input id='and_post_index_company' type='text'
+                                                                          name='post_index'><br>
+        <label for='and_country_company'>Страна</label><input id='and_country_company' type='text' name='country'><br>
+        <label for='and_city_company'>Город</label><input id='and_city_company' type='text' name='city'><br>
+        <label for='and_street_company'>Улица</label><input id='and_street_company' type='text' name='street'><br>
+        <label for='and_house_number_company'>Номер дома</label><input id='and_house_number_company' type='text'
+                                                                       name='house_number'><br>
+        <label for='and_apartrment_number_company'>Номер квартиры</label><input id='and_apartrment_number_company'
+                                                                                type='text'
+                                                                                name='apartrment_number'><br>
+    </fieldset>
+</div>
+<div th:class="dialog-edit-company" title="Редактирование компании">
+    <label for='edit_name_company'>Имя</label><input id='edit_name_company' type='text' name='first_name'><br>
+    <table class="table-edit-company-address table table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Почтовый индекс</th>
+            <th>Страна</th>
+            <th>Город</th>
+            <th>Улица</th>
+            <th>Номер дома</th>
+            <th>Номер квартиры</th>
+            <th>Команда</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <table class="table-edit-company-employee table table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Фамилия</th>
+            <th>Должность</th>
+            <th>Команда</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
 <script th:type="'text/javascript'">
+
+    let objectTrTable = {};
+
+    $("div.dialog-add-employee-address-company").dialog({
+        autoOpen: false,
+        resizable: false,
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 400,
+        height: 580,
+        buttons: {
+            "Добавить": function () {
+                if ($("div.dialog-add-employee-address-company input#and_last_name_employee_company").val().length === 0 ||
+                    $("div.dialog-add-employee-address-company input#and_country_company").val().length === 0 ||
+                    $("div.dialog-add-employee-address-company input#and_city_company").val().length === 0 ||
+                    $("div.dialog-add-employee-address-company input#and_street_company").val().length === 0
+                ) {
+                    $("div.dialog-add-employee-address-company label[for='and_last_name_employee_company']").css("color", "red");
+                    $("div.dialog-add-employee-address-company label[for='and_country_company']").css("color", "red");
+                    $("div.dialog-add-employee-address-company label[for='and_city_company']").css("color", "red");
+                    $("div.dialog-add-employee-address-company label[for='and_street_company']").css("color", "red");
+                } else {
+                    $("div.dialog-add-employee-address-company label[for='and_last_name_employee_company']").css("color", "black");
+                    $("div.dialog-add-employee-address-company label[for='and_country_company']").css("color", "black");
+                    $("div.dialog-add-employee-address-company label[for='and_city_company']").css("color", "black");
+                    $("div.dialog-add-employee-address-company label[for='and_street_company']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/company/employee_and_address';
+                    let idCompany = $("div.dialog-add-employee-address-company").data("key");
+                    let json_for_send = {
+                        id: idCompany,
+                        address: {
+                            post_index: $("div.dialog-add-employee-address-company #and_post_index_company").val(),
+                            country: $("div.dialog-add-employee-address-company #and_country_company").val(),
+                            city: $("div.dialog-add-employee-address-company #and_city_company").val(),
+                            street: $("div.dialog-add-employee-address-company #and_street_company").val(),
+                            house_number: $("div.dialog-add-employee-address-company #and_house_number_company").val(),
+                            apartrment_number: $("div.dialog-add-employee-address-company #and_apartrment_number_company").val()
+                        },
+                        employee: {
+                            first_name: $("div.dialog-add-employee-address-company #and_first_name_employee_company").val(),
+                            middle_name: $("div.dialog-add-employee-address-company #and_middle_name_employee_company").val(),
+                            last_name: $("div.dialog-add-employee-address-company #and_last_name_employee_company").val(),
+                            position: $("div.dialog-add-employee-address-company #and_position_employee_company").val()
+                        }
+                    };
+                    sendPostRequestAddNewEmployeeAndAddressToCompany(url, json_for_send, $(this));
+                }
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-add-employee-company").data("key", "");
+        },
+    });
+
+    $("div.dialog-add-employee-company").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Добавить": function () {
+                if ($("div.dialog-add-employee-company input#add_last_name_employee_company").val().length === 0) {
+                    $("div.dialog-add-employee-company label[for='add_last_name_employee_company']").css("color", "red");
+                } else {
+                    $("div.dialog-add-employee-company label[for='add_last_name_employee_company']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/company/employee';
+                    let idCompany = $("div.dialog-add-employee-company").data("key");
+                    let json_for_send = {
+                        id: idCompany,
+                        first_name: $("div.dialog-add-employee-company #add_first_name_employee_company").val(),
+                        middle_name: $("div.dialog-add-employee-company #add_middle_name_employee_company").val(),
+                        last_name: $("div.dialog-add-employee-company #add_last_name_employee_company").val(),
+                        position: $("div.dialog-add-employee-company #add_position_employee_company").val()
+                    };
+                    sendPostRequestAddNewEmployeeToCompany(url, json_for_send, $(this));
+                }
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-add-employee-company").data("key", "");
+        },
+    });
+
+    $("div.dialog-add-address-person").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Добавить": function () {
+                if ($("div.dialog-add-address-person input#add_country_person").val().length === 0 ||
+                    $("div.dialog-add-address-person input#add_city_person").val().length === 0 ||
+                    $("div.dialog-add-address-person input#add_street_person").val().length === 0) {
+                    $("div.dialog-add-address-person label[for='add_country_person']").css("color", "red");
+                    $("div.dialog-add-address-person label[for='add_city_person']").css("color", "red");
+                    $("div.dialog-add-address-person label[for='add_street_person']").css("color", "red");
+                } else {
+                    $("div.dialog-add-address-person label[for='add_country_person']").css("color", "black");
+                    $("div.dialog-add-address-person label[for='add_city_person']").css("color", "black");
+                    $("div.dialog-add-address-person label[for='add_street_person']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/person/address';
+                    let idPerson = $("div.dialog-add-address-person").data("key");
+                    let json_for_send = {
+                        id: idPerson,
+                        post_index: $("div.dialog-add-address-person #add_post_index_person").val(),
+                        country: $("div.dialog-add-address-person #add_country_person").val(),
+                        city: $("div.dialog-add-address-person #add_city_person").val(),
+                        street: $("div.dialog-add-address-person #add_street_person").val(),
+                        house_number: $("div.dialog-add-address-person #add_house_number_person").val(),
+                        apartrment_number: $("div.dialog-add-address-person #add_apartrment_number_person").val()
+                    };
+                    sendPostRequestAddNewAddressToPerson(url, json_for_send, $(this));
+                }
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-add-address-person").data("key", "");
+        },
+    });
+
+    $("div.dialog-add-address-company").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Добавить": function () {
+                if ($("div.dialog-add-address-company input#add_country_company").val().length === 0 ||
+                    $("div.dialog-add-address-company input#add_city_company").val().length === 0 ||
+                    $("div.dialog-add-address-company input#add_street_company").val().length === 0) {
+                    $("div.dialog-add-address-company label[for='add_country_company']").css("color", "red");
+                    $("div.dialog-add-address-company label[for='add_city_company']").css("color", "red");
+                    $("div.dialog-add-address-company label[for='add_street_company']").css("color", "red");
+                } else {
+                    $("div.dialog-add-address-company label[for='add_country_company']").css("color", "black");
+                    $("div.dialog-add-address-company label[for='add_city_company']").css("color", "black");
+                    $("div.dialog-add-address-company label[for='add_street_company']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/company/address';
+                    let idCompany = $("div.dialog-add-address-company").data("key");
+                    let json_for_send = {
+                        id: idCompany,
+                        post_index: $("div.dialog-add-address-company #add_post_index_company").val(),
+                        country: $("div.dialog-add-address-company #add_country_company").val(),
+                        city: $("div.dialog-add-address-company #add_city_company").val(),
+                        street: $("div.dialog-add-address-company #add_street_company").val(),
+                        house_number: $("div.dialog-add-address-company #add_house_number_company").val(),
+                        apartrment_number: $("div.dialog-add-address-company #add_apartrment_number_company").val()
+                    };
+                    sendPostRequestAddNewAddressToCompany(url, json_for_send, $(this));
+                }
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-add-address-company").data("key", "");
+        },
+    });
+
+    $("div.dialog-edit-company").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 1000,
+        height: 600,
+        buttons: {
+            "Сохранить": function () {
+                if ($("div.dialog-edit-company input#edit_name_company").val().length === 0) {
+                    $("div.dialog-edit-company label[for='edit_name_company']").css("color", "red");
+                } else {
+                    $("div.dialog-edit-company label[for='edit_name_company']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/company';
+                    let json_for_send = {
+                        id: $("div.dialog-edit-company").data("key"),
+                        name_company: $("div.dialog-edit-company #edit_name_company").val()
+                    };
+                    sendPostRequestToServer(url, json_for_send, $(this), "company");
+                }
+            },
+            "Добавить связку Контакт + Адрес": function () {
+                $("div.dialog-add-employee-address-company").data("key", $("div.dialog-edit-company").data("key"));
+                $("div.dialog-add-employee-address-company").dialog("open");
+            },
+            "Добавить контакт": function () {
+                $("div.dialog-add-employee-company").data("key", $("div.dialog-edit-company").data("key"));
+                $("div.dialog-add-employee-company").dialog("open");
+            },
+            "Добавить адрес": function () {
+                $("div.dialog-add-address-company").data("key", $("div.dialog-edit-company").data("key"));
+                $("div.dialog-add-address-company").dialog("open");
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-edit-company table tbody").empty();
+        },
+    });
+
+    $("div.dialog-edit-person").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 1000,
+        height: 600,
+        buttons: {
+            "Сохранить": function () {
+                if ($("div.dialog-edit-person input#edit_last_name_person").val().length === 0) {
+                    $("div.dialog-edit-person label[for='edit_last_name_person']").css("color", "red");
+                } else {
+                    $("div.dialog-edit-person label[for='edit_last_name_person']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/person';
+                    let json_for_send = {
+                        id: $("div.dialog-edit-person").data("key"),
+                        first_name: $("div.dialog-edit-person #edit_first_name_person").val(),
+                        middle_name: $("div.dialog-edit-person #edit_middle_name_person").val(),
+                        last_name: $("div.dialog-edit-person #edit_last_name_person").val()
+                    };
+                    sendPostRequestToServer(url, json_for_send, $(this), "person");
+                }
+            },
+            "Добавить адрес": function () {
+                $("div.dialog-add-address-person").data("key", $("div.dialog-edit-person").data("key"));
+                $("div.dialog-add-address-person").dialog("open");
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-edit-person table tbody").empty();
+        },
+    });
+
+    $("div.dialog-edit-employee").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Редактировать": function () {
+                if ($("div.dialog-edit-employee input#edit_last_name_employee").val().length === 0) {
+                    $("div.dialog-edit-employee label[for='edit_last_name_employee']").css("color", "red");
+                } else {
+                    $("div.dialog-edit-employee label[for='edit_last_name_employee']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/employee';
+                    let json_for_send = {
+                        id: $("div.dialog-edit-employee").data("key"),
+                        first_name: $("div.dialog-edit-employee #edit_first_name_employee").val(),
+                        middle_name: $("div.dialog-edit-employee #edit_middle_name_employee").val(),
+                        last_name: $("div.dialog-edit-employee #edit_last_name_employee").val(),
+                        position: $("div.dialog-edit-employee #edit_position_employee").val()
+                    };
+                    sendPostRequestToServer(url, json_for_send, $(this), "employee");
+                }
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+    });
+
+    $("div.dialog-edit-address").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: "auto",
+        show: "fold",
+        hide: "blind",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Редактировать": function () {
+                if ($("div.dialog-edit-address input#edit_country").val().length === 0 ||
+                    $("div.dialog-edit-address input#edit_city").val().length === 0 ||
+                    $("div.dialog-edit-address input#edit_street").val().length === 0) {
+                    $("div.dialog-edit-address label[for='edit_country']").css("color", "red");
+                    $("div.dialog-edit-address label[for='edit_city']").css("color", "red");
+                    $("div.dialog-edit-address label[for='edit_street']").css("color", "red");
+                } else {
+                    $("div.dialog-edit-address label[for='edit_country']").css("color", "black");
+                    $("div.dialog-edit-address label[for='edit_city']").css("color", "black");
+                    $("div.dialog-edit-address label[for='edit_street']").css("color", "black");
+                    let url = 'http://localhost:8090/contragent/edit/address';
+                    let json_for_send = {
+                        id: $("div.dialog-edit-address").data("key"),
+                        post_index: $("div.dialog-edit-address #edit_post_index").val(),
+                        country: $("div.dialog-edit-address #edit_country").val(),
+                        city: $("div.dialog-edit-address #edit_city").val(),
+                        street: $("div.dialog-edit-address #edit_street").val(),
+                        house_number: $("div.dialog-edit-address #edit_house_number").val(),
+                        apartrment_number: $("div.dialog-edit-address #edit_apartrment_number").val()
+                    };
+                    sendPostRequestToServer(url, json_for_send, $(this), "address");
+                }
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+    });
+
+    $(document).ready(function () {
+        $("div.dialog-person").dialog({
+            autoOpen: false,
+            resizable: false,
+            height: "auto",
+            show: "fold",
+            hide: "slide",
+            modal: true,
+            width: 400,
+            buttons: {
+                "Отправить запрос": function () {
+                    if ($("div.dialog-person input#last_name_person").val().length === 0) {
+                        $("div.dialog-person label[for='last_name_person']").css("color", "red");
+                    } else {
+                        $("div.dialog-person label[for='last_name_person']").css("color", "black");
+                        let url = 'http://localhost:8090/contragent/edit/person';
+                        $("div.contragent-table-found-values table tbody").empty();
+                        let json_for_send = {
+                            first_name: $("div.dialog-person #first_name_person").val(),
+                            middle_name: $("div.dialog-person #middle_name_person").val(),
+                            last_name: $("div.dialog-person #last_name_person").val()
+                        };
+
+                        $.get(url, json_for_send)
+                            .done(function (data) {
+                                $("div.dialog-person").dialog("close");
+                                $.each(data, function (key, value) {
+                                    $("div.contragent-table-found-values table tbody").append(
+                                        "<tr>" +
+                                        "<td id='id'>" + value.id + "</td>" +
+                                        "<td id='first_name'>" + value.first_name + "</td>" +
+                                        "<td id='middle_name'>" + value.middle_name + "</td>" +
+                                        "<td id='last_name'>" + value.last_name + "</td>" +
+                                        "<td>" +
+                                        "<button name='edit_button'>Редактировать</button>" +
+                                        "<br>" +
+                                        "<button name='delete_button'>Удалить</button>" +
+                                        "</td>" +
+                                        "</tr>"
+                                    );
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                    $("div.dialog-edit-person").data("key", $(this).parent().parent().children("#id").text());
+                                    $("div.dialog-edit-person input[id='edit_first_name_person']").val($(this).parent().parent().children("#first_name").text());
+                                    $("div.dialog-edit-person input[id='edit_middle_name_person']").val($(this).parent().parent().children("#middle_name").text());
+                                    $("div.dialog-edit-person input[id='edit_last_name_person']").val($(this).parent().parent().children("#last_name").text());
+                                    objectTrTable = $(this).parent().parent();
+                                    getAddressesToPerson($(this).parent().parent().children("#id").text());
+                                    $("div.dialog-edit-person").dialog("open");
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                                    if (confirm("Вы действительно хотите удалить запись?")) {
+                                        url = url + '/' + $(this).parent().parent().children("#id").text();
+                                        sendDeleteRequestToServer(url, $(this).parent().parent());
+                                    }
+                                });
+                            })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                            });
+                    }
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            },
+        });
+        $("div.dialog-address").dialog({
+            autoOpen: false,
+            resizable: false,
+            height: "auto",
+            show: "fold",
+            hide: "slide",
+            modal: true,
+            width: 400,
+            buttons: {
+                "Отправить запрос": function () {
+                    if ($("div.dialog-address input#country").val().length === 0 ||
+                        $("div.dialog-address input#city").val().length === 0 ||
+                        $("div.dialog-address input#street").val().length === 0) {
+                        $("div.dialog-address label[for='country']").css("color", "red");
+                        $("div.dialog-address label[for='city']").css("color", "red");
+                        $("div.dialog-address label[for='street']").css("color", "red");
+                    } else {
+                        $("div.dialog-address label[for='country']").css("color", "black");
+                        $("div.dialog-address label[for='city']").css("color", "black");
+                        $("div.dialog-address label[for='street']").css("color", "black");
+                        let url = 'http://localhost:8090/contragent/edit/address';
+                        $("div.contragent-table-found-values table tbody").empty();
+                        let json_for_send = {
+                            post_index: $("div.dialog-address #post_index").val(),
+                            country: $("div.dialog-address #country").val(),
+                            city: $("div.dialog-address #city").val(),
+                            street: $("div.dialog-address #street").val(),
+                            house_number: $("div.dialog-address #house_number").val(),
+                            apartrment_number: $("div.dialog-address #apartrment_number").val()
+                        };
+                        $.get(url, json_for_send)
+                            .done(function (data) {
+                                $("div.dialog-address").dialog("close");
+                                $.each(data, function (key, value) {
+                                    $("div.contragent-table-found-values table tbody").append(
+                                        "<tr>" +
+                                        "<td id='id'>" + value.id + "</td>" +
+                                        "<td id='post_index'>" + value.index + "</td>" +
+                                        "<td id='country'>" + value.country + "</td>" +
+                                        "<td id='city'>" + value.city + "</td>" +
+                                        "<td id='street'>" + value.street + "</td>" +
+                                        "<td id='house_number'>" + value.house_number + "</td>" +
+                                        "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
+                                        "<td>" +
+                                        "<button name='edit_button'>Редактировать</button>" +
+                                        "<br>" +
+                                        "<button name='delete_button'>Удалить</button>" +
+                                        "</td>" +
+                                        "</tr>"
+                                    );
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                    $("div.dialog-edit-address").data("key", $(this).parent().parent().children("#id").text());
+                                    $("div.dialog-edit-address input[id='edit_post_index']").val($(this).parent().parent().children("#post_index").text());
+                                    $("div.dialog-edit-address input[id='edit_country']").val($(this).parent().parent().children("#country").text());
+                                    $("div.dialog-edit-address input[id='edit_city']").val($(this).parent().parent().children("#city").text());
+                                    $("div.dialog-edit-address input[id='edit_street']").val($(this).parent().parent().children("#street").text());
+                                    $("div.dialog-edit-address input[id='edit_house_number']").val($(this).parent().parent().children("#house_number").text());
+                                    $("div.dialog-edit-address input[id='edit_apartrment_number']").val($(this).parent().parent().children("#apartrment_number").text());
+                                    objectTrTable = $(this).parent().parent();
+                                    $("div.dialog-edit-address").dialog("open");
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                                    if (confirm("Вы действительно хотите удалить запись?")) {
+                                        url = url + '/' + $(this).parent().parent().children("#id").text();
+                                        sendDeleteRequestToServer(url, $(this).parent().parent());
+                                    }
+                                });
+                            })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                            });
+                    }
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            },
+        });
+        $("div.dialog-company").dialog({
+            autoOpen: false,
+            resizable: false,
+            height: "auto",
+            show: "fold",
+            hide: "slide",
+            modal: true,
+            width: 400,
+            buttons: {
+                "Отправить запрос": function () {
+                    if ($("div.dialog-company input#name_company").val().length === 0) {
+                        $("div.dialog-company label[for='name_company']").css("color", "red");
+                    } else {
+                        $("div.dialog-company label[for='name_company']").css("color", "black");
+                        let url = 'http://localhost:8090/contragent/edit/company';
+                        $("div.contragent-table-found-values table tbody").empty();
+                        let json_for_send = {
+                            name_company: $("div.dialog-company #name_company").val()
+                        };
+                        $.get(url, json_for_send)
+                            .done(function (data) {
+                                $("div.dialog-company").dialog("close");
+                                $.each(data, function (key, value) {
+                                    $("div.contragent-table-found-values table tbody").append(
+                                        "<tr>" +
+                                        "<td id='id'>" + value.id + "</td>" +
+                                        "<td id='name_company'>" + value.name_company + "</td>" +
+                                        "<td>" +
+                                        "<button name='edit_button'>Редактировать</button>" +
+                                        "<br>" +
+                                        "<button name='delete_button'>Удалить</button>" +
+                                        "</td>" +
+                                        "</tr>"
+                                    );
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                    $("div.dialog-edit-company").data("key", $(this).parent().parent().children("#id").text());
+                                    $("div.dialog-edit-company input[id='edit_name_company']").val($(this).parent().parent().children("#name_company").text());
+                                    objectTrTable = $(this).parent().parent();
+                                    getAddressesToCompany($(this).parent().parent().children("#id").text());
+                                    getEmployeeToCompany($(this).parent().parent().children("#id").text());
+                                    $("div.dialog-edit-company").dialog("open");
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                                    if (confirm("Вы действительно хотите удалить запись?")) {
+                                        url = url + '/' + $(this).parent().parent().children("#id").text();
+                                        sendDeleteRequestToServer(url, $(this).parent().parent());
+                                    }
+                                });
+                            })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                            });
+                    }
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            },
+        });
+        $("div.dialog-employee").dialog({
+            autoOpen: false,
+            resizable: false,
+            height: "auto",
+            show: "fold",
+            hide: "slide",
+            modal: true,
+            width: 400,
+            buttons: {
+                "Отправить запрос": function () {
+                    if ($("div.dialog-employee input#last_name_employee").val().length === 0) {
+                        $("div.dialog-employee label[for='last_name_employee']").css("color", "red");
+                    } else {
+                        $("div.dialog-employee label[for='last_name_employee']").css("color", "black");
+                        let url = 'http://localhost:8090/contragent/edit/employee';
+                        $("div.contragent-table-found-values table tbody").empty();
+                        let json_for_send = {
+                            first_name: $("div.dialog-employee #first_name_employee").val(),
+                            middle_name: $("div.dialog-employee #middle_name_employee").val(),
+                            last_name: $("div.dialog-employee #last_name_employee").val(),
+                            position: $("div.dialog-employee #position_employee").val()
+                        };
+                        $.get(url, json_for_send)
+                            .done(function (data) {
+                                $("div.dialog-employee").dialog("close");
+                                $.each(data, function (key, value) {
+                                    $("div.contragent-table-found-values table tbody").append(
+                                        "<tr>" +
+                                        "<td id='id'>" + value.id + "</td>" +
+                                        "<td id='first_name'>" + value.first_name + "</td>" +
+                                        "<td id='middle_name'>" + value.middle_name + "</td>" +
+                                        "<td id='last_name'>" + value.last_name + "</td>" +
+                                        "<td id='position'>" + value.position + "</td>" +
+                                        "<td>" +
+                                        "<button name='edit_button'>Редактировать</button>" +
+                                        "<br>" +
+                                        "<button name='delete_button'>Удалить</button>" +
+                                        "</td>" +
+                                        "</tr>"
+                                    );
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                    $("div.dialog-edit-employee").data("key", $(this).parent().parent().children("#id").text());
+                                    $("div.dialog-edit-employee input[id='edit_first_name_employee']").val($(this).parent().parent().children("#first_name").text());
+                                    $("div.dialog-edit-employee input[id='edit_middle_name_employee']").val($(this).parent().parent().children("#middle_name").text());
+                                    $("div.dialog-edit-employee input[id='edit_last_name_employee']").val($(this).parent().parent().children("#last_name").text());
+                                    $("div.dialog-edit-employee input[id='edit_position_employee']").val($(this).parent().parent().children("#position").text());
+                                    objectTrTable = $(this).parent().parent();
+                                    $("div.dialog-edit-employee").dialog("open");
+                                });
+
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
+                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
+                                    if (confirm("Вы действительно хотите удалить запись?")) {
+                                        url = url + '/' + $(this).parent().parent().children("#id").text();
+                                        sendDeleteRequestToServer(url, $(this).parent().parent());
+                                    }
+                                });
+                            })
+                            .fail(function (jqXHR, textStatus, errorThrown) {
+                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                            });
+                    }
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            },
+        });
+        $("div.contragent-command-button button[name='search']").click(function () {
+            switch ($("div.contragent-list-radio-buttons input[type='radio']:checked").val()) {
+                case "person":
+                    $("div.dialog-person").dialog("open");
+                    break;
+                case "company":
+                    $("div.dialog-company").dialog("open");
+                    break;
+                case "address":
+                    $("div.dialog-address").dialog("open");
+                    break;
+                case "employee":
+                    $("div.dialog-employee").dialog("open");
+                    break;
+            }
+            ;
+        });
+    });
+
     $("div.contragent-list-radio-buttons input[type='radio']").on('click', function () {
-        const mainInputs = $("div.contragent-edit-box");
         const tableHeader = $("div.contragent-table-found-values");
         tableHeader.empty();
-        mainInputs.empty();
-        disabledCommandButton();
 
         switch ($(this).val()) {
             case "person":
-                mainInputs.append(
-                    "<label for='first_name'>Имя</label><input id='first_name' type='text' name='first_name'><br>" +
-                    "<label for='middle_name'>Отчество</label><input id='middle_name' type='text' name='middle_name'><br>" +
-                    "<label for='last_name'>Фамилия</label><input id='last_name' type='text' name='last_name'><br>");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -61,8 +848,6 @@
                     "</table>");
                 break;
             case "company":
-                mainInputs.append(
-                    "<label for='name_company'>Наименование компании</label><input id='name_company' type='text' name='name_company'>");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -77,13 +862,6 @@
                     "</table>");
                 break;
             case "address":
-                mainInputs.append(
-                    "<label for='post_index'>Почтовый индекс</label><input id='post_index' type='text' name='post_index'><br>" +
-                    "<label for='country'>Страна</label><input id='country' type='text' name='country'><br>" +
-                    "<label for='city'>Город</label><input id='city' type='text' name='city'><br>" +
-                    "<label for='street'>Улица</label><input id='street' type='text' name='street'><br>" +
-                    "<label for='house_number'>Номер дома</label><input id='house_number' type='text' name='house_number'><br>" +
-                    "<label for='apartrment_number'>Номер квартиры</label><input id='apartrment_number' type='text' name='apartrment_number'><br>");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -103,11 +881,6 @@
                     "</table>");
                 break;
             case "employee":
-                mainInputs.append(
-                    "<label for='first_name'>Имя</label><input id='first_name' type='text' name='first_name'><br>" +
-                    "<label for='middle_name'>Отчество</label><input id='middle_name' type='text' name='middle_name'><br>" +
-                    "<label for='last_name'>Фамилия</label><input id='last_name' type='text' name='last_name'><br>" +
-                    "<label for='position'>Должность</label><input id='position' type='text' name='position'><br>");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -124,16 +897,13 @@
                     "    </tbody>" +
                     "</table>");
                 break;
-        };
+        }
+        ;
         $("div.contragent-search-panel").css('display', 'flex');
     });
 
     $("div.contragent-command-button button[name='cancel']").on('click', function () {
-        disabledCommandButton();
         $("div.contragent-table-found-values table tbody").empty();
-        $.each($("div.contragent-edit-box input"), function (key, value) {
-            value.value = '';
-        });
     });
 
     $("div.contragent-command-button button[name='ok']").on('click', function () {
@@ -152,18 +922,6 @@
                 };
                 sendPostRequestToServer(url, json_for_send);
                 break;
-            case "address":
-                json_for_send = {
-                    id: $("div.contragent-edit-box").data("key"),
-                    post_index: $("div.contragent-edit-box #post_index").val(),
-                    country: $("div.contragent-edit-box #country").val(),
-                    city: $("div.contragent-edit-box #city").val(),
-                    street: $("div.contragent-edit-box #street").val(),
-                    house_number: $("div.contragent-edit-box #house_number").val(),
-                    apartrment_number: $("div.contragent-edit-box #apartrment_number").val()
-                };
-                sendPostRequestToServer(url, json_for_send);
-                break;
             case "company":
                 json_for_send = {
                     id: $("div.contragent-edit-box").data("key"),
@@ -171,215 +929,10 @@
                 };
                 sendPostRequestToServer(url, json_for_send);
                 break;
-            case "employee":
-                json_for_send = {
-                    id: $("div.contragent-edit-box").data("key"),
-                    first_name: $("div.contragent-edit-box #first_name").val(),
-                    middle_name: $("div.contragent-edit-box #middle_name").val(),
-                    last_name: $("div.contragent-edit-box #last_name").val(),
-                    position: $("div.contragent-edit-box #position").val()
-                };
-                sendPostRequestToServer(url, json_for_send);
-                break;
         }
     });
 
-    $("div.contragent-command-button button[name='verify']").on('click', function () {
-
-        let typeEntity = $("div.contragent-list-radio-buttons input:checked").val();
-        let url = 'http://localhost:8090/contragent/edit/' + typeEntity;
-        let json_for_send;
-
-        $("div.contragent-table-found-values table tbody").empty();
-        $("div.contragent-command-button button[name='ok']").attr("disabled", "disabled");
-
-        switch (typeEntity) {
-            case "person":
-                json_for_send = {
-                    first_name: $("div.contragent-edit-box #first_name").val(),
-                    middle_name: $("div.contragent-edit-box #middle_name").val(),
-                    last_name: $("div.contragent-edit-box #last_name").val()
-                };
-
-                $.get(url, json_for_send)
-                    .done(function (data) {
-                        $.each(data, function (key, value) {
-                            $("div.contragent-table-found-values table tbody").append(
-                                "<tr>" +
-                                "<td id='id'>" + value.id + "</td>" +
-                                "<td id='first_name'>" + value.first_name + "</td>" +
-                                "<td id='middle_name'>" + value.middle_name + "</td>" +
-                                "<td id='last_name'>" + value.last_name + "</td>" +
-                                "<td>" +
-                                "<button name='edit_button'>Редактировать</button>" +
-                                "<br>" +
-                                "<button name='delete_button'>Удалить</button>" +
-                                "</td>" +
-                                "</tr>"
-                            );
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
-                            $("div.contragent-edit-box").data("key", $(this).parent().parent().children("#id").text());
-                            $("div.contragent-edit-box input[id='first_name']").val($(this).parent().parent().children("#first_name").text());
-                            $("div.contragent-edit-box input[id='middle_name']").val($(this).parent().parent().children("#middle_name").text());
-                            $("div.contragent-edit-box input[id='last_name']").val($(this).parent().parent().children("#last_name").text());
-                            $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                            if (confirm("Вы действительно хотите удалить запись?")) {
-                                url = url + '/' + $(this).parent().parent().children("#id").text();
-                                sendDeleteRequestToServer(url, $(this).parent().parent());
-                            }
-                        });
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
-                break;
-            case "address":
-                json_for_send = {
-                    post_index: $("div.contragent-edit-box #post_index").val(),
-                    country: $("div.contragent-edit-box #country").val(),
-                    city: $("div.contragent-edit-box #city").val(),
-                    street: $("div.contragent-edit-box #street").val(),
-                    house_number: $("div.contragent-edit-box #house_number").val(),
-                    apartrment_number: $("div.contragent-edit-box #apartrment_number").val()
-                };
-
-                $.get(url, json_for_send)
-                    .done(function (data) {
-                        $.each(data, function (key, value) {
-                            $("div.contragent-table-found-values table tbody").append(
-                                "<tr>" +
-                                "<td id='id'>" + value.id + "</td>" +
-                                "<td id='post_index'>" + value.index + "</td>" +
-                                "<td id='country'>" + value.country + "</td>" +
-                                "<td id='city'>" + value.city + "</td>" +
-                                "<td id='street'>" + value.street + "</td>" +
-                                "<td id='house_number'>" + value.house_number + "</td>" +
-                                "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
-                                "<td>" +
-                                "<button name='edit_button'>Редактировать</button>" +
-                                "<br>" +
-                                "<button name='delete_button'>Удалить</button>" +
-                                "</td>" +
-                                "</tr>"
-                            );
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
-                            $("div.contragent-edit-box").data("key", $(this).parent().parent().children("#id").text());
-                            $("div.contragent-edit-box input[id='post_index']").val($(this).parent().parent().children("#post_index").text());
-                            $("div.contragent-edit-box input[id='country']").val($(this).parent().parent().children("#country").text());
-                            $("div.contragent-edit-box input[id='city']").val($(this).parent().parent().children("#city").text());
-                            $("div.contragent-edit-box input[id='street']").val($(this).parent().parent().children("#street").text());
-                            $("div.contragent-edit-box input[id='house_number']").val($(this).parent().parent().children("#house_number").text());
-                            $("div.contragent-edit-box input[id='apartrment_number']").val($(this).parent().parent().children("#apartrment_number").text());
-                            $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                            if (confirm("Вы действительно хотите удалить запись?")) {
-                                url = url + '/' + $(this).parent().parent().children("#id").text();
-                                sendDeleteRequestToServer(url, $(this).parent().parent());
-                            }
-                        });
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
-
-                break;
-            case "company":
-                json_for_send = {
-                    name_company: $("div.contragent-edit-box #name_company").val()
-                };
-                $.get(url, json_for_send)
-                    .done(function (data) {
-                        $.each(data, function (key, value) {
-                            $("div.contragent-table-found-values table tbody").append(
-                                "<tr>" +
-                                "<td id='id'>" + value.id + "</td>" +
-                                "<td id='name_company'>" + value.name_company + "</td>" +
-                                "<td>" +
-                                "<button name='edit_button'>Редактировать</button>" +
-                                "<br>" +
-                                "<button name='delete_button'>Удалить</button>" +
-                                "</td>" +
-                                "</tr>"
-                            );
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
-                            $("div.contragent-edit-box").data("key", $(this).parent().parent().children("#id").text());
-                            $("div.contragent-edit-box input[id='name_company']").val($(this).parent().parent().children("#name_company").text());
-                            $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                            if (confirm("Вы действительно хотите удалить запись?")) {
-                                url = url + '/' + $(this).parent().parent().children("#id").text();
-                                sendDeleteRequestToServer(url, $(this).parent().parent());
-                            }
-                        });
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
-                break;
-            case "employee":
-                json_for_send = {
-                    first_name: $("div.contragent-edit-box #first_name").val(),
-                    middle_name: $("div.contragent-edit-box #middle_name").val(),
-                    last_name: $("div.contragent-edit-box #last_name").val(),
-                    position: $("div.contragent-edit-box #position").val()
-                };
-                $.get(url, json_for_send)
-                    .done(function (data) {
-                        $.each(data, function (key, value) {
-                            $("div.contragent-table-found-values table tbody").append(
-                                "<tr>" +
-                                "<td id='id'>" + value.id + "</td>" +
-                                "<td id='first_name'>" + value.first_name + "</td>" +
-                                "<td id='middle_name'>" + value.middle_name + "</td>" +
-                                "<td id='last_name'>" + value.last_name + "</td>" +
-                                "<td id='position'>" + value.position + "</td>" +
-                                "<td>" +
-                                "<button name='edit_button'>Редактировать</button>" +
-                                "<br>" +
-                                "<button name='delete_button'>Удалить</button>" +
-                                "</td>" +
-                                "</tr>"
-                            );
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
-                            $("div.contragent-edit-box").data("key", $(this).parent().parent().children("#id").text());
-                            $("div.contragent-edit-box input[id='first_name']").val($(this).parent().parent().children("#first_name").text());
-                            $("div.contragent-edit-box input[id='middle_name']").val($(this).parent().parent().children("#middle_name").text());
-                            $("div.contragent-edit-box input[id='last_name']").val($(this).parent().parent().children("#last_name").text());
-                            $("div.contragent-edit-box input[id='position']").val($(this).parent().parent().children("#position").text());
-                            $("div.contragent-command-button button[name='ok']").removeAttr("disabled");
-                        });
-
-                        $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                            if (confirm("Вы действительно хотите удалить запись?")) {
-                                url = url + '/' + $(this).parent().parent().children("#id").text();
-                                sendDeleteRequestToServer(url, $(this).parent().parent());
-                            }
-                        });
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(jQuery.parseJSON(jqXHR.responseText).message);
-                    });
-
-                break;
-        }
-    });
-
-    function sendPostRequestToServer(url, json_for_send) {
+    function sendPostRequestToServer(url, json_for_send, dialogWindow, typeEntity) {
         $.ajax({
             method: "POST",
             beforeSend: function (xhr) {
@@ -392,6 +945,9 @@
             data: JSON.stringify(json_for_send),
             success: function () {
                 alert("Данные успешно обновлены");
+                dialogWindow.dialog("close");
+                updateTable(typeEntity, json_for_send);
+
             },
             error: function (error) {
                 alert("Error")
@@ -417,9 +973,324 @@
         });
     }
 
-    function disabledCommandButton() {
-        $("div.contragent-edit-box").data("key", "");
-        $("div.contragent-command-button button[name='ok']").attr("disabled", "disabled");
+    function sendPostRequestAddNewAddressToPerson(url, json_for_send, dialogWindow) {
+        $.ajax({
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: url,
+            datatype: 'application/json',
+            contentType: 'application/json',
+            data: JSON.stringify(json_for_send),
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $("div.dialog-edit-person table tbody").append(
+                    "<tr>" +
+                    "<td id='id'>" + data.id + "</td>" +
+                    "<td id='post_index'>" + data.index + "</td>" +
+                    "<td id='country'>" + data.country + "</td>" +
+                    "<td id='city'>" + data.city + "</td>" +
+                    "<td id='street'>" + data.street + "</td>" +
+                    "<td id='house_number'>" + data.house_number + "</td>" +
+                    "<td id='apartrment_number'>" + data.apartrment_number + "</td>" +
+                    "<td>" +
+                    "<button name='delete_address_person'>Удалить</button>" +
+                    "</td>" +
+                    "</tr>"
+                );
+                $("div.dialog-edit-person table tbody tr td button[name='delete_address_person']").off('click');
+                $("div.dialog-edit-person table tbody tr td button[name='delete_address_person']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/person/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+                dialogWindow.dialog("close");
+            });
+    }
+
+    function sendPostRequestAddNewAddressToCompany(url, json_for_send, dialogWindow) {
+        $.ajax({
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: url,
+            datatype: 'application/json',
+            contentType: 'application/json',
+            data: JSON.stringify(json_for_send),
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $("div.dialog-edit-company table.table-edit-company-address tbody").append(
+                    "<tr>" +
+                    "<td id='id'>" + data.id + "</td>" +
+                    "<td id='post_index'>" + data.index + "</td>" +
+                    "<td id='country'>" + data.country + "</td>" +
+                    "<td id='city'>" + data.city + "</td>" +
+                    "<td id='street'>" + data.street + "</td>" +
+                    "<td id='house_number'>" + data.house_number + "</td>" +
+                    "<td id='apartrment_number'>" + data.apartrment_number + "</td>" +
+                    "<td>" +
+                    "<button name='delete_address_company'>Удалить</button>" +
+                    "</td>" +
+                    "</tr>"
+                );
+                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").off('click');
+                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+                dialogWindow.dialog("close");
+            });
+    }
+
+    function sendPostRequestAddNewEmployeeToCompany(url, json_for_send, dialogWindow) {
+        $.ajax({
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: url,
+            datatype: 'application/json',
+            contentType: 'application/json',
+            data: JSON.stringify(json_for_send),
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $("div.dialog-edit-company table.table-edit-company-employee tbody").append(
+                    "<tr>" +
+                    "<td id='id'>" + data.id + "</td>" +
+                    "<td id='first_name'>" + data.first_name + "</td>" +
+                    "<td id='middle_name'>" + data.middle_name + "</td>" +
+                    "<td id='last_name'>" + data.last_name + "</td>" +
+                    "<td id='position'>" + data.position + "</td>" +
+                    "<td>" +
+                    "<button name='delete_employee_company'>Удалить</button>" +
+                    "</td>" +
+                    "</tr>"
+                );
+                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").off('click');
+                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+                dialogWindow.dialog("close");
+            });
+    }
+
+    function sendPostRequestAddNewEmployeeAndAddressToCompany(url, json_for_send, dialogWindow) {
+        $.ajax({
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: url,
+            datatype: 'application/json',
+            contentType: 'application/json',
+            data: JSON.stringify(json_for_send),
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $("div.dialog-edit-company table.table-edit-company-employee tbody").append(
+                    "<tr>" +
+                    "<td id='id'>" + data.employee.id + "</td>" +
+                    "<td id='first_name'>" + data.employee.first_name + "</td>" +
+                    "<td id='middle_name'>" + data.employee.middle_name + "</td>" +
+                    "<td id='last_name'>" + data.employee.last_name + "</td>" +
+                    "<td id='position'>" + data.employee.position + "</td>" +
+                    "<td>" +
+                    "<button name='delete_employee_company'>Удалить</button>" +
+                    "</td>" +
+                    "</tr>"
+                );
+                $("div.dialog-edit-company table.table-edit-company-address tbody").append(
+                    "<tr>" +
+                    "<td id='id'>" + data.address.id + "</td>" +
+                    "<td id='post_index'>" + data.address.index + "</td>" +
+                    "<td id='country'>" + data.address.country + "</td>" +
+                    "<td id='city'>" + data.address.city + "</td>" +
+                    "<td id='street'>" + data.address.street + "</td>" +
+                    "<td id='house_number'>" + data.address.house_number + "</td>" +
+                    "<td id='apartrment_number'>" + data.address.apartrment_number + "</td>" +
+                    "<td>" +
+                    "<button name='delete_address_company'>Удалить</button>" +
+                    "</td>" +
+                    "</tr>"
+                );
+                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").off('click');
+                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+                dialogWindow.dialog("close");
+                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").off('click');
+                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+                dialogWindow.dialog("close");
+            });
+    }
+
+    function getAddressesToPerson(idPerson) {
+        $.ajax({
+            method: "GET",
+            url: 'http://localhost:8090/contragent/edit/person/' + idPerson + "/address",
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $.each(data, function (key, value) {
+                    $("div.dialog-edit-person table tbody").append(
+                        "<tr>" +
+                        "<td id='id'>" + value.id + "</td>" +
+                        "<td id='post_index'>" + value.index + "</td>" +
+                        "<td id='country'>" + value.country + "</td>" +
+                        "<td id='city'>" + value.city + "</td>" +
+                        "<td id='street'>" + value.street + "</td>" +
+                        "<td id='house_number'>" + value.house_number + "</td>" +
+                        "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
+                        "<td>" +
+                        "<button name='delete_address_person'>Удалить</button>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                });
+
+                $("div.dialog-edit-person table tbody tr td button[name='delete_address_person']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/person/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+            })
+    };
+
+    function getAddressesToCompany(idCompany) {
+        $.ajax({
+            method: "GET",
+            url: 'http://localhost:8090/contragent/edit/company/' + idCompany + "/address",
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $.each(data, function (key, value) {
+                    $("div.dialog-edit-company table.table-edit-company-address tbody").append(
+                        "<tr>" +
+                        "<td id='id'>" + value.id + "</td>" +
+                        "<td id='post_index'>" + value.index + "</td>" +
+                        "<td id='country'>" + value.country + "</td>" +
+                        "<td id='city'>" + value.city + "</td>" +
+                        "<td id='street'>" + value.street + "</td>" +
+                        "<td id='house_number'>" + value.house_number + "</td>" +
+                        "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
+                        "<td>" +
+                        "<button name='delete_address_company'>Удалить</button>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                });
+
+                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+            })
+    };
+
+    function getEmployeeToCompany(idCompany) {
+        $.ajax({
+            method: "GET",
+            url: 'http://localhost:8090/contragent/edit/company/' + idCompany + "/employee",
+            success: function () {
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        })
+            .done(function (data) {
+                $.each(data, function (key, value) {
+                    $("div.dialog-edit-company table.table-edit-company-employee tbody").append(
+                        "<tr>" +
+                        "<td id='id'>" + value.id + "</td>" +
+                        "<td id='first_name'>" + value.first_name + "</td>" +
+                        "<td id='middle_name'>" + value.middle_name + "</td>" +
+                        "<td id='last_name'>" + value.last_name + "</td>" +
+                        "<td id='position'>" + value.position + "</td>" +
+                        "<td>" +
+                        "<button name='delete_employee_company'>Удалить</button>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                });
+
+                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").on('click', function () {
+                    if (confirm("Вы действительно хотите удалить запись?")) {
+                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
+                    }
+                });
+            })
+    };
+
+    function updateTable(typeEntity, objectToUpdateTable) {
+        switch (typeEntity) {
+            case "address":
+                objectTrTable.children("#post_index").text(objectToUpdateTable.post_index);
+                objectTrTable.children("#country").text(objectToUpdateTable.country);
+                objectTrTable.children("#city").text(objectToUpdateTable.city);
+                objectTrTable.children("#street").text(objectToUpdateTable.street);
+                objectTrTable.children("#house_number").text(objectToUpdateTable.house_number);
+                objectTrTable.children("#apartrment_number").text(objectToUpdateTable.apartrment_number);
+                break;
+            case "employee":
+                objectTrTable.children("#first_name").text(objectToUpdateTable.first_name);
+                objectTrTable.children("#middle_name").text(objectToUpdateTable.middle_name);
+                objectTrTable.children("#last_name").text(objectToUpdateTable.last_name);
+                objectTrTable.children("#position").text(objectToUpdateTable.position);
+                break;
+            case "person":
+                objectTrTable.children("#first_name").text(objectToUpdateTable.first_name);
+                objectTrTable.children("#middle_name").text(objectToUpdateTable.middle_name);
+                objectTrTable.children("#last_name").text(objectToUpdateTable.last_name);
+                break;
+            case "company":
+                objectTrTable.children("#name_company").text(objectToUpdateTable.name_company);
+                break;
+            default:
+                break;
+        }
     }
 </script>
 </body>
