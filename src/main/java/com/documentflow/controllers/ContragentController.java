@@ -11,7 +11,7 @@ import com.documentflow.services.AddressService;
 import com.documentflow.services.ContragentService;
 import com.documentflow.services.OrganizationService;
 import com.documentflow.services.PersonService;
-import com.documentflow.services.exceptions.NotFoundIdException;
+import com.documentflow.exceptions.NotFoundIdException;
 import com.documentflow.utils.ContragentUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
