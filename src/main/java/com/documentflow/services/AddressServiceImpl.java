@@ -2,10 +2,10 @@ package com.documentflow.services;
 
 import com.documentflow.entities.Address;
 import com.documentflow.entities.dto.ContragentDtoAddress;
+import com.documentflow.exceptions.NotFoundAddressException;
+import com.documentflow.exceptions.NotFoundIdException;
 import com.documentflow.repositories.AddressRepository;
 import com.documentflow.repositories.specifications.AddressSpecifications;
-import com.documentflow.services.exceptions.NotFoundAddressException;
-import com.documentflow.services.exceptions.NotFoundIdException;
 import com.documentflow.utils.ContragentUtils;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
