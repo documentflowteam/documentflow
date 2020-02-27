@@ -62,3 +62,7 @@
     margin: auto;
 }
 /*end login*/
+
+.inline {
+    display: flex;
+}
