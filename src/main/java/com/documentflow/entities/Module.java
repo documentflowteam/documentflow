@@ -5,19 +5,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
-@Table(name = "sys_task_types")
-public class TaskType implements Serializable {
-    private static final long serialVersionUID = -3132602854653537863L;
-
+@NoArgsConstructor
+@Table(name = "sys_modules")
+public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
 
     @Column(name = "name")
@@ -26,4 +23,6 @@ public class TaskType implements Serializable {
     @Column(name = "business_key")
     private String businessKey;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Role> roles;
 }
