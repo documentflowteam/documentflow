@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="person_parameters">
+    <label th:class='first_name'>Имя</label><input th:class='first_name' type='text' name='first_name'><br>
+    <label th:class='middle_name'>Отчество</label><input th:class='middle_name' type='text' name='middle_name'><br>
+    <label th:class='last_name'>Фамилия</label><input th:class='last_name' type='text' name='last_name'><br>
+</div>
+<div th:fragment="address">
+    <label th:class='post_index'>Почтовый индекс</label><input th:class='post_index' type='text' name='post_index'><br>
+    <label th:class='country'>Страна</label><input th:class='country' type='text' name='country'><br>
+    <label th:class='city'>Город</label><input th:class='city' type='text' name='city'><br>
+    <label th:class='street'>Улица</label><input th:class='street' type='text' name='street'><br>
+    <label th:class='house_number'>Номер дома</label><input th:class='house_number' type='text' name='house_number'><br>
+    <label th:class='apartrment_number'>Номер квартиры</label><input th:class='apartrment_number' type='text'
+                                                                     name='apartrment_number'><br>
+</div>
+<div th:fragment="company_parameters">
+    <label th:class='name_company'>Наименование компании</label><input th:class='name_company' type='text' name='name_company'>
+</div>
+<div th:fragment="employee">
+    <label th:class='first_name'>Имя</label><input th:class='first_name' type='text' name='first_name'><br>
+    <label th:class='middle_name'>Отчество</label><input th:class='middle_name' type='text'
+                                                         name='middle_name'><br>
+    <label th:class='last_name'>Фамилия</label><input th:class='last_name' type='text' name='last_name'><br>
+    <label th:class='position'>Должность</label><input th:class='position' type='text' name='position'><br>
+</div>
+<div th:fragment="table-address">
+    <table class="table-edit-address table table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Почтовый индекс</th>
+            <th>Страна</th>
+            <th>Город</th>
+            <th>Улица</th>
+            <th>Номер дома</th>
+            <th>Номер квартиры</th>
+            <th>Команда</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div th:fragment="table-employee">
+    <table class="table-edit-employee table table-bordered table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Фамилия</th>
+            <th>Должность</th>
+            <th>Команда</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

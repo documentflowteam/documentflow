@@ -55,13 +55,13 @@ public class AddressServiceImpl implements AddressService {
             spec = spec.and(AddressSpecifications.postIndexEq(postIndex));
         }
         if (!StringUtils.isEmpty(country)) {
-            spec = spec.and(AddressSpecifications.countryEq(country));
+            spec = spec.and(AddressSpecifications.countryEq(country.toUpperCase()));
         }
         if (!StringUtils.isEmpty(city)) {
-            spec = spec.and(AddressSpecifications.cityEq(city));
+            spec = spec.and(AddressSpecifications.cityEq(city.toUpperCase()));
         }
         if (!StringUtils.isEmpty(street)) {
-            spec = spec.and(AddressSpecifications.streetEq(street));
+            spec = spec.and(AddressSpecifications.streetEq(street.toUpperCase()));
         }
         if (!ObjectUtils.isEmpty(houseNumber)) {
             spec = spec.and(AddressSpecifications.houseNumberEq(houseNumber));
@@ -75,6 +75,35 @@ public class AddressServiceImpl implements AddressService {
                             .anyMatch(contragent -> !contragent.getIsDeleted());
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Address strongFind(Address address) {
+        Specification<Address> spec = Specification.where(null);
+        if (!ObjectUtils.isEmpty(address.getIndex())) {
+            spec = spec.and(AddressSpecifications.postIndexEq(address.getIndex().toString()));
+        } else {
+            spec = spec.and(AddressSpecifications.postIndexIsNull());
+        }
+        if (!StringUtils.isEmpty(address.getCountry())) {
+            spec = spec.and(AddressSpecifications.countryEq(address.getCountry().toUpperCase()));
+        }
+        if (!StringUtils.isEmpty(address.getCity())) {
+            spec = spec.and(AddressSpecifications.cityEq(address.getCity().toUpperCase()));
+        }
+        if (!StringUtils.isEmpty(address.getStreet())) {
+            spec = spec.and(AddressSpecifications.streetEq(address.getStreet().toUpperCase()));
+        }
+        if (!ObjectUtils.isEmpty(address.getHouseNumber())) {
+            spec = spec.and(AddressSpecifications.houseNumberEq(address.getHouseNumber()));
+        } else {
+            spec = spec.and(AddressSpecifications.houseNumberIsNull());
+        }
+        if (!ObjectUtils.isEmpty(address.getApartmentNumber())) {
+            spec = spec.and(AddressSpecifications.apartmentNumberIsNull());
+        }
+
+        return addressRepository.findOne(spec).orElse(null);
     }
 
     @Override

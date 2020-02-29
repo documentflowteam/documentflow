@@ -37,6 +37,15 @@ public interface AddressService {
     List<Address> findAll(String postIndex, String country, String city, String street, String houseNumber, String apartrmentNumber);
 
     /**
+     * We search for address who meet the search conditions. Strict search. If the field value is
+     * not specifying this field is equal to null in the database query
+     *
+     * @param address
+     * @return address or null if not found
+     */
+    Address strongFind(Address address);
+
+    /**
      * Updating data in the database
      *
      * @param address address
