@@ -51,7 +51,7 @@ public class ContragentServiceImpl implements ContragentService {
     public List<Contragent> searchContragents(@NonNull String searchName) {
 
         Specification<Contragent> spec = Specification.where(null);
-        spec = spec.and(ContragentSpecifications.searchNameLike(searchName));
+        spec = spec.and(ContragentSpecifications.searchNameLike(searchName.toUpperCase()));
 
         return contragentRepository.findAll(spec).stream()
                 .filter(item -> !item.getIsDeleted())
@@ -122,6 +122,7 @@ public class ContragentServiceImpl implements ContragentService {
                                 Contragent contragent = new Contragent.Builder()
                                         .searchName(searchName)
                                         .address(address)
+                                        .isDeleted(false)
                                         .organization(organization)
                                         .build();
                                 address.getContragents().add(contragent);
@@ -247,7 +248,7 @@ public class ContragentServiceImpl implements ContragentService {
 
         //Проверяем существует ли в БД заданная персона. Если существует, то используем ее, не добавляя дубликат в БД
         Person person = personService.strongFind(argumentPerson);
-        if(person == null) {
+        if (person == null) {
             person = personService.save(argumentPerson);
         }
         Organization organization = organizationService.find(idOrganization);
@@ -294,13 +295,13 @@ public class ContragentServiceImpl implements ContragentService {
 
         //Проверяем существует ли в БД заданная персона. Если существует, то используем ее, не добавляя дубликат в БД
         Person person = personService.strongFind(argumentPerson);
-        if(person == null) {
+        if (person == null) {
             person = personService.save(argumentPerson);
         }
 
         //Проверяем существует ли в БД заданный адрес. Если существует, то используем его, не добавляя дубликат в БД
         Address address = addressService.strongFind(argumentAddress);
-        if(address == null) {
+        if (address == null) {
             address = addressService.save(argumentAddress);
         }
 

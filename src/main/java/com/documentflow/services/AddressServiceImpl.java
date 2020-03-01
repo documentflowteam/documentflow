@@ -44,8 +44,8 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address save(Address address) {
-        return addressRepository.save(address);
+    public Address save(@NonNull Address address) {
+        return addressRepository.save(ContragentUtils.normalizeAddress(address));
     }
 
     @Override
@@ -100,6 +100,8 @@ public class AddressServiceImpl implements AddressService {
             spec = spec.and(AddressSpecifications.houseNumberIsNull());
         }
         if (!ObjectUtils.isEmpty(address.getApartmentNumber())) {
+            spec = spec.and(AddressSpecifications.apartmentNumberEq(address.getApartmentNumber()));
+        } else {
             spec = spec.and(AddressSpecifications.apartmentNumberIsNull());
         }
 
