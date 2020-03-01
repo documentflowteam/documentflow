@@ -1,6 +1,7 @@
 package com.documentflow.entities;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class DocOut implements Serializable {
 
     private static final long serialVersionUID = 6L;

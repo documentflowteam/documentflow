@@ -44,17 +44,18 @@
                        class="btn btn-secondary"
                        data-toggle="modal"
                        href="#newDocOut"
-                       th:data-docOutNew="${docOutNew}"
-                       th:data-createDate="${createDate}"
-                       th:data-creator="${creator}"
-                       th:data-docTypes="${docTypes}"
-                       th:data-signer="${signer}"
-                       th:data-content="${content}"
-                       th:data-pages="${pages}"
-                       th:data-appendix="${appendix}"
-                       th:data-note="${note}"
-                       th:data-docin="${docin}"
-                       th:data-task="${task}">Создать исходящий документ</a>
+                       th:onclick="'javascript:openModal(-1);'">Зарегистрировать</a>
+                       <!--th:data-docOutNew="${docOutNew}"-->
+                       <!--th:data-createDate="${createDate}"-->
+                       <!--th:data-creator="${creator}"-->
+                       <!--th:data-docTypes="${docTypes}"-->
+                       <!--th:data-signer="${signer}"-->
+                       <!--th:data-content="${content}"-->
+                       <!--th:data-pages="${pages}"-->
+                       <!--th:data-appendix="${appendix}"-->
+                       <!--th:data-note="${note}"-->
+                       <!--th:data-docin="${docin}"-->
+                       <!--th:data-task="${task}">Создать исходящий документ</a>-->
                     <!-- Modal new registration document-->
                     <div class="modal fade" id="newDocOut">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -83,7 +84,7 @@
                                     <div class="form-row">
                                         <label class="col-sm-3 col-form-label">Дата регистрации</label>
                                         <div class="col-sm-9">
-                                            <label class="col-sm-3 col-form-label" th:text="${#dates.format(#dates.createNow(), 'dd/mm/yyyy')}" />
+                                            <label class="col-sm-3 col-form-label" th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}" />
                                         </div>
                                     </div>
 
@@ -444,8 +445,11 @@
                         </tr>
                         </thead>
 
+
+
+
                         <tbody>
-                        <tr th:each="docOutDTO : ${docsOut.getContent()}">
+                        <tr th:each="docOutDTO : ${docOut.getContent()}">
                             <td><input type="checkbox" value=" " /></td>
                             <td>
                                 <a role="button"
@@ -461,7 +465,7 @@
                             </td>
                             <td th:text="${docOutDTO.createDate}" />
                             <td th:text="${docOutDTO.docType.name}" />
-                            <td th:text="${docOutDTO.creator.lastName}" />
+                            <td th:text="${docOutDTO.creatorFIO}" />
                             <td th:text="${docOutDTO.state.name}" />
                             <!--<td th:text="${contragents.search_name}" />-->
                             <td><i th:if="${docOutDTO.appendix != null}" class="far fa-file-pdf"></i></td>
@@ -473,14 +477,14 @@
 
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
-                            <li class="page-item" th:classappend="${!(docsOut.getNumber() > 0) ? 'disabled' : ''}">
-                                <a th:class="page-link" th:href="@{'/docs/out?currentPage=' + ${docsOut.getNumber()}}" th:text="prev"/>
+                            <li class="page-item" th:classappend="${!(docOut.getNumber() > 0) ? 'disabled' : ''}">
+                                <a th:class="page-link" th:href="@{'/docs/out?currentPage=' + ${docOut.getNumber()}}" th:text="prev"/>
                             </li>
-                            <li class="page-item" th:classappend="${docsOut.getNumber() + 1 == i ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, docsOut.getTotalPages())}">
+                            <li class="page-item" th:classappend="${docOut.getNumber() + 1 == i ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, docOut.getTotalPages())}">
                                 <a class="page-link" th:href="@{'/docs/out?currentPage=' + ${i}}" th:text=${i} />
                             </li>
-                            <li class="page-item" th:classappend="${!(docsOut.getNumber() < docsOut.getTotalPages() - 1) ? 'disabled' : ''}">
-                                <a th:class="page-link" th:href="@{'/docs/out?currentPage=' + ${docsOut.getNumber() + 2} }" th:text="next"/>
+                            <li class="page-item" th:classappend="${!(docOut.getNumber() < docOut.getTotalPages() - 1) ? 'disabled' : ''}">
+                                <a th:class="page-link" th:href="@{'/docs/out?currentPage=' + ${docOut.getNumber() + 2} }" th:text="next"/>
                             </li>
                         </ul>
                     </nav>
