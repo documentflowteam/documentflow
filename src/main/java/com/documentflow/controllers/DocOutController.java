@@ -22,7 +22,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 
 
-@RestController
+@Controller
 @RequestMapping("/docs/out")
 public class DocOutController {
 
@@ -32,14 +32,17 @@ public class DocOutController {
     private UserServiceImpl userService;
     private DocOutUtils docOutUtils;
     private StateService stateService;
+    private ContragentServiceImpl contragentService;
 
     @Autowired
-    public void setDocOutService(DocOutService docOutService, DocTypeService docTypeService, UserServiceImpl userService, DocOutUtils docOutUtils, StateService stateService) {
+    public void setDocOutService(DocOutService docOutService, DocTypeService docTypeService, UserServiceImpl userService,
+                                 DocOutUtils docOutUtils, StateService stateService, ContragentServiceImpl contragentService) {
         this.docOutService = docOutService;
         this.docTypeService = docTypeService;
         this.userService = userService;
         this.docOutUtils = docOutUtils;
         this.stateService = stateService;
+        this.contragentService=contragentService;
     }
 
     @GetMapping()
@@ -58,14 +61,15 @@ public class DocOutController {
 
         DocOutFilter filter = new DocOutFilter(request);
         model.addAttribute("filter", filter.getFiltersString());
-//        Page<DocInDto> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate")).map(d -> docInUtils.convertToDTO(d));
         Page<DocOutDTO> page = docOutService.findAllByPagingAndFiltering(filter.getSpecification(), PageRequest.of(currentPage-1,20, Sort.Direction.DESC, "createDate"))
                 .map(d -> docOutUtils.convertFromDocOut(d));
-        model.addAttribute("docOut", page);
+        model.addAttribute("docs", page);
         model.addAttribute("createDate", LocalDate.now());
         model.addAttribute("creator", userService.getAllUsers());
+        model.addAttribute("states", stateService.findAllStates());
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
-//        model.addAttribute("appendix", docOutService.findAll().getAppendix());
+        model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
+        model.addAttribute("appendix", docOutService.findOneById(1L).getAppendix());
         return "doc_out";
 
     }
@@ -121,7 +125,7 @@ public class DocOutController {
          return "redirect:/docs/out";
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/card/{id}")
     public String deleteDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
         if(docOut.getState()!=stateService.getStateById(1)

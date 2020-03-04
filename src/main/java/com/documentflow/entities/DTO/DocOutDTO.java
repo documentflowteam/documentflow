@@ -32,7 +32,6 @@ public class DocOutDTO implements Serializable {
     private DocType docType;
     private Integer docTypeId;
     private User signer;
-//    private String signerFIO;
     private String content;
     private Integer pages;
     private String appendix;
@@ -90,8 +89,8 @@ public class DocOutDTO implements Serializable {
         this.regDate = regDate;
         this.state = state;
         this.stateId = stateId;
-
     }
+}
 
     //    public DocOutDTO(DocOut docOut) {
 //        this.id = docOut.getId();
@@ -149,5 +148,5 @@ public class DocOutDTO implements Serializable {
 //        return docOutDTO;
 //    }
 
-}
+//}
 
