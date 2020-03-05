@@ -77,10 +77,10 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         Organization organization = optionalOrganization.get();
 
-        String oldNameOrganization = organization.getName();
-        String newNameOrganization = org.getName();
+        String oldNameOrganization = organization.getName().toUpperCase().replace(" ", "");
+        String newNameOrganization = org.getName().toUpperCase().replace(" ", "");
 
-        organization.setName(newNameOrganization);
+        organization.setName(org.getName());
 
         organization.getContragents().forEach(contragent -> {
             String oldSearchName = contragent.getSearchName();

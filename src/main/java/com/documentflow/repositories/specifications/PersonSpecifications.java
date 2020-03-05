@@ -7,8 +7,14 @@ public class PersonSpecifications {
     public static Specification<Person> firstNameEq(String firstName){
         return (Specification<Person>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("firstName"), firstName);
     }
+    public static Specification<Person> firstNameIsNull(){
+        return (Specification<Person>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.isNull(root.get("firstName"));
+    }
     public static Specification<Person> middleNameEq(String middleName){
         return (Specification<Person>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("middleName"), middleName);
+    }
+    public static Specification<Person> middleNameIsNull(){
+        return (Specification<Person>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.isNull(root.get("middleName"));
     }
     public static Specification<Person> lastNameEq(String lastName){
         return (Specification<Person>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("lastName"), lastName);
