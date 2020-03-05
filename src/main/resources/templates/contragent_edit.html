@@ -170,16 +170,20 @@
                         });
                     });
 
-                    json_for_send = {
-                        type_person: type_person,
-                        parameters: {
-                            name_company: name_company
-                        },
-                        addresses: arrayAddress,
-                        employees: arrayEmployee
-                    };
+                    if (arrayAddress.length === 0) {
+                        alert("Необходимо указать адрес!")
+                    } else {
+                        json_for_send = {
+                            type_person: type_person,
+                            parameters: {
+                                name_company: name_company
+                            },
+                            addresses: arrayAddress,
+                            employees: arrayEmployee
+                        };
 
-                    sendPostRequestToServerAdd(json_for_send, $(this));
+                        sendPostRequestToServerAdd(json_for_send, $(this));
+                    }
                 }
             },
             "Добавить адрес": function () {
@@ -196,6 +200,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-company table tbody").empty();
+            $("div.dialog-add-company input").val('');
         },
     });
 
@@ -258,18 +263,21 @@
                             apartrment_number: apartrment_number
                         });
                     });
+                    if (arrayAddress.length === 0) {
+                        alert("Необходимо указать адрес!")
+                    } else {
+                        json_for_send = {
+                            type_person: type_person,
+                            parameters: {
+                                first_name: $("div.dialog-add-person input.first_name").val(),
+                                middle_name: $("div.dialog-add-person input.middle_name").val(),
+                                last_name: $("div.dialog-add-person input.last_name").val()
+                            },
+                            addresses: arrayAddress
+                        };
 
-                    json_for_send = {
-                        type_person: type_person,
-                        parameters: {
-                            first_name: $("div.dialog-add-person input.first_name").val(),
-                            middle_name: $("div.dialog-add-person input.middle_name").val(),
-                            last_name: $("div.dialog-add-person input.last_name").val()
-                        },
-                        addresses: arrayAddress
-                    };
-
-                    sendPostRequestToServerAdd(json_for_send, $(this));
+                        sendPostRequestToServerAdd(json_for_send, $(this));
+                    }
                 }
             },
             "Добавить адрес": function () {
@@ -282,6 +290,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-person table tbody").empty();
+            $("div.dialog-add-person input").val('');
         },
     });
 
@@ -338,6 +347,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-employee-address-company").data("key", "");
             $("div.dialog-add-employee-address-company").data("type", "");
+            $("div.dialog-add-employee-address-company input").val('');
         },
     });
 
@@ -406,6 +416,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-employee-company").data("key", "");
             $("div.dialog-add-employee-company").data("type", "");
+            $("div.dialog-add-employee-company input").val('');
         },
     });
 
@@ -486,6 +497,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-address-person").data("key", "");
             $("div.dialog-add-address-person").data("type", "");
+            $("div.dialog-add-address-person input").val('');
         },
     });
 
@@ -566,6 +578,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-address-company").data("key", "");
             $("div.dialog-add-address-company").data("type", "");
+            $("div.dialog-add-address-company input").val('');
         },
     });
 
@@ -613,6 +626,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-edit-company table tbody").empty();
+            $("div.dialog-edit-company input").val('');
         },
     });
 
@@ -652,6 +666,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-edit-person table tbody").empty();
+            $("div.dialog-edit-person input").val('');
         },
     });
 
@@ -683,6 +698,9 @@
             "Отмена": function () {
                 $(this).dialog("close");
             }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-edit-employee input").val('');
         },
     });
 
@@ -722,6 +740,9 @@
             "Отмена": function () {
                 $(this).dialog("close");
             }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-edit-address input").val('');
         },
     });
 
@@ -793,6 +814,9 @@
                 Cancel: function () {
                     $(this).dialog("close");
                 }
+            },
+            beforeClose(event, ui) {
+                $("div.dialog-search-person input").val('');
             },
         });
         $("div.dialog-search-address").dialog({
@@ -876,6 +900,9 @@
                     $(this).dialog("close");
                 }
             },
+            beforeClose(event, ui) {
+                $("div.dialog-search-address input").val('');
+            },
         });
         $("div.dialog-search-company").dialog({
             autoOpen: false,
@@ -938,6 +965,9 @@
                 Cancel: function () {
                     $(this).dialog("close");
                 }
+            },
+            beforeClose(event, ui) {
+                $("div.dialog-search-company input").val('');
             },
         });
         $("div.dialog-search-employee").dialog({
@@ -1008,6 +1038,9 @@
                 Cancel: function () {
                     $(this).dialog("close");
                 }
+            },
+            beforeClose(event, ui) {
+                $("div.dialog-search-employee input").val('');
             },
         });
         $("div.contragent-command-button button[name='search']").click(function () {
