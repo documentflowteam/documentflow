@@ -37,4 +37,4 @@ spring.datasource.password=YOUR_DB_PASSWORD
 
 ???
 
-4. PROFIT
+4. PROFIT mazafaka!
