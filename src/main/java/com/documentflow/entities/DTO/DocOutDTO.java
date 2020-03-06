@@ -25,7 +25,7 @@ public class DocOutDTO implements Serializable {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate createDate;
-
+    private User creator;
     private Integer creatorId;
     private String creatorFIO;
     private String docTypeName;
@@ -47,11 +47,12 @@ public class DocOutDTO implements Serializable {
     private Task task;
     private Long taskId;
 
-    public DocOutDTO(Long id, LocalDate createDate, Integer creatorId, String creatorFIO, String docTypeName,
+    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO, String docTypeName,
                      DocType docType, Integer docTypeId, User signer, String content, Integer pages, String appendix,
                      String note, Boolean isGenerated, String number, LocalDate regDate, State state) {
         this.id = id;
         this.createDate = createDate;
+        this.creator=creator;
         this.creatorId = creatorId;
         this.creatorFIO = creatorFIO;
         this.docTypeName = docTypeName;
@@ -69,11 +70,12 @@ public class DocOutDTO implements Serializable {
 
     }
 
-    public DocOutDTO(Long id, LocalDate createDate, Integer creatorId, String creatorFIO, String docTypeName,
+    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO, String docTypeName,
                      DocType docType, Integer docTypeId, User signer, String content, Integer pages, String appendix,
-                     String note, Boolean isGenerated, String number, LocalDate regDate, State state, Integer stateId) {
+                     String note, Boolean isGenerated, String number, LocalDate regDate, State state, Integer stateId, Task task) {
         this.id = id;
         this.createDate = createDate;
+        this.creator = creator;
         this.creatorId = creatorId;
         this.creatorFIO = creatorFIO;
         this.docTypeName = docTypeName;
@@ -89,6 +91,7 @@ public class DocOutDTO implements Serializable {
         this.regDate = regDate;
         this.state = state;
         this.stateId = stateId;
+        this.task = task;
     }
 }
 

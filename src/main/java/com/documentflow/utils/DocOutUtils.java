@@ -18,14 +18,14 @@ import java.util.Date;
 @Component
 public class DocOutUtils {
 
-    private UserService userService;
+    private UserServiceImpl userService;
     private StateService stateService;
     private DocTypeService docTypeService;
     private TaskService taskService;
     private DocOutService docOutService;
 
     @Autowired
-    public DocOutUtils(UserService userService, StateService stateService, DocTypeService docTypeService,
+    public DocOutUtils(UserServiceImpl userService, StateService stateService, DocTypeService docTypeService,
                        TaskService taskService, DocOutService docOutService) {
         this.docOutService = docOutService;
         this.userService = userService;
@@ -44,30 +44,46 @@ public class DocOutUtils {
     }
 
     public DocOut convertFromDocOutDTO(DocOutDTO docOutDTO) {
-        DocOut docOut = new DocOut(
-                docOutDTO.getId(),
-                docOutDTO.getCreateDate(),
-                userService.findOneById(docOutDTO.getCreatorId()),
-                docTypeService.getDocTypeById(docOutDTO.getDocTypeId()),
-                docOutDTO.getSigner(),
-                docOutDTO.getContent(),
-                docOutDTO.getPages(),
-                docOutDTO.getAppendix(),
-                docOutDTO.getNote(),
-                docOutDTO.getIsGenerated(),
-                docOutDTO.getNumber(),
-                docOutDTO.getRegDate(),
-                docOutDTO.getState(),
-                docOutDTO.getTask());
+ //       DocOut docOut = new DocOut(
+//                docOutDTO.getId(),
+//                docOutDTO.getCreateDate(),
+//                userService.getUserByUsername(docOutDTO.getCreator().getUsername()),//findOneById(docOutDTO.getCreatorId()),
+//                docTypeService.getDocTypeById(docOutDTO.getDocTypeId()),
+//                docOutDTO.getSigner(),
+//                docOutDTO.getContent(),
+//                docOutDTO.getPages(),
+//                docOutDTO.getAppendix(),
+//                docOutDTO.getNote(),
+//                docOutDTO.getIsGenerated(),
+//                docOutDTO.getNumber(),
+//                docOutDTO.getRegDate(),
+//                docOutDTO.getState(),
+//                docOutDTO.getTask());
+
+        DocOut docOut = new DocOut();
+                docOut.setId(docOutDTO.getId());
+                docOut.setCreateDate(docOutDTO.getCreateDate());
+                docOut.setCreator(docOutDTO.getCreator());
+                docOut.setDocType(docOutDTO.getDocType());
+                docOut.setSigner(docOutDTO.getSigner());
+                docOut.setContent(docOutDTO.getContent());
+        docOut.setPages(docOutDTO.getPages());
+        docOut.setAppendix(docOutDTO.getAppendix());
+        docOut.setNote(docOutDTO.getNote());
+        docOut.setIsGenerated(docOutDTO.getIsGenerated());
+        docOut.setNumber(docOutDTO.getNumber());
+        docOut.setRegDate(docOutDTO.getRegDate());
+        docOut.setState(docOutDTO.getState());
+        docOut.setTask(docOutDTO.getTask());
 
         if (docOutDTO.getState() !=null) {
             docOut.setState(stateService.getStateById(docOutDTO.getStateId()));
         } else {
             docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
           }
-        if (docOutDTO.getTask() != null) {
-            docOutDTO.setTask(taskService.findOneById(docOutDTO.getTaskId()));
-        } else docOutDTO.setTask(null);
+//        if (docOutDTO.getTask() != null) {
+//            docOutDTO.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+//        } else docOutDTO.setTask(null);
         return docOut;
     }
 
@@ -75,6 +91,7 @@ public class DocOutUtils {
         DocOutDTO docOutDTO = new DocOutDTO(
                 docOut.getId(),
                 docOut.getCreateDate(),
+                docOut.getCreator(),
                 docOut.getCreator().getId(),
                 getUserFIO(docOut.getCreator()),
                 docOut.getDocType().getName(),

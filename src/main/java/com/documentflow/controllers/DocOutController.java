@@ -11,6 +11,7 @@ import com.documentflow.utils.DocOutUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,16 +34,19 @@ public class DocOutController {
     private DocOutUtils docOutUtils;
     private StateService stateService;
     private ContragentServiceImpl contragentService;
+    private TaskService taskService;
 
     @Autowired
     public void setDocOutService(DocOutService docOutService, DocTypeService docTypeService, UserServiceImpl userService,
-                                 DocOutUtils docOutUtils, StateService stateService, ContragentServiceImpl contragentService) {
+                                 DocOutUtils docOutUtils, StateService stateService, ContragentServiceImpl contragentService,
+                                 TaskService taskService) {
         this.docOutService = docOutService;
         this.docTypeService = docTypeService;
         this.userService = userService;
         this.docOutUtils = docOutUtils;
         this.stateService = stateService;
         this.contragentService=contragentService;
+        this.taskService=taskService;
     }
 
     @GetMapping()
@@ -66,7 +70,9 @@ public class DocOutController {
         model.addAttribute("docs", page);
         model.addAttribute("createDate", LocalDate.now());
         model.addAttribute("creator", userService.getAllUsers());
+        model.addAttribute("signer", userService.getAllUsers());
         model.addAttribute("states", stateService.findAllStates());
+        model.addAttribute("tasks", taskService.findAll(Pageable.unpaged()));
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
         model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
         model.addAttribute("appendix", docOutService.findOneById(1L).getAppendix());
@@ -105,27 +111,29 @@ public class DocOutController {
 //        return "redirect:/docs/out";
 //    }
 
-    @RequestMapping(value = "/card", method = RequestMethod.POST)
-    public String userCardSubmit(@ModelAttribute DocOut docOut) {
+//    @RequestMapping(value = "/card", method = RequestMethod.POST)
+//    public String userCardSubmit(@ModelAttribute DocOut docOut) {
+//        docOutService.save(docOut);
+//        return "redirect:/docs/out";
+//    }
+    @PostMapping("/card")
+    public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
+
+        DocOut docOut=docOutUtils.convertFromDocOutDTO(docOutDTO);
+//        if (docOut.getId() == null) {
+//            docOutDTO.setRegNumber(docOutUtils.getRegNumber());
+//        }
         docOutService.save(docOut);
         return "redirect:/docs/out";
     }
 
-//    @GetMapping("/edit")
-//    public DocOut getDocOut(@RequestParam(name = "editDocOut") DocOutDTO docOutDTO) {
-////        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
-//        docOutService.update(docOutDTO);
-//        return "redirect:/docs/out";
-//    }
-
-    @PostMapping("/edit")
-    public String editDocOut(@RequestParam(name = "editDocOut") DocOut docOut) {
-//        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
-            docOutService.save(docOut);
-         return "redirect:/docs/out";
+    @ResponseBody
+    @RequestMapping("/card/{id}")
+    public DocOutDTO getCard(@PathVariable("id") Long id) {
+        return docOutUtils.getDocOutDTO(id);
     }
 
-    @PostMapping("/card/{id}")
+    @PostMapping("/delete")
     public String deleteDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
         if(docOut.getState()!=stateService.getStateById(1)
