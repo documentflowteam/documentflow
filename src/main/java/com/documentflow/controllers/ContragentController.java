@@ -7,6 +7,7 @@ import com.documentflow.entities.Person;
 import com.documentflow.entities.dto.ContragentDto;
 import com.documentflow.entities.dto.ContragentDtoBindAddressAndEmployee;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
+import com.documentflow.exceptions.BadArgumentException;
 import com.documentflow.services.AddressService;
 import com.documentflow.services.ContragentService;
 import com.documentflow.services.OrganizationService;
@@ -54,14 +55,13 @@ public class ContragentController {
         }
         return modelAndView;
     }
-
     private ModelAndView createDefaultModelAndView(String url) {
         return new ModelAndView(url);
     }
 
     @GetMapping("/add")
     public String getPageToAdd() {
-        return "contragent_add";
+        return "contragent_edit";
     }
 
     @GetMapping("/edit")
@@ -76,7 +76,6 @@ public class ContragentController {
         if (ContragentUtils.isEmpty(contragentDto.getParameters())) {
             throw new IllegalArgumentException("Не заполнены основные параметры контрагента");
         }
-
         return contragentService.save(contragentDto);
     }
 
@@ -89,7 +88,6 @@ public class ContragentController {
         if (StringUtils.isEmpty(lastName)) {
             throw new IllegalArgumentException("Last name is empty");
         }
-
         return personService.findAll(firstName.toUpperCase(), middleName.toUpperCase(), lastName.toUpperCase());
     }
 
@@ -122,7 +120,13 @@ public class ContragentController {
         //ВНИМАНИЕ. В полученном объекте типа Address в поле ID хранится ID объекта типа Person
         Long idPerson = address.getId();
         address.setId(0L);
-        return contragentService.bindAddressWithPerson(idPerson, address);
+
+        Address findAddress = addressService.strongFind(address);
+        if(findAddress != null) {
+            return findAddress;
+        } else {
+            return contragentService.bindAddressWithPerson(idPerson, address);
+        }
     }
 
     @GetMapping("/edit/person/{id:[\\d]+}/address")
@@ -142,13 +146,13 @@ public class ContragentController {
                                     @RequestParam(name = "apartrment_number", required = false) String apartrmentNumber) {
 
         if (StringUtils.isEmpty(country)) {
-            throw new IllegalArgumentException("Country is empty");
+            throw new BadArgumentException("Country is empty");
         }
         if (StringUtils.isEmpty(city)) {
-            throw new IllegalArgumentException("City is empty");
+            throw new BadArgumentException("City is empty");
         }
         if (StringUtils.isEmpty(street)) {
-            throw new IllegalArgumentException("Street is empty");
+            throw new BadArgumentException("Street is empty");
         }
         return addressService.findAll(postIndex, country.toUpperCase(), city.toUpperCase(), street.toUpperCase(), houseNumber, apartrmentNumber);
     }
@@ -170,7 +174,7 @@ public class ContragentController {
     public List<Organization> getOrganization(@RequestParam(name = "name_company") String nameCompany) {
 
         if (StringUtils.isEmpty(nameCompany)) {
-            throw new IllegalArgumentException("Company name is empty");
+            throw new BadArgumentException("Company name is empty");
         }
         return organizationService.findAll(nameCompany);
     }
@@ -193,7 +197,13 @@ public class ContragentController {
         //ВНИМАНИЕ. В полученном объекте типа Address в поле ID хранится ID объекта типа Organization
         Long idOrganization = address.getId();
         address.setId(0L);
-        return contragentService.bindAddressWithOrganization(idOrganization, address);
+
+        Address findAddress = addressService.strongFind(address);
+        if(findAddress != null) {
+            return findAddress;
+        } else {
+            return contragentService.bindAddressWithOrganization(idOrganization, address);
+        }
     }
 
     @PostMapping("edit/company/employee")
@@ -260,7 +270,7 @@ public class ContragentController {
                                                    @RequestParam(name = "position", required = false) String position) {
 
         if (StringUtils.isEmpty(lastName)) {
-            throw new RuntimeException("Last name is empty");
+            throw new BadArgumentException("Last name is empty");
         }
 
         //the order of arguments is important
@@ -284,10 +294,10 @@ public class ContragentController {
     public Contragent editEmployee(@RequestBody ContragentDtoEmployee employee) {
 
         if (ObjectUtils.isEmpty(employee.getId())) {
-            throw new RuntimeException("ID is empty");
+            throw new BadArgumentException("ID is empty");
         }
         if (StringUtils.isEmpty(employee.getLastName())) {
-            throw new RuntimeException("Last name is empty");
+            throw new BadArgumentException("Last name is empty");
         }
         return contragentService.updateEmployee(employee);
     }

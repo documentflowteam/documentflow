@@ -95,6 +95,25 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public Person strongFind(Person person) {
+        Specification<Person> spec = Specification.where(null);
+        if (StringUtils.isNotEmpty(person.getFirstName())) {
+            spec = spec.and(PersonSpecifications.firstNameEq(person.getFirstName().toUpperCase()));
+        } else {
+            spec = spec.and(PersonSpecifications.firstNameIsNull());
+        }
+        if (StringUtils.isNotEmpty(person.getMiddleName())) {
+            spec = spec.and(PersonSpecifications.middleNameEq(person.getMiddleName().toUpperCase()));
+        } else {
+            spec = spec.and(PersonSpecifications.middleNameIsNull());
+        }
+        if (StringUtils.isNotEmpty(person.getLastName())) {
+            spec = spec.and(PersonSpecifications.lastNameEq(person.getLastName().toUpperCase()));
+        }
+        return personRepository.findOne(spec).orElse(null);
+    }
+
+    @Override
     public Person update(Person per) {
 
         if (per.getId() == null) {
