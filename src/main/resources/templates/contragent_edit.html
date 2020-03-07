@@ -26,215 +26,306 @@
     <div th:class="contragent-search-panel">
         <div th:class="contragent-command-button">
             <button th:name="search" th:text="'Поиск'"></button>
+            <button th:name="add" th:text="'Добавить'" th:disabled="disabled"></button>
             <button th:name="cancel" th:text="'Очистить'"></button>
         </div>
     </div>
 </div>
 <div th:class="contragent-table-found-values"></div>
-<div th:class="dialog-person" title="Введите параметры поиска">
-    <label for='first_name_person'>Имя</label><input id='first_name_person' type='text' name='first_name'><br>
-    <label for='middle_name_person'>Отчество</label><input id='middle_name_person' type='text' name='middle_name'><br>
-    <label for='last_name_person'>Фамилия</label><input id='last_name_person' type='text' name='last_name'><br>
-</div>
-<div th:class="dialog-address" title="Введите параметры поиска">
-    <label for='post_index'>Почтовый индекс</label><input id='post_index' type='text' name='post_index'><br>
-    <label for='country'>Страна</label><input id='country' type='text' name='country'><br>
-    <label for='city'>Город</label><input id='city' type='text' name='city'><br>
-    <label for='street'>Улица</label><input id='street' type='text' name='street'><br>
-    <label for='house_number'>Номер дома</label><input id='house_number' type='text' name='house_number'><br>
-    <label for='apartrment_number'>Номер квартиры</label><input id='apartrment_number' type='text'
-                                                                name='apartrment_number'><br>
-</div>
-<div th:class="dialog-company" title="Введите параметры поиска">
-    <label for='name_company'>Наименование компании</label><input id='name_company' type='text' name='name_company'>
-</div>
-<div th:class="dialog-employee" title="Введите параметры поиска">
-    <label for='first_name_employee'>Имя</label><input id='first_name_employee' type='text' name='first_name'><br>
-    <label for='middle_name_employee'>Отчество</label><input id='middle_name_employee' type='text'
-                                                             name='middle_name'><br>
-    <label for='last_name_employee'>Фамилия</label><input id='last_name_employee' type='text' name='last_name'><br>
-    <label for='position_employee'>Должность</label><input id='position_employee' type='text' name='position'><br>
-</div>
-<div th:class="dialog-edit-address" title="Редактирование адреса">
-    <label for='edit_post_index'>Почтовый индекс</label><input id='edit_post_index' type='text' name='post_index'><br>
-    <label for='edit_country'>Страна</label><input id='edit_country' type='text' name='country'><br>
-    <label for='edit_city'>Город</label><input id='edit_city' type='text' name='city'><br>
-    <label for='edit_street'>Улица</label><input id='edit_street' type='text' name='street'><br>
-    <label for='edit_house_number'>Номер дома</label><input id='edit_house_number' type='text' name='house_number'><br>
-    <label for='edit_apartrment_number'>Номер квартиры</label><input id='edit_apartrment_number' type='text'
-                                                                     name='apartrment_number'><br>
-</div>
-<div th:class="dialog-edit-employee" title="Редактирование контактного лица">
-    <label for='edit_first_name_employee'>Имя</label><input id='edit_first_name_employee' type='text' name='first_name'><br>
-    <label for='edit_middle_name_employee'>Отчество</label><input id='edit_middle_name_employee' type='text'
-                                                                  name='middle_name'><br>
-    <label for='edit_last_name_employee'>Фамилия</label><input id='edit_last_name_employee' type='text'
-                                                               name='last_name'><br>
-    <label for='edit_position_employee'>Должность</label><input id='edit_position_employee' type='text' name='position'><br>
-</div>
+<div th:class="dialog-search-person" title="Введите параметры поиска"
+     th:insert="~{contragent_fragments::person_parameters}"/>
+<div th:class="dialog-search-address" title="Введите параметры поиска" th:insert="~{contragent_fragments::address}"/>
+<div th:class="dialog-search-company" title="Введите параметры поиска"
+     th:insert="~{contragent_fragments::company_parameters}"/>
+<div th:class="dialog-search-employee" title="Введите параметры поиска" th:insert="~{contragent_fragments::employee}"/>
+<div th:class="dialog-edit-address" title="Редактирование адреса" th:insert="~{contragent_fragments::address}"/>
+<div th:class="dialog-edit-employee" title="Редактирование контактного лица"
+     th:insert="~{contragent_fragments::employee}"/>
 <div th:class="dialog-edit-person" title="Редактирование персоны">
-    <label for='edit_first_name_person'>Имя</label><input id='edit_first_name_person' type='text' name='first_name'><br>
-    <label for='edit_middle_name_person'>Отчество</label><input id='edit_middle_name_person' type='text'
-                                                                name='middle_name'><br>
-    <label for='edit_last_name_person'>Фамилия</label><input id='edit_last_name_person' type='text'
-                                                             name='last_name'><br>
-    <table class="table table-bordered table-sm">
-        <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Почтовый индекс</th>
-            <th>Страна</th>
-            <th>Город</th>
-            <th>Улица</th>
-            <th>Номер дома</th>
-            <th>Номер квартиры</th>
-            <th>Команда</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div th:insert="~{contragent_fragments::person_parameters}"/>
+    <div th:insert="~{contragent_fragments::table-address}"/>
 </div>
-<div th:class="dialog-add-address-person" title="Добавить адрес">
-    <label for='add_post_index_person'>Почтовый индекс</label><input id='add_post_index_person' type='text'
-                                                                     name='post_index'><br>
-    <label for='add_country_person'>Страна</label><input id='add_country_person' type='text' name='country'><br>
-    <label for='add_city_person'>Город</label><input id='add_city_person' type='text' name='city'><br>
-    <label for='add_street_person'>Улица</label><input id='add_street_person' type='text' name='street'><br>
-    <label for='add_house_number_person'>Номер дома</label><input id='add_house_number_person' type='text'
-                                                                  name='house_number'><br>
-    <label for='add_apartrment_number_person'>Номер квартиры</label><input id='add_apartrment_number_person' type='text'
-                                                                           name='apartrment_number'><br>
-</div>
-<div th:class="dialog-add-address-company" title="Добавить адрес">
-    <label for='add_post_index_company'>Почтовый индекс</label><input id='add_post_index_company' type='text'
-                                                                      name='post_index'><br>
-    <label for='add_country_company'>Страна</label><input id='add_country_company' type='text' name='country'><br>
-    <label for='add_city_company'>Город</label><input id='add_city_company' type='text' name='city'><br>
-    <label for='add_street_company'>Улица</label><input id='add_street_company' type='text' name='street'><br>
-    <label for='add_house_number_company'>Номер дома</label><input id='add_house_number_company' type='text'
-                                                                   name='house_number'><br>
-    <label for='add_apartrment_number_company'>Номер квартиры</label><input id='add_apartrment_number_company'
-                                                                            type='text'
-                                                                            name='apartrment_number'><br>
-</div>
-<div th:class="dialog-add-employee-company" title="Добавить контактное лицо">
-    <label for='add_first_name_employee_company'>Имя</label><input id='add_first_name_employee_company' type='text'
-                                                                   name='first_name'><br>
-    <label for='add_middle_name_employee_company'>Отчество</label><input id='add_middle_name_employee_company'
-                                                                         type='text'
-                                                                         name='middle_name'><br>
-    <label for='add_last_name_employee_company'>Фамилия</label><input id='add_last_name_employee_company' type='text'
-                                                                      name='last_name'><br>
-    <label for='add_position_employee_company'>Должность</label><input id='add_position_employee_company' type='text'
-                                                                       name='position'><br>
-</div>
+<div th:class="dialog-add-address-person" title="Добавить адрес" th:insert="~{contragent_fragments::address}"/>
+<div th:class="dialog-add-address-company" title="Добавить адрес" th:insert="~{contragent_fragments::address}"/>
+<div th:class="dialog-add-employee-company" title="Добавить контактное лицо"
+     th:insert="~{contragent_fragments::employee}"/>
 <div th:class="dialog-add-employee-address-company" title="Добавить контактное лицо + адрес">
     <fieldset>
         <legend>Контактное лицо</legend>
-        <label for='and_first_name_employee_company'>Имя</label><input id='and_first_name_employee_company' type='text'
-                                                                       name='first_name'><br>
-        <label for='and_middle_name_employee_company'>Отчество</label><input id='and_middle_name_employee_company'
-                                                                             type='text'
-                                                                             name='middle_name'><br>
-        <label for='and_last_name_employee_company'>Фамилия</label><input id='and_last_name_employee_company'
-                                                                          type='text'
-                                                                          name='last_name'><br>
-        <label for='and_position_employee_company'>Должность</label><input id='and_position_employee_company'
-                                                                           type='text' name='position'><br>
+        <div th:insert="~{contragent_fragments::employee}"/>
     </fieldset>
     <fieldset>
         <legend>Адрес</legend>
-        <label for='and_post_index_company'>Почтовый индекс</label><input id='and_post_index_company' type='text'
-                                                                          name='post_index'><br>
-        <label for='and_country_company'>Страна</label><input id='and_country_company' type='text' name='country'><br>
-        <label for='and_city_company'>Город</label><input id='and_city_company' type='text' name='city'><br>
-        <label for='and_street_company'>Улица</label><input id='and_street_company' type='text' name='street'><br>
-        <label for='and_house_number_company'>Номер дома</label><input id='and_house_number_company' type='text'
-                                                                       name='house_number'><br>
-        <label for='and_apartrment_number_company'>Номер квартиры</label><input id='and_apartrment_number_company'
-                                                                                type='text'
-                                                                                name='apartrment_number'><br>
+        <div th:insert="~{contragent_fragments::address}"/>
     </fieldset>
 </div>
 <div th:class="dialog-edit-company" title="Редактирование компании">
-    <label for='edit_name_company'>Имя</label><input id='edit_name_company' type='text' name='first_name'><br>
-    <table class="table-edit-company-address table table-bordered table-sm">
-        <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Почтовый индекс</th>
-            <th>Страна</th>
-            <th>Город</th>
-            <th>Улица</th>
-            <th>Номер дома</th>
-            <th>Номер квартиры</th>
-            <th>Команда</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <table class="table-edit-company-employee table table-bordered table-sm">
-        <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Имя</th>
-            <th>Отчество</th>
-            <th>Фамилия</th>
-            <th>Должность</th>
-            <th>Команда</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div th:insert="~{contragent_fragments::company_parameters}"/>
+    <div th:insert="~{contragent_fragments::table-address}"/>
+    <div th:insert="~{contragent_fragments::table-employee}"/>
+</div>
+<div th:class="dialog-add-person" title="Создание новой персоны">
+    <div th:insert="~{contragent_fragments::person_parameters}"/>
+    <div th:insert="~{contragent_fragments::table-address}"/>
+</div>
+<div th:class="dialog-add-company" title="Создание новой компании">
+    <div th:insert="~{contragent_fragments::company_parameters}"/>
+    <div th:insert="~{contragent_fragments::table-address}"/>
+    <div th:insert="~{contragent_fragments::table-employee}"/>
 </div>
 <script th:type="'text/javascript'">
 
     let objectTrTable = {};
 
+    $("div.dialog-add-company").dialog({
+        autoOpen: false,
+        resizable: false,
+        show: "fold",
+        hide: "slide",
+        modal: true,
+        width: 1000,
+        height: 600,
+        buttons: {
+            "Сохранить": function () {
+                if ($("div.dialog-add-company input.name_company").val().length === 0) {
+                    $("div.dialog-add-company label.name_company").css("color", "red");
+                } else {
+                    $("div.dialog-add-company label.name_company").css("color", "black");
+
+                    var json_for_send;
+                    var type_person = "company";
+                    var name_company = $("div.dialog-add-company input.name_company").val();
+                    var arrayAddress = new Array();
+                    var arrayEmployee = new Array();
+
+                    $("div.dialog-add-company table.table-edit-address tbody tr").each(function () {
+
+                        var post_index;
+                        var country;
+                        var city;
+                        var street;
+                        var house_number;
+                        var apartrment_number;
+
+                        $(this).children().each(function () {
+
+                            if ($(this).attr("id") === "post_index") {
+                                post_index = $(this).text();
+                            }
+                            if ($(this).attr("id") === "country") {
+                                country = $(this).text();
+                            }
+                            if ($(this).attr("id") === "city") {
+                                city = $(this).text();
+                            }
+                            if ($(this).attr("id") === "street") {
+                                street = $(this).text();
+                            }
+                            if ($(this).attr("id") === "house_number") {
+                                house_number = $(this).text();
+                            }
+                            if ($(this).attr("id") === "apartrment_number") {
+                                apartrment_number = $(this).text();
+                            }
+                        });
+
+                        arrayAddress.push({
+                            post_index: post_index,
+                            country: country,
+                            city: city,
+                            street: street,
+                            house_number: house_number,
+                            apartrment_number: apartrment_number
+                        });
+                    });
+
+                    $("div.dialog-add-company table.table-edit-employee tbody tr").each(function () {
+
+                        var first_name;
+                        var middle_name;
+                        var last_name;
+                        var position;
+
+                        $(this).children().each(function () {
+
+                            if ($(this).attr("id") === "first_name") {
+                                first_name = $(this).text();
+                            }
+                            if ($(this).attr("id") === "middle_name") {
+                                middle_name = $(this).text();
+                            }
+                            if ($(this).attr("id") === "last_name") {
+                                last_name = $(this).text();
+                            }
+                            if ($(this).attr("id") === "position") {
+                                position = $(this).text();
+                            }
+                        });
+
+                        arrayEmployee.push({
+                            first_name: first_name,
+                            middle_name: middle_name,
+                            last_name: last_name,
+                            position: position
+                        });
+                    });
+
+                    json_for_send = {
+                        type_person: type_person,
+                        parameters: {
+                            name_company: name_company
+                        },
+                        addresses: arrayAddress,
+                        employees: arrayEmployee
+                    };
+
+                    sendPostRequestToServerAdd(json_for_send, $(this));
+                }
+            },
+            "Добавить адрес": function () {
+                $("div.dialog-add-address-company").data("type", "add");
+                $("div.dialog-add-address-company").dialog("open");
+            },
+            "Добавить контактное лицо": function () {
+                $("div.dialog-add-employee-company").data("type", "add");
+                $("div.dialog-add-employee-company").dialog("open");
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-add-company table tbody").empty();
+        },
+    });
+
+    $("div.dialog-add-person").dialog({
+        autoOpen: false,
+        resizable: false,
+        show: "fold",
+        hide: "slide",
+        modal: true,
+        width: 1000,
+        height: 600,
+        buttons: {
+            "Сохранить": function () {
+                if ($("div.dialog-add-person input.last_name").val().length === 0) {
+                    $("div.dialog-add-person label.last_name").css("color", "red");
+                } else {
+                    $("div.dialog-add-person label.last_name").css("color", "black");
+
+                    var json_for_send;
+                    var type_person = "person";
+                    var arrayAddress = new Array();
+
+                    $("div.dialog-add-person table tbody tr").each(function () {
+
+                        var post_index;
+                        var country;
+                        var city;
+                        var street;
+                        var house_number;
+                        var apartrment_number;
+
+                        $(this).children().each(function () {
+
+                            if ($(this).attr("id") === "post_index") {
+                                post_index = $(this).text();
+                            }
+                            if ($(this).attr("id") === "country") {
+                                country = $(this).text();
+                            }
+                            if ($(this).attr("id") === "city") {
+                                city = $(this).text();
+                            }
+                            if ($(this).attr("id") === "street") {
+                                street = $(this).text();
+                            }
+                            if ($(this).attr("id") === "house_number") {
+                                house_number = $(this).text();
+                            }
+                            if ($(this).attr("id") === "apartrment_number") {
+                                apartrment_number = $(this).text();
+                            }
+                        });
+
+                        arrayAddress.push({
+                            post_index: post_index,
+                            country: country,
+                            city: city,
+                            street: street,
+                            house_number: house_number,
+                            apartrment_number: apartrment_number
+                        });
+                    });
+
+                    json_for_send = {
+                        type_person: type_person,
+                        parameters: {
+                            first_name: $("div.dialog-add-person input.first_name").val(),
+                            middle_name: $("div.dialog-add-person input.middle_name").val(),
+                            last_name: $("div.dialog-add-person input.last_name").val()
+                        },
+                        addresses: arrayAddress
+                    };
+
+                    sendPostRequestToServerAdd(json_for_send, $(this));
+                }
+            },
+            "Добавить адрес": function () {
+                $("div.dialog-add-address-person").data("type", "add");
+                $("div.dialog-add-address-person").dialog("open");
+            },
+            "Отмена": function () {
+                $(this).dialog("close");
+            }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-add-person table tbody").empty();
+        },
+    });
+
     $("div.dialog-add-employee-address-company").dialog({
         autoOpen: false,
         resizable: false,
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 400,
         height: 580,
         buttons: {
             "Добавить": function () {
-                if ($("div.dialog-add-employee-address-company input#and_last_name_employee_company").val().length === 0 ||
-                    $("div.dialog-add-employee-address-company input#and_country_company").val().length === 0 ||
-                    $("div.dialog-add-employee-address-company input#and_city_company").val().length === 0 ||
-                    $("div.dialog-add-employee-address-company input#and_street_company").val().length === 0
+                if ($("div.dialog-add-employee-address-company input.last_name").val().length === 0 ||
+                    $("div.dialog-add-employee-address-company input.country").val().length === 0 ||
+                    $("div.dialog-add-employee-address-company input.city").val().length === 0 ||
+                    $("div.dialog-add-employee-address-company input.street").val().length === 0
                 ) {
-                    $("div.dialog-add-employee-address-company label[for='and_last_name_employee_company']").css("color", "red");
-                    $("div.dialog-add-employee-address-company label[for='and_country_company']").css("color", "red");
-                    $("div.dialog-add-employee-address-company label[for='and_city_company']").css("color", "red");
-                    $("div.dialog-add-employee-address-company label[for='and_street_company']").css("color", "red");
+                    $("div.dialog-add-employee-address-company label.last_name").css("color", "red");
+                    $("div.dialog-add-employee-address-company label.country").css("color", "red");
+                    $("div.dialog-add-employee-address-company label.city").css("color", "red");
+                    $("div.dialog-add-employee-address-company label.street").css("color", "red");
                 } else {
-                    $("div.dialog-add-employee-address-company label[for='and_last_name_employee_company']").css("color", "black");
-                    $("div.dialog-add-employee-address-company label[for='and_country_company']").css("color", "black");
-                    $("div.dialog-add-employee-address-company label[for='and_city_company']").css("color", "black");
-                    $("div.dialog-add-employee-address-company label[for='and_street_company']").css("color", "black");
+                    $("div.dialog-add-employee-address-company label.last_name").css("color", "black");
+                    $("div.dialog-add-employee-address-company label.country").css("color", "black");
+                    $("div.dialog-add-employee-address-company label.city").css("color", "black");
+                    $("div.dialog-add-employee-address-company label.street").css("color", "black");
                     let url = 'http://localhost:8090/contragent/edit/company/employee_and_address';
                     let idCompany = $("div.dialog-add-employee-address-company").data("key");
                     let json_for_send = {
                         id: idCompany,
                         address: {
-                            post_index: $("div.dialog-add-employee-address-company #and_post_index_company").val(),
-                            country: $("div.dialog-add-employee-address-company #and_country_company").val(),
-                            city: $("div.dialog-add-employee-address-company #and_city_company").val(),
-                            street: $("div.dialog-add-employee-address-company #and_street_company").val(),
-                            house_number: $("div.dialog-add-employee-address-company #and_house_number_company").val(),
-                            apartrment_number: $("div.dialog-add-employee-address-company #and_apartrment_number_company").val()
+                            post_index: $("div.dialog-add-employee-address-company input.post_index").val(),
+                            country: $("div.dialog-add-employee-address-company input.country").val(),
+                            city: $("div.dialog-add-employee-address-company input.city").val(),
+                            street: $("div.dialog-add-employee-address-company input.street").val(),
+                            house_number: $("div.dialog-add-employee-address-company input.house_number").val(),
+                            apartrment_number: $("div.dialog-add-employee-address-company input.apartrment_number").val()
                         },
                         employee: {
-                            first_name: $("div.dialog-add-employee-address-company #and_first_name_employee_company").val(),
-                            middle_name: $("div.dialog-add-employee-address-company #and_middle_name_employee_company").val(),
-                            last_name: $("div.dialog-add-employee-address-company #and_last_name_employee_company").val(),
-                            position: $("div.dialog-add-employee-address-company #and_position_employee_company").val()
+                            first_name: $("div.dialog-add-employee-address-company input.first_name").val(),
+                            middle_name: $("div.dialog-add-employee-address-company input.middle_name").val(),
+                            last_name: $("div.dialog-add-employee-address-company input.last_name").val(),
+                            position: $("div.dialog-add-employee-address-company input.position").val()
                         }
                     };
                     sendPostRequestAddNewEmployeeAndAddressToCompany(url, json_for_send, $(this));
@@ -245,7 +336,8 @@
             }
         },
         beforeClose(event, ui) {
-            $("div.dialog-add-employee-company").data("key", "");
+            $("div.dialog-add-employee-address-company").data("key", "");
+            $("div.dialog-add-employee-address-company").data("type", "");
         },
     });
 
@@ -254,25 +346,57 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 400,
         buttons: {
             "Добавить": function () {
-                if ($("div.dialog-add-employee-company input#add_last_name_employee_company").val().length === 0) {
-                    $("div.dialog-add-employee-company label[for='add_last_name_employee_company']").css("color", "red");
+                if ($("div.dialog-add-employee-company input.last_name").val().length === 0) {
+                    $("div.dialog-add-employee-company label.last_name").css("color", "red");
                 } else {
-                    $("div.dialog-add-employee-company label[for='add_last_name_employee_company']").css("color", "black");
-                    let url = 'http://localhost:8090/contragent/edit/company/employee';
-                    let idCompany = $("div.dialog-add-employee-company").data("key");
-                    let json_for_send = {
-                        id: idCompany,
-                        first_name: $("div.dialog-add-employee-company #add_first_name_employee_company").val(),
-                        middle_name: $("div.dialog-add-employee-company #add_middle_name_employee_company").val(),
-                        last_name: $("div.dialog-add-employee-company #add_last_name_employee_company").val(),
-                        position: $("div.dialog-add-employee-company #add_position_employee_company").val()
+                    $("div.dialog-add-employee-company label.last_name").css("color", "black");
+
+                    let typeOperation = $("div.dialog-add-employee-company").data("type");
+                    let firstName = $("div.dialog-add-employee-company input.first_name").val();
+                    let middleName = $("div.dialog-add-employee-company input.middle_name").val();
+                    let lastName = $("div.dialog-add-employee-company input.last_name").val();
+                    let position = $("div.dialog-add-employee-company input.position").val();
+
+                    switch (typeOperation) {
+                        case "edit":
+                            let url = 'http://localhost:8090/contragent/edit/company/employee';
+                            let idCompany = $("div.dialog-add-employee-company").data("key");
+                            let json_for_send = {
+                                id: idCompany,
+                                first_name: firstName,
+                                middle_name: middleName,
+                                last_name: lastName,
+                                position: position
+                            };
+                            sendPostRequestAddNewEmployeeToCompany(url, json_for_send, $(this));
+                            break;
+                        case "add":
+                            $("div.dialog-add-company table.table-edit-employee tbody").append(
+                                "<tr>" +
+                                "<td id='id'></td>" +
+                                "<td id='first_name'>" + firstName + "</td>" +
+                                "<td id='middle_name'>" + middleName + "</td>" +
+                                "<td id='last_name'>" + lastName + "</td>" +
+                                "<td id='position'>" + position + "</td>" +
+                                "<td>" +
+                                "<button name='delete_employee_company'>Удалить</button>" +
+                                "</td>" +
+                                "</tr>"
+                            );
+                            $("div.dialog-add-company table tbody tr td button[name='delete_employee_company']").off('click');
+                            $("div.dialog-add-company table tbody tr td button[name='delete_employee_company']").on('click', function () {
+                                if (confirm("Вы действительно хотите удалить запись?")) {
+                                    $(this).parent().parent().remove();
+                                }
+                            });
+                            $(this).dialog("close");
+                            break;
                     };
-                    sendPostRequestAddNewEmployeeToCompany(url, json_for_send, $(this));
                 }
             },
             "Отмена": function () {
@@ -281,6 +405,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-employee-company").data("key", "");
+            $("div.dialog-add-employee-company").data("type", "");
         },
     });
 
@@ -289,33 +414,69 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 400,
         buttons: {
             "Добавить": function () {
-                if ($("div.dialog-add-address-person input#add_country_person").val().length === 0 ||
-                    $("div.dialog-add-address-person input#add_city_person").val().length === 0 ||
-                    $("div.dialog-add-address-person input#add_street_person").val().length === 0) {
-                    $("div.dialog-add-address-person label[for='add_country_person']").css("color", "red");
-                    $("div.dialog-add-address-person label[for='add_city_person']").css("color", "red");
-                    $("div.dialog-add-address-person label[for='add_street_person']").css("color", "red");
+                if ($("div.dialog-add-address-person input.country").val().length === 0 ||
+                    $("div.dialog-add-address-person input.city").val().length === 0 ||
+                    $("div.dialog-add-address-person input.street").val().length === 0) {
+                    $("div.dialog-add-address-person label.country").css("color", "red");
+                    $("div.dialog-add-address-person label.city").css("color", "red");
+                    $("div.dialog-add-address-person label.street").css("color", "red");
                 } else {
-                    $("div.dialog-add-address-person label[for='add_country_person']").css("color", "black");
-                    $("div.dialog-add-address-person label[for='add_city_person']").css("color", "black");
-                    $("div.dialog-add-address-person label[for='add_street_person']").css("color", "black");
-                    let url = 'http://localhost:8090/contragent/edit/person/address';
-                    let idPerson = $("div.dialog-add-address-person").data("key");
-                    let json_for_send = {
-                        id: idPerson,
-                        post_index: $("div.dialog-add-address-person #add_post_index_person").val(),
-                        country: $("div.dialog-add-address-person #add_country_person").val(),
-                        city: $("div.dialog-add-address-person #add_city_person").val(),
-                        street: $("div.dialog-add-address-person #add_street_person").val(),
-                        house_number: $("div.dialog-add-address-person #add_house_number_person").val(),
-                        apartrment_number: $("div.dialog-add-address-person #add_apartrment_number_person").val()
+                    $("div.dialog-add-address-person label.country").css("color", "black");
+                    $("div.dialog-add-address-person label.city").css("color", "black");
+                    $("div.dialog-add-address-person label.street").css("color", "black");
+
+                    let typeOperation = $("div.dialog-add-address-person").data("type");
+                    let postIndex = $("div.dialog-add-address-person input.post_index").val();
+                    let country = $("div.dialog-add-address-person input.country").val();
+                    let city = $("div.dialog-add-address-person input.city").val();
+                    let street = $("div.dialog-add-address-person input.street").val();
+                    let houseNumber = $("div.dialog-add-address-person input.house_number").val();
+                    let apartrmentNumber = $("div.dialog-add-address-person input.apartrment_number").val();
+
+                    switch (typeOperation) {
+                        case "edit":
+                            let url = 'http://localhost:8090/contragent/edit/person/address';
+                            let idPerson = $("div.dialog-add-address-person").data("key");
+                            let json_for_send = {
+                                id: idPerson,
+                                post_index: postIndex,
+                                country: country,
+                                city: city,
+                                street: street,
+                                house_number: houseNumber,
+                                apartrment_number: apartrmentNumber
+                            };
+                            sendPostRequestAddNewAddressToPerson(url, json_for_send, $(this));
+                            break;
+                        case "add":
+                            $("div.dialog-add-person table tbody").append(
+                                "<tr>" +
+                                "<td id='id'></td>" +
+                                "<td id='post_index'>" + postIndex + "</td>" +
+                                "<td id='country'>" + country + "</td>" +
+                                "<td id='city'>" + city + "</td>" +
+                                "<td id='street'>" + street + "</td>" +
+                                "<td id='house_number'>" + houseNumber + "</td>" +
+                                "<td id='apartrment_number'>" + apartrmentNumber + "</td>" +
+                                "<td>" +
+                                "<button name='delete_address_person'>Удалить</button>" +
+                                "</td>" +
+                                "</tr>"
+                            );
+                            $("div.dialog-add-person table tbody tr td button[name='delete_address_person']").off('click');
+                            $("div.dialog-add-person table tbody tr td button[name='delete_address_person']").on('click', function () {
+                                if (confirm("Вы действительно хотите удалить запись?")) {
+                                    $(this).parent().parent().remove();
+                                }
+                            });
+                            $(this).dialog("close");
+                            break;
                     };
-                    sendPostRequestAddNewAddressToPerson(url, json_for_send, $(this));
                 }
             },
             "Отмена": function () {
@@ -324,6 +485,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-address-person").data("key", "");
+            $("div.dialog-add-address-person").data("type", "");
         },
     });
 
@@ -332,33 +494,69 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 400,
         buttons: {
             "Добавить": function () {
-                if ($("div.dialog-add-address-company input#add_country_company").val().length === 0 ||
-                    $("div.dialog-add-address-company input#add_city_company").val().length === 0 ||
-                    $("div.dialog-add-address-company input#add_street_company").val().length === 0) {
-                    $("div.dialog-add-address-company label[for='add_country_company']").css("color", "red");
-                    $("div.dialog-add-address-company label[for='add_city_company']").css("color", "red");
-                    $("div.dialog-add-address-company label[for='add_street_company']").css("color", "red");
+                if ($("div.dialog-add-address-company input.country").val().length === 0 ||
+                    $("div.dialog-add-address-company input.city").val().length === 0 ||
+                    $("div.dialog-add-address-company input.street").val().length === 0) {
+                    $("div.dialog-add-address-company label.country").css("color", "red");
+                    $("div.dialog-add-address-company label.city").css("color", "red");
+                    $("div.dialog-add-address-company label.street").css("color", "red");
                 } else {
-                    $("div.dialog-add-address-company label[for='add_country_company']").css("color", "black");
-                    $("div.dialog-add-address-company label[for='add_city_company']").css("color", "black");
-                    $("div.dialog-add-address-company label[for='add_street_company']").css("color", "black");
-                    let url = 'http://localhost:8090/contragent/edit/company/address';
-                    let idCompany = $("div.dialog-add-address-company").data("key");
-                    let json_for_send = {
-                        id: idCompany,
-                        post_index: $("div.dialog-add-address-company #add_post_index_company").val(),
-                        country: $("div.dialog-add-address-company #add_country_company").val(),
-                        city: $("div.dialog-add-address-company #add_city_company").val(),
-                        street: $("div.dialog-add-address-company #add_street_company").val(),
-                        house_number: $("div.dialog-add-address-company #add_house_number_company").val(),
-                        apartrment_number: $("div.dialog-add-address-company #add_apartrment_number_company").val()
-                    };
-                    sendPostRequestAddNewAddressToCompany(url, json_for_send, $(this));
+                    $("div.dialog-add-address-company label.country").css("color", "black");
+                    $("div.dialog-add-address-company label.city").css("color", "black");
+                    $("div.dialog-add-address-company label.street").css("color", "black");
+
+                    let typeOperation = $("div.dialog-add-address-company").data("type");
+                    let postIndex = $("div.dialog-add-address-company input.post_index").val();
+                    let country = $("div.dialog-add-address-company input.country").val();
+                    let city = $("div.dialog-add-address-company input.city").val();
+                    let street = $("div.dialog-add-address-company input.street").val();
+                    let houseNumber = $("div.dialog-add-address-company input.house_number").val();
+                    let apartrmentNumber = $("div.dialog-add-address-company input.apartrment_number").val();
+
+                    switch (typeOperation) {
+                        case "edit":
+                            let url = 'http://localhost:8090/contragent/edit/company/address';
+                            let idCompany = $("div.dialog-add-address-company").data("key");
+                            let json_for_send = {
+                                id: idCompany,
+                                post_index: postIndex,
+                                country: country,
+                                city: city,
+                                street: street,
+                                house_number: houseNumber,
+                                apartrment_number: apartrmentNumber
+                            };
+                            sendPostRequestAddNewAddressToCompany(url, json_for_send, $(this));
+                            break;
+                        case "add":
+                            $("div.dialog-add-company table.table-edit-address tbody").append(
+                                "<tr>" +
+                                "<td id='id'></td>" +
+                                "<td id='post_index'>" + postIndex + "</td>" +
+                                "<td id='country'>" + country + "</td>" +
+                                "<td id='city'>" + city + "</td>" +
+                                "<td id='street'>" + street + "</td>" +
+                                "<td id='house_number'>" + houseNumber + "</td>" +
+                                "<td id='apartrment_number'>" + apartrmentNumber + "</td>" +
+                                "<td>" +
+                                "<button name='delete_address_company'>Удалить</button>" +
+                                "</td>" +
+                                "</tr>"
+                            );
+                            $("div.dialog-add-company table tbody tr td button[name='delete_address_company']").off('click');
+                            $("div.dialog-add-company table tbody tr td button[name='delete_address_company']").on('click', function () {
+                                if (confirm("Вы действительно хотите удалить запись?")) {
+                                    $(this).parent().parent().remove();
+                                }
+                            });
+                            $(this).dialog("close");
+                            break;
+                    }
                 }
             },
             "Отмена": function () {
@@ -367,6 +565,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-address-company").data("key", "");
+            $("div.dialog-add-address-company").data("type", "");
         },
     });
 
@@ -375,34 +574,37 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 1000,
         height: 600,
         buttons: {
             "Сохранить": function () {
-                if ($("div.dialog-edit-company input#edit_name_company").val().length === 0) {
-                    $("div.dialog-edit-company label[for='edit_name_company']").css("color", "red");
+                if ($("div.dialog-edit-company input.name_company").val().length === 0) {
+                    $("div.dialog-edit-company label.name_company").css("color", "red");
                 } else {
-                    $("div.dialog-edit-company label[for='edit_name_company']").css("color", "black");
+                    $("div.dialog-edit-company label.name_company").css("color", "black");
                     let url = 'http://localhost:8090/contragent/edit/company';
                     let json_for_send = {
                         id: $("div.dialog-edit-company").data("key"),
-                        name_company: $("div.dialog-edit-company #edit_name_company").val()
+                        name_company: $("div.dialog-edit-company input.name_company").val()
                     };
-                    sendPostRequestToServer(url, json_for_send, $(this), "company");
+                    sendPostRequestToServerEdit(url, json_for_send, $(this), "company");
                 }
             },
             "Добавить связку Контакт + Адрес": function () {
                 $("div.dialog-add-employee-address-company").data("key", $("div.dialog-edit-company").data("key"));
+                $("div.dialog-add-employee-address-company").data("type", "edit");
                 $("div.dialog-add-employee-address-company").dialog("open");
             },
             "Добавить контакт": function () {
                 $("div.dialog-add-employee-company").data("key", $("div.dialog-edit-company").data("key"));
+                $("div.dialog-add-employee-company").data("type", "edit");
                 $("div.dialog-add-employee-company").dialog("open");
             },
             "Добавить адрес": function () {
                 $("div.dialog-add-address-company").data("key", $("div.dialog-edit-company").data("key"));
+                $("div.dialog-add-address-company").data("type", "edit");
                 $("div.dialog-add-address-company").dialog("open");
             },
             "Отмена": function () {
@@ -419,28 +621,29 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 1000,
         height: 600,
         buttons: {
             "Сохранить": function () {
-                if ($("div.dialog-edit-person input#edit_last_name_person").val().length === 0) {
-                    $("div.dialog-edit-person label[for='edit_last_name_person']").css("color", "red");
+                if ($("div.dialog-edit-person input.last_name").val().length === 0) {
+                    $("div.dialog-edit-person label.last_name").css("color", "red");
                 } else {
-                    $("div.dialog-edit-person label[for='edit_last_name_person']").css("color", "black");
+                    $("div.dialog-edit-person label.last_name").css("color", "black");
                     let url = 'http://localhost:8090/contragent/edit/person';
                     let json_for_send = {
                         id: $("div.dialog-edit-person").data("key"),
-                        first_name: $("div.dialog-edit-person #edit_first_name_person").val(),
-                        middle_name: $("div.dialog-edit-person #edit_middle_name_person").val(),
-                        last_name: $("div.dialog-edit-person #edit_last_name_person").val()
+                        first_name: $("div.dialog-edit-person input.first_name").val(),
+                        middle_name: $("div.dialog-edit-person input.middle_name").val(),
+                        last_name: $("div.dialog-edit-person input.last_name").val()
                     };
-                    sendPostRequestToServer(url, json_for_send, $(this), "person");
+                    sendPostRequestToServerEdit(url, json_for_send, $(this), "person");
                 }
             },
             "Добавить адрес": function () {
                 $("div.dialog-add-address-person").data("key", $("div.dialog-edit-person").data("key"));
+                $("div.dialog-add-address-person").data("type", "edit");
                 $("div.dialog-add-address-person").dialog("open");
             },
             "Отмена": function () {
@@ -457,24 +660,24 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 400,
         buttons: {
             "Редактировать": function () {
-                if ($("div.dialog-edit-employee input#edit_last_name_employee").val().length === 0) {
-                    $("div.dialog-edit-employee label[for='edit_last_name_employee']").css("color", "red");
+                if ($("div.dialog-edit-employee input.last_name").val().length === 0) {
+                    $("div.dialog-edit-employee label.last_name").css("color", "red");
                 } else {
-                    $("div.dialog-edit-employee label[for='edit_last_name_employee']").css("color", "black");
+                    $("div.dialog-edit-employee label.last_name").css("color", "black");
                     let url = 'http://localhost:8090/contragent/edit/employee';
                     let json_for_send = {
                         id: $("div.dialog-edit-employee").data("key"),
-                        first_name: $("div.dialog-edit-employee #edit_first_name_employee").val(),
-                        middle_name: $("div.dialog-edit-employee #edit_middle_name_employee").val(),
-                        last_name: $("div.dialog-edit-employee #edit_last_name_employee").val(),
-                        position: $("div.dialog-edit-employee #edit_position_employee").val()
+                        first_name: $("div.dialog-edit-employee input.first_name").val(),
+                        middle_name: $("div.dialog-edit-employee input.middle_name").val(),
+                        last_name: $("div.dialog-edit-employee input.last_name").val(),
+                        position: $("div.dialog-edit-employee input.position").val()
                     };
-                    sendPostRequestToServer(url, json_for_send, $(this), "employee");
+                    sendPostRequestToServerEdit(url, json_for_send, $(this), "employee");
                 }
             },
             "Отмена": function () {
@@ -488,32 +691,32 @@
         resizable: false,
         height: "auto",
         show: "fold",
-        hide: "blind",
+        hide: "slide",
         modal: true,
         width: 400,
         buttons: {
             "Редактировать": function () {
-                if ($("div.dialog-edit-address input#edit_country").val().length === 0 ||
-                    $("div.dialog-edit-address input#edit_city").val().length === 0 ||
-                    $("div.dialog-edit-address input#edit_street").val().length === 0) {
-                    $("div.dialog-edit-address label[for='edit_country']").css("color", "red");
-                    $("div.dialog-edit-address label[for='edit_city']").css("color", "red");
-                    $("div.dialog-edit-address label[for='edit_street']").css("color", "red");
+                if ($("div.dialog-edit-address input.country").val().length === 0 ||
+                    $("div.dialog-edit-address input.city").val().length === 0 ||
+                    $("div.dialog-edit-address input.street").val().length === 0) {
+                    $("div.dialog-edit-address label.country").css("color", "red");
+                    $("div.dialog-edit-address label.city").css("color", "red");
+                    $("div.dialog-edit-address label.street").css("color", "red");
                 } else {
-                    $("div.dialog-edit-address label[for='edit_country']").css("color", "black");
-                    $("div.dialog-edit-address label[for='edit_city']").css("color", "black");
-                    $("div.dialog-edit-address label[for='edit_street']").css("color", "black");
+                    $("div.dialog-edit-address label.country").css("color", "black");
+                    $("div.dialog-edit-address label.city").css("color", "black");
+                    $("div.dialog-edit-address label.street").css("color", "black");
                     let url = 'http://localhost:8090/contragent/edit/address';
                     let json_for_send = {
                         id: $("div.dialog-edit-address").data("key"),
-                        post_index: $("div.dialog-edit-address #edit_post_index").val(),
-                        country: $("div.dialog-edit-address #edit_country").val(),
-                        city: $("div.dialog-edit-address #edit_city").val(),
-                        street: $("div.dialog-edit-address #edit_street").val(),
-                        house_number: $("div.dialog-edit-address #edit_house_number").val(),
-                        apartrment_number: $("div.dialog-edit-address #edit_apartrment_number").val()
+                        post_index: $("div.dialog-edit-address input.post_index").val(),
+                        country: $("div.dialog-edit-address input.country").val(),
+                        city: $("div.dialog-edit-address input.city").val(),
+                        street: $("div.dialog-edit-address input.street").val(),
+                        house_number: $("div.dialog-edit-address input.house_number").val(),
+                        apartrment_number: $("div.dialog-edit-address input.apartrment_number").val()
                     };
-                    sendPostRequestToServer(url, json_for_send, $(this), "address");
+                    sendPostRequestToServerEdit(url, json_for_send, $(this), "address");
                 }
             },
             "Отмена": function () {
@@ -523,7 +726,7 @@
     });
 
     $(document).ready(function () {
-        $("div.dialog-person").dialog({
+        $("div.dialog-search-person").dialog({
             autoOpen: false,
             resizable: false,
             height: "auto",
@@ -533,21 +736,21 @@
             width: 400,
             buttons: {
                 "Отправить запрос": function () {
-                    if ($("div.dialog-person input#last_name_person").val().length === 0) {
-                        $("div.dialog-person label[for='last_name_person']").css("color", "red");
+                    if ($("div.dialog-search-person input.last_name").val().length === 0) {
+                        $("div.dialog-search-person label.last_name").css("color", "red");
                     } else {
-                        $("div.dialog-person label[for='last_name_person']").css("color", "black");
+                        $("div.dialog-search-person label.last_name").css("color", "black");
                         let url = 'http://localhost:8090/contragent/edit/person';
                         $("div.contragent-table-found-values table tbody").empty();
                         let json_for_send = {
-                            first_name: $("div.dialog-person #first_name_person").val(),
-                            middle_name: $("div.dialog-person #middle_name_person").val(),
-                            last_name: $("div.dialog-person #last_name_person").val()
+                            first_name: $("div.dialog-search-person input.first_name").val(),
+                            middle_name: $("div.dialog-search-person input.middle_name").val(),
+                            last_name: $("div.dialog-search-person input.last_name").val()
                         };
 
                         $.get(url, json_for_send)
                             .done(function (data) {
-                                $("div.dialog-person").dialog("close");
+                                $("div.dialog-search-person").dialog("close");
                                 $.each(data, function (key, value) {
                                     $("div.contragent-table-found-values table tbody").append(
                                         "<tr>" +
@@ -566,9 +769,9 @@
 
                                 $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
                                     $("div.dialog-edit-person").data("key", $(this).parent().parent().children("#id").text());
-                                    $("div.dialog-edit-person input[id='edit_first_name_person']").val($(this).parent().parent().children("#first_name").text());
-                                    $("div.dialog-edit-person input[id='edit_middle_name_person']").val($(this).parent().parent().children("#middle_name").text());
-                                    $("div.dialog-edit-person input[id='edit_last_name_person']").val($(this).parent().parent().children("#last_name").text());
+                                    $("div.dialog-edit-person input.first_name").val($(this).parent().parent().children("#first_name").text());
+                                    $("div.dialog-edit-person input.middle_name").val($(this).parent().parent().children("#middle_name").text());
+                                    $("div.dialog-edit-person input.last_name").val($(this).parent().parent().children("#last_name").text());
                                     objectTrTable = $(this).parent().parent();
                                     getAddressesToPerson($(this).parent().parent().children("#id").text());
                                     $("div.dialog-edit-person").dialog("open");
@@ -592,7 +795,7 @@
                 }
             },
         });
-        $("div.dialog-address").dialog({
+        $("div.dialog-search-address").dialog({
             autoOpen: false,
             resizable: false,
             height: "auto",
@@ -602,29 +805,29 @@
             width: 400,
             buttons: {
                 "Отправить запрос": function () {
-                    if ($("div.dialog-address input#country").val().length === 0 ||
-                        $("div.dialog-address input#city").val().length === 0 ||
-                        $("div.dialog-address input#street").val().length === 0) {
-                        $("div.dialog-address label[for='country']").css("color", "red");
-                        $("div.dialog-address label[for='city']").css("color", "red");
-                        $("div.dialog-address label[for='street']").css("color", "red");
+                    if ($("div.dialog-search-address input.country").val().length === 0 ||
+                        $("div.dialog-search-address input.city").val().length === 0 ||
+                        $("div.dialog-search-address input.street").val().length === 0) {
+                        $("div.dialog-search-address label.country").css("color", "red");
+                        $("div.dialog-search-address label.city").css("color", "red");
+                        $("div.dialog-search-address label.street").css("color", "red");
                     } else {
-                        $("div.dialog-address label[for='country']").css("color", "black");
-                        $("div.dialog-address label[for='city']").css("color", "black");
-                        $("div.dialog-address label[for='street']").css("color", "black");
+                        $("div.dialog-search-address label.country").css("color", "black");
+                        $("div.dialog-search-address label.city").css("color", "black");
+                        $("div.dialog-search-address label.street").css("color", "black");
                         let url = 'http://localhost:8090/contragent/edit/address';
                         $("div.contragent-table-found-values table tbody").empty();
                         let json_for_send = {
-                            post_index: $("div.dialog-address #post_index").val(),
-                            country: $("div.dialog-address #country").val(),
-                            city: $("div.dialog-address #city").val(),
-                            street: $("div.dialog-address #street").val(),
-                            house_number: $("div.dialog-address #house_number").val(),
-                            apartrment_number: $("div.dialog-address #apartrment_number").val()
+                            post_index: $("div.dialog-search-address input.post_index").val(),
+                            country: $("div.dialog-search-address input.country").val(),
+                            city: $("div.dialog-search-address input.city").val(),
+                            street: $("div.dialog-search-address input.street").val(),
+                            house_number: $("div.dialog-search-address input.house_number").val(),
+                            apartrment_number: $("div.dialog-search-address input.apartrment_number").val()
                         };
                         $.get(url, json_for_send)
                             .done(function (data) {
-                                $("div.dialog-address").dialog("close");
+                                $("div.dialog-search-address").dialog("close");
                                 $.each(data, function (key, value) {
                                     $("div.contragent-table-found-values table tbody").append(
                                         "<tr>" +
@@ -646,12 +849,12 @@
 
                                 $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
                                     $("div.dialog-edit-address").data("key", $(this).parent().parent().children("#id").text());
-                                    $("div.dialog-edit-address input[id='edit_post_index']").val($(this).parent().parent().children("#post_index").text());
-                                    $("div.dialog-edit-address input[id='edit_country']").val($(this).parent().parent().children("#country").text());
-                                    $("div.dialog-edit-address input[id='edit_city']").val($(this).parent().parent().children("#city").text());
-                                    $("div.dialog-edit-address input[id='edit_street']").val($(this).parent().parent().children("#street").text());
-                                    $("div.dialog-edit-address input[id='edit_house_number']").val($(this).parent().parent().children("#house_number").text());
-                                    $("div.dialog-edit-address input[id='edit_apartrment_number']").val($(this).parent().parent().children("#apartrment_number").text());
+                                    $("div.dialog-edit-address input.post_index").val($(this).parent().parent().children("#post_index").text());
+                                    $("div.dialog-edit-address input.country").val($(this).parent().parent().children("#country").text());
+                                    $("div.dialog-edit-address input.city").val($(this).parent().parent().children("#city").text());
+                                    $("div.dialog-edit-address input.street").val($(this).parent().parent().children("#street").text());
+                                    $("div.dialog-edit-address input.house_number").val($(this).parent().parent().children("#house_number").text());
+                                    $("div.dialog-edit-address input.apartrment_number").val($(this).parent().parent().children("#apartrment_number").text());
                                     objectTrTable = $(this).parent().parent();
                                     $("div.dialog-edit-address").dialog("open");
                                 });
@@ -674,7 +877,7 @@
                 }
             },
         });
-        $("div.dialog-company").dialog({
+        $("div.dialog-search-company").dialog({
             autoOpen: false,
             resizable: false,
             height: "auto",
@@ -684,18 +887,18 @@
             width: 400,
             buttons: {
                 "Отправить запрос": function () {
-                    if ($("div.dialog-company input#name_company").val().length === 0) {
-                        $("div.dialog-company label[for='name_company']").css("color", "red");
+                    if ($("div.dialog-search-company input.name_company").val().length === 0) {
+                        $("div.dialog-search-company label.name_company").css("color", "red");
                     } else {
-                        $("div.dialog-company label[for='name_company']").css("color", "black");
+                        $("div.dialog-search-company label.name_company").css("color", "black");
                         let url = 'http://localhost:8090/contragent/edit/company';
                         $("div.contragent-table-found-values table tbody").empty();
                         let json_for_send = {
-                            name_company: $("div.dialog-company #name_company").val()
+                            name_company: $("div.dialog-search-company input.name_company").val()
                         };
                         $.get(url, json_for_send)
                             .done(function (data) {
-                                $("div.dialog-company").dialog("close");
+                                $("div.dialog-search-company").dialog("close");
                                 $.each(data, function (key, value) {
                                     $("div.contragent-table-found-values table tbody").append(
                                         "<tr>" +
@@ -712,7 +915,7 @@
 
                                 $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
                                     $("div.dialog-edit-company").data("key", $(this).parent().parent().children("#id").text());
-                                    $("div.dialog-edit-company input[id='edit_name_company']").val($(this).parent().parent().children("#name_company").text());
+                                    $("div.dialog-edit-company input.name_company").val($(this).parent().parent().children("#name_company").text());
                                     objectTrTable = $(this).parent().parent();
                                     getAddressesToCompany($(this).parent().parent().children("#id").text());
                                     getEmployeeToCompany($(this).parent().parent().children("#id").text());
@@ -737,7 +940,7 @@
                 }
             },
         });
-        $("div.dialog-employee").dialog({
+        $("div.dialog-search-employee").dialog({
             autoOpen: false,
             resizable: false,
             height: "auto",
@@ -747,21 +950,21 @@
             width: 400,
             buttons: {
                 "Отправить запрос": function () {
-                    if ($("div.dialog-employee input#last_name_employee").val().length === 0) {
-                        $("div.dialog-employee label[for='last_name_employee']").css("color", "red");
+                    if ($("div.dialog-search-employee input.last_name").val().length === 0) {
+                        $("div.dialog-search-employee label.last_name").css("color", "red");
                     } else {
-                        $("div.dialog-employee label[for='last_name_employee']").css("color", "black");
+                        $("div.dialog-search-employee label.last_name").css("color", "black");
                         let url = 'http://localhost:8090/contragent/edit/employee';
                         $("div.contragent-table-found-values table tbody").empty();
                         let json_for_send = {
-                            first_name: $("div.dialog-employee #first_name_employee").val(),
-                            middle_name: $("div.dialog-employee #middle_name_employee").val(),
-                            last_name: $("div.dialog-employee #last_name_employee").val(),
-                            position: $("div.dialog-employee #position_employee").val()
+                            first_name: $("div.dialog-search-employee input.first_name").val(),
+                            middle_name: $("div.dialog-search-employee input.middle_name").val(),
+                            last_name: $("div.dialog-search-employee input.last_name").val(),
+                            position: $("div.dialog-search-employee input.position").val()
                         };
                         $.get(url, json_for_send)
                             .done(function (data) {
-                                $("div.dialog-employee").dialog("close");
+                                $("div.dialog-search-employee").dialog("close");
                                 $.each(data, function (key, value) {
                                     $("div.contragent-table-found-values table tbody").append(
                                         "<tr>" +
@@ -781,10 +984,10 @@
 
                                 $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
                                     $("div.dialog-edit-employee").data("key", $(this).parent().parent().children("#id").text());
-                                    $("div.dialog-edit-employee input[id='edit_first_name_employee']").val($(this).parent().parent().children("#first_name").text());
-                                    $("div.dialog-edit-employee input[id='edit_middle_name_employee']").val($(this).parent().parent().children("#middle_name").text());
-                                    $("div.dialog-edit-employee input[id='edit_last_name_employee']").val($(this).parent().parent().children("#last_name").text());
-                                    $("div.dialog-edit-employee input[id='edit_position_employee']").val($(this).parent().parent().children("#position").text());
+                                    $("div.dialog-edit-employee input.first_name").val($(this).parent().parent().children("#first_name").text());
+                                    $("div.dialog-edit-employee input.middle_name").val($(this).parent().parent().children("#middle_name").text());
+                                    $("div.dialog-edit-employee input.last_name").val($(this).parent().parent().children("#last_name").text());
+                                    $("div.dialog-edit-employee input.position").val($(this).parent().parent().children("#position").text());
                                     objectTrTable = $(this).parent().parent();
                                     $("div.dialog-edit-employee").dialog("open");
                                 });
@@ -810,16 +1013,29 @@
         $("div.contragent-command-button button[name='search']").click(function () {
             switch ($("div.contragent-list-radio-buttons input[type='radio']:checked").val()) {
                 case "person":
-                    $("div.dialog-person").dialog("open");
+                    $("div.dialog-search-person").dialog("open");
                     break;
                 case "company":
-                    $("div.dialog-company").dialog("open");
+                    $("div.dialog-search-company").dialog("open");
                     break;
                 case "address":
-                    $("div.dialog-address").dialog("open");
+                    $("div.dialog-search-address").dialog("open");
                     break;
                 case "employee":
-                    $("div.dialog-employee").dialog("open");
+                    $("div.dialog-search-employee").dialog("open");
+                    break;
+            }
+            ;
+        });
+        $("div.contragent-command-button button[name='add']").click(function () {
+            switch ($("div.contragent-list-radio-buttons input[type='radio']:checked").val()) {
+                case "person":
+                    $("div.dialog-add-person").dialog("open");
+                    break;
+                case "company":
+                    $("div.dialog-add-company").dialog("open");
+                    break;
+                default:
                     break;
             }
             ;
@@ -827,11 +1043,12 @@
     });
 
     $("div.contragent-list-radio-buttons input[type='radio']").on('click', function () {
+        const buttonAdd = $("div.contragent-search-panel .contragent-command-button button[name='add']");
         const tableHeader = $("div.contragent-table-found-values");
         tableHeader.empty();
-
         switch ($(this).val()) {
             case "person":
+                buttonAdd.removeAttr("disabled");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -848,6 +1065,7 @@
                     "</table>");
                 break;
             case "company":
+                buttonAdd.removeAttr("disabled");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -862,6 +1080,7 @@
                     "</table>");
                 break;
             case "address":
+                buttonAdd.attr("disabled", "disabled");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -881,6 +1100,7 @@
                     "</table>");
                 break;
             case "employee":
+                buttonAdd.attr("disabled", "disabled");
                 tableHeader.append(
                     "<table class=\"table table-bordered table-sm\">" +
                     "    <thead class=\"thead-dark\">" +
@@ -906,33 +1126,28 @@
         $("div.contragent-table-found-values table tbody").empty();
     });
 
-    $("div.contragent-command-button button[name='ok']").on('click', function () {
+    function sendPostRequestToServerAdd(json_for_send, dialogWindow) {
+        $.ajax({
+            method: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Access-Control-Request-Method', "POST");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            url: 'http://localhost:8090/contragent/add',
+            datatype: 'application/json',
+            contentType: 'application/json',
+            data: JSON.stringify(json_for_send),
+            success: function () {
+                alert("Данные успешно сохранены");
+                dialogWindow.dialog("close");
+            },
+            error: function (error) {
+                alert("Error")
+            },
+        });
+    }
 
-        let typeEntity = $("div.contragent-list-radio-buttons input:checked").val();
-        let url = 'http://localhost:8090/contragent/edit/' + typeEntity;
-        let json_for_send;
-
-        switch (typeEntity) {
-            case "person":
-                json_for_send = {
-                    id: $("div.contragent-edit-box").data("key"),
-                    first_name: $("div.contragent-edit-box #first_name").val(),
-                    middle_name: $("div.contragent-edit-box #middle_name").val(),
-                    last_name: $("div.contragent-edit-box #last_name").val()
-                };
-                sendPostRequestToServer(url, json_for_send);
-                break;
-            case "company":
-                json_for_send = {
-                    id: $("div.contragent-edit-box").data("key"),
-                    name_company: $("div.contragent-edit-box #name_company").val()
-                };
-                sendPostRequestToServer(url, json_for_send);
-                break;
-        }
-    });
-
-    function sendPostRequestToServer(url, json_for_send, dialogWindow, typeEntity) {
+    function sendPostRequestToServerEdit(url, json_for_send, dialogWindow, typeEntity) {
         $.ajax({
             method: "POST",
             beforeSend: function (xhr) {
@@ -947,7 +1162,6 @@
                 alert("Данные успешно обновлены");
                 dialogWindow.dialog("close");
                 updateTable(typeEntity, json_for_send);
-
             },
             error: function (error) {
                 alert("Error")
@@ -1033,7 +1247,7 @@
             },
         })
             .done(function (data) {
-                $("div.dialog-edit-company table.table-edit-company-address tbody").append(
+                $("div.dialog-edit-company table.table-edit-address tbody").append(
                     "<tr>" +
                     "<td id='id'>" + data.id + "</td>" +
                     "<td id='post_index'>" + data.index + "</td>" +
@@ -1043,12 +1257,12 @@
                     "<td id='house_number'>" + data.house_number + "</td>" +
                     "<td id='apartrment_number'>" + data.apartrment_number + "</td>" +
                     "<td>" +
-                    "<button name='delete_address_company'>Удалить</button>" +
+                    "<button name='delete_address'>Удалить</button>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").off('click');
-                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").on('click', function () {
+                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").off('click');
+                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").on('click', function () {
                     if (confirm("Вы действительно хотите удалить запись?")) {
                         sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
                     }
@@ -1075,7 +1289,7 @@
             },
         })
             .done(function (data) {
-                $("div.dialog-edit-company table.table-edit-company-employee tbody").append(
+                $("div.dialog-edit-company table.table-edit-employee tbody").append(
                     "<tr>" +
                     "<td id='id'>" + data.id + "</td>" +
                     "<td id='first_name'>" + data.first_name + "</td>" +
@@ -1083,12 +1297,12 @@
                     "<td id='last_name'>" + data.last_name + "</td>" +
                     "<td id='position'>" + data.position + "</td>" +
                     "<td>" +
-                    "<button name='delete_employee_company'>Удалить</button>" +
+                    "<button name='delete_employee'>Удалить</button>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").off('click');
-                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").on('click', function () {
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").off('click');
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").on('click', function () {
                     if (confirm("Вы действительно хотите удалить запись?")) {
                         sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
                     }
@@ -1115,7 +1329,7 @@
             },
         })
             .done(function (data) {
-                $("div.dialog-edit-company table.table-edit-company-employee tbody").append(
+                $("div.dialog-edit-company table.table-edit-employee tbody").append(
                     "<tr>" +
                     "<td id='id'>" + data.employee.id + "</td>" +
                     "<td id='first_name'>" + data.employee.first_name + "</td>" +
@@ -1123,11 +1337,11 @@
                     "<td id='last_name'>" + data.employee.last_name + "</td>" +
                     "<td id='position'>" + data.employee.position + "</td>" +
                     "<td>" +
-                    "<button name='delete_employee_company'>Удалить</button>" +
+                    "<button name='delete_employee'>Удалить</button>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-company-address tbody").append(
+                $("div.dialog-edit-company table.table-edit-address tbody").append(
                     "<tr>" +
                     "<td id='id'>" + data.address.id + "</td>" +
                     "<td id='post_index'>" + data.address.index + "</td>" +
@@ -1137,19 +1351,19 @@
                     "<td id='house_number'>" + data.address.house_number + "</td>" +
                     "<td id='apartrment_number'>" + data.address.apartrment_number + "</td>" +
                     "<td>" +
-                    "<button name='delete_address_company'>Удалить</button>" +
+                    "<button name='delete_address'>Удалить</button>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").off('click');
-                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").on('click', function () {
+                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").off('click');
+                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").on('click', function () {
                     if (confirm("Вы действительно хотите удалить запись?")) {
                         sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
                     }
                 });
                 dialogWindow.dialog("close");
-                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").off('click');
-                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").on('click', function () {
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").off('click');
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").on('click', function () {
                     if (confirm("Вы действительно хотите удалить запись?")) {
                         sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
                     }
@@ -1206,7 +1420,7 @@
         })
             .done(function (data) {
                 $.each(data, function (key, value) {
-                    $("div.dialog-edit-company table.table-edit-company-address tbody").append(
+                    $("div.dialog-edit-company table.table-edit-address tbody").append(
                         "<tr>" +
                         "<td id='id'>" + value.id + "</td>" +
                         "<td id='post_index'>" + value.index + "</td>" +
@@ -1216,13 +1430,13 @@
                         "<td id='house_number'>" + value.house_number + "</td>" +
                         "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
                         "<td>" +
-                        "<button name='delete_address_company'>Удалить</button>" +
+                        "<button name='delete_address'>Удалить</button>" +
                         "</td>" +
                         "</tr>"
                     );
                 });
 
-                $("div.dialog-edit-company table.table-edit-company-address tbody tr td button[name='delete_address_company']").on('click', function () {
+                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").on('click', function () {
                     if (confirm("Вы действительно хотите удалить запись?")) {
                         sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
                     }
@@ -1242,7 +1456,7 @@
         })
             .done(function (data) {
                 $.each(data, function (key, value) {
-                    $("div.dialog-edit-company table.table-edit-company-employee tbody").append(
+                    $("div.dialog-edit-company table.table-edit-employee tbody").append(
                         "<tr>" +
                         "<td id='id'>" + value.id + "</td>" +
                         "<td id='first_name'>" + value.first_name + "</td>" +
@@ -1250,13 +1464,13 @@
                         "<td id='last_name'>" + value.last_name + "</td>" +
                         "<td id='position'>" + value.position + "</td>" +
                         "<td>" +
-                        "<button name='delete_employee_company'>Удалить</button>" +
+                        "<button name='delete_employee'>Удалить</button>" +
                         "</td>" +
                         "</tr>"
                     );
                 });
 
-                $("div.dialog-edit-company table.table-edit-company-employee tbody tr td button[name='delete_employee_company']").on('click', function () {
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").on('click', function () {
                     if (confirm("Вы действительно хотите удалить запись?")) {
                         sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
                     }

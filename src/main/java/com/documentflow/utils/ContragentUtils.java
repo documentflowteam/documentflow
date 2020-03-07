@@ -1,6 +1,7 @@
 package com.documentflow.utils;
 
 import com.documentflow.entities.Address;
+import com.documentflow.entities.dto.ContragentDtoAddress;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.entities.dto.ContragentDtoParameters;
 import lombok.NonNull;
@@ -8,6 +9,8 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -52,5 +55,19 @@ public class ContragentUtils {
 
     public static String toUpperCase(String string) {
         return string != null ? string.toUpperCase() : null;
+    }
+
+    public static ContragentDtoAddress[] deleteDuplicate(ContragentDtoAddress[] addresses){
+        return Arrays.stream(addresses)
+                .distinct()
+                .collect(Collectors.toList())
+                .toArray(new ContragentDtoAddress[]{});
+    }
+
+    public static ContragentDtoEmployee[] deleteDuplicate(ContragentDtoEmployee[] addresses){
+        return Arrays.stream(addresses)
+                .distinct()
+                .collect(Collectors.toList())
+                .toArray(new ContragentDtoEmployee[]{});
     }
 }
