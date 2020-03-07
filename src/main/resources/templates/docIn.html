@@ -51,27 +51,30 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <form th:action="@{/docs/in}" method="GET">
-                                    <td><input th:value="${param.regNumber != null} ? ${param.regNumber}" class="form-control" th:name="regNumber" type="text"></td>
+                                <form id="filterForm" th:action="@{/docs/in}" method="GET">
+                                    <td><input th:value="${param.regNumber != null} ? ${param.regNumber}" class="form-control reset" th:name="regNumber" type="text"></td>
                                     <td class="inline">
-                                        <input th:value="${param.regDateMin != null} ? ${param.regDateMin}" class="form-control" th:name="regDateMin" type="date">
-                                        <input th:value="${param.regDateMax != null} ? ${param.regDateMax}" class="form-control" th:name="regDateMax" type="date">
+                                        <input th:value="${param.regDateMin != null} ? ${param.regDateMin}" class="form-control reset" th:name="regDateMin" type="date">
+                                        <input th:value="${param.regDateMax != null} ? ${param.regDateMax}" class="form-control reset" th:name="regDateMax" type="date">
                                     </td>
                                     <td>
-                                        <select class="form-control" th:name="docTypeId">
+                                        <select class="form-control reset" th:name="docTypeId">
                                             <option th:text="' '" th:value="null"/>
                                             <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:selected="${{param.docTypeId}} == ${{docT.id}}" />
                                         </select>
                                     </td>
-                                    <td><input th:value="${param.sender != null} ? ${param.sender}" class="form-control" th:name="sender" type="text"></td>
+                                    <td><input th:value="${param.sender != null} ? ${param.sender}" class="form-control reset" th:name="sender" type="text"></td>
                                     <td>
-                                        <select class="form-control" th:name="stateId">
+                                        <select class="form-control reset" th:name="stateId">
                                             <option th:text="' '" th:value="null"/>
                                             <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
                                         </select>
                                     </td>
                                     <td></td>
-                                    <td><button type="submit" class="btn btn-primary">Применить</button></td>
+                                    <td>
+                                        <button type="submit"><i class="far fa-check-square"></i></button>
+                                        <button type="button" th:onclick="'javascript:clearFilter();'"><i class="far fa-window-close"></i></button>
+                                    </td>
                                 </form>
                             </tr>
                             <tr th:each="docIn : ${docs.getContent()}">
@@ -148,6 +151,12 @@
             }
         });
     }
+
+    function clearFilter() {
+        $('.reset').val('');
+<!--        $('.reset').prop('checked', false);-->
+    }
+
 
     function openModal(id){
         $.ajax({

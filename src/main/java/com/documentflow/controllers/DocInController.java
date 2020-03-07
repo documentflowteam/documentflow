@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
-@Controller
+@RestController
 @RequestMapping("/docs/in")
 public class DocInController {
 
@@ -59,7 +59,6 @@ public class DocInController {
         return "docIn";
     }
 
-    @ResponseBody
     @RequestMapping("/card/{id}")
     public DocInDto getCard(@PathVariable("id") Long id, Principal principal) {
         return docInUtils.getDocIn(id, principal.getName());
