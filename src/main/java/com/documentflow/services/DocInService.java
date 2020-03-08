@@ -1,6 +1,7 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.DocIn;
+import com.documentflow.entities.DocOut;
 import com.documentflow.entities.Task;
 import com.documentflow.repositories.DocInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,4 +60,16 @@ public class DocInService {
     public DocIn findByRegNumber(String regNumber) {
         return docInRepository.findByRegNumber(regNumber);
     }
+
+    public void addTaskToDocIn(Long id, Task task) {
+        DocIn docIn = docInRepository.getOne(id);
+        docIn.setTask(task);
+        docInRepository.save(docIn);
+    }
+
+//    public void addDocOutToDocIn(Long id, DocOut docOut) {
+//        DocIn docIn = docInRepository.getOne(id);
+//        docIn.setDocOut(docOut);
+//        docInRepository.save(docIn);
+//    }
 }
