@@ -44,43 +44,39 @@ public class DocOutUtils {
     }
 
     public DocOut convertFromDocOutDTO(DocOutDTO docOutDTO) {
- //       DocOut docOut = new DocOut(
-//                docOutDTO.getId(),
-//                docOutDTO.getCreateDate(),
-//                userService.getUserByUsername(docOutDTO.getCreator().getUsername()),//findOneById(docOutDTO.getCreatorId()),
-//                docTypeService.getDocTypeById(docOutDTO.getDocTypeId()),
-//                docOutDTO.getSigner(),
-//                docOutDTO.getContent(),
-//                docOutDTO.getPages(),
-//                docOutDTO.getAppendix(),
-//                docOutDTO.getNote(),
-//                docOutDTO.getIsGenerated(),
-//                docOutDTO.getNumber(),
-//                docOutDTO.getRegDate(),
-//                docOutDTO.getState(),
-//                docOutDTO.getTask());
 
         DocOut docOut = new DocOut();
                 docOut.setId(docOutDTO.getId());
                 docOut.setCreateDate(docOutDTO.getCreateDate());
                 docOut.setCreator(docOutDTO.getCreator());
-                docOut.setDocType(docOutDTO.getDocType());
+                docOut.setDocType(docTypeService.getDocTypeById(docOutDTO.getDocTypeId()));
+      //          docOut.setDocType(docOutDTO.getDocType());
+      //          docOut.setDocTypeId(docTypeService.getDocTypeById(1));
                 docOut.setSigner(docOutDTO.getSigner());
                 docOut.setContent(docOutDTO.getContent());
         docOut.setPages(docOutDTO.getPages());
         docOut.setAppendix(docOutDTO.getAppendix());
         docOut.setNote(docOutDTO.getNote());
-        docOut.setIsGenerated(docOutDTO.getIsGenerated());
-        docOut.setNumber(docOutDTO.getNumber());
+        if (docOutDTO.getIsGenerated()==null) {
+            docOut.setIsGenerated(false);
+        } else docOut.setIsGenerated(docOutDTO.getIsGenerated());
+
+        if (docOutDTO.getNumber()==null) {
+            docOut.setNumber("б/н");
+        } else docOut.setNumber(docOutDTO.getNumber());
+//        docOut.setNumber(docOutDTO.getNumber());
+
         docOut.setRegDate(docOutDTO.getRegDate());
+
+//        if (docOutDTO.getState() ==null) {
+//            docOut.setState(stateService.getStateById(1));
+//        } else {docOut.setState(docOutDTO.getState());
+//        }
+ //       docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
         docOut.setState(docOutDTO.getState());
         docOut.setTask(docOutDTO.getTask());
 
-        if (docOutDTO.getState() !=null) {
-            docOut.setState(stateService.getStateById(docOutDTO.getStateId()));
-        } else {
-            docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
-          }
+
 //        if (docOutDTO.getTask() != null) {
 //            docOutDTO.setTask(taskService.findOneById(docOutDTO.getTaskId()));
 //        } else docOutDTO.setTask(null);

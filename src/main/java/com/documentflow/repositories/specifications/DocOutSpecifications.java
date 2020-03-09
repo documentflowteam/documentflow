@@ -73,6 +73,11 @@ public class DocOutSpecifications {
                         criteriaBuilder.lower(criteriaBuilder.literal("%" + content + "%"))));
     }
 
+//    public static Specification<DocOut> docInId(Long id) {
+//        return ((root, criteriaQuery, criteriaBuilder) ->
+//                criteriaBuilder.equal(root.get("docIn").get("id"), id));
+//    }
+
     public static Specification<DocOut> noteContains(String note) {
         return ((root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.like(

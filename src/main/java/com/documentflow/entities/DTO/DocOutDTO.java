@@ -70,17 +70,30 @@ public class DocOutDTO implements Serializable {
 
     }
 
-    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO, String docTypeName,
-                     DocType docType, Integer docTypeId, User signer, String content, Integer pages, String appendix,
-                     String note, Boolean isGenerated, String number, LocalDate regDate, State state, Integer stateId, Task task) {
+//
+//    private Long id;
+//    private LocalDate createDate;
+//    private User creator;
+//    private DocType docType;
+//     private User signer;
+//    private String content;
+//    private Integer pages;
+//    private String appendix;
+//    private String note;
+//    private Boolean isGenerated;
+//    private String number;
+//    private LocalDate regDate;
+//    private State state;
+//     private Task task;
+
+    public DocOutDTO(Long id, LocalDate createDate, User creator, DocType docType, Integer docTypeId, User signer,
+                          String content, Integer pages, String appendix, String note,
+                          Boolean isGenerated, String number, LocalDate regDate, State state, Task task) {
         this.id = id;
         this.createDate = createDate;
         this.creator = creator;
-        this.creatorId = creatorId;
-        this.creatorFIO = creatorFIO;
-        this.docTypeName = docTypeName;
         this.docType = docType;
-        this.docTypeId = docTypeId;
+        this.docTypeId=docTypeId;
         this.signer = signer;
         this.content = content;
         this.pages = pages;
@@ -90,8 +103,20 @@ public class DocOutDTO implements Serializable {
         this.number = number;
         this.regDate = regDate;
         this.state = state;
-        this.stateId = stateId;
         this.task = task;
+    }
+
+    public DocOutDTO(Long id, LocalDate createDate, User creator, DocType docType, Integer docTypeId, User signer,
+                     String content, Integer pages, State state) {
+        this.id = id;
+        this.createDate = createDate;
+        this.creator = creator;
+        this.docType = docType;
+        this.docTypeId=docTypeId;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.state = state;
     }
 }
 

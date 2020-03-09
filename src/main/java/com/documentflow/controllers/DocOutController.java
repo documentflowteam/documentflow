@@ -80,42 +80,6 @@ public class DocOutController {
 
     }
 
-
-//    @RequestMapping(value = "/card", method = RequestMethod.POST)
-//    public String userCardSubmit(@ModelAttribute DocOutDTO docOutDTO) {
-//        docOutService.save(docOutDTO);
-//        return "redirect:/docs/out";
-//    }
-
-
-//    @RequestMapping(value = "/card")
-//    public ModelAndView editCard(@PathVariable DocOutDTO docOutDTO) {
-//        ModelAndView result = new ModelAndView("doc_out");
-// //       DocOut docOut=docOutDTO.convertToDocOut();
-//        result.addObject("creators", userService.getAllUsers());
-//        result.addObject("docType", docTypeService.findAllDocTypes());
-//        result.addObject("signer", userService.getAllUsers());
-//        return result;
-//    }
-
-//    @PostMapping("/card")
-//    public String createNewDocOut(@RequestParam(name = "newDocOut") DocOutDTO docOutDTO) {
-//        DocOut docOut=new DocOut();
-//        docOut.setCreateDate(docOutDTO.getCreateDate());
-//        docOut.setCreator(docOutDTO.getCreator());
-//        docOut.setDocType(docOutDTO.getDocType());
-//        docOut.setSigner(docOutDTO.getSigner());
-
-
-//        docOutService.save(docOutDTO);
-//        return "redirect:/docs/out";
-//    }
-
-//    @RequestMapping(value = "/card", method = RequestMethod.POST)
-//    public String userCardSubmit(@ModelAttribute DocOut docOut) {
-//        docOutService.save(docOut);
-//        return "redirect:/docs/out";
-//    }
     @PostMapping("/card")
     public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
 
@@ -136,6 +100,7 @@ public class DocOutController {
     @PostMapping("/delete")
     public String deleteDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
+ //      if(docOut.getIsGenerated()==true) return "redirect:/docs/out";
         if(docOut.getState()!=stateService.getStateById(1)
                 || docOut.getState()!=stateService.getStateById(3)
                 || docOut.getState()!=stateService.getStateById(4)
@@ -143,34 +108,8 @@ public class DocOutController {
                 || docOut.getState()!=stateService.getStateById(9)) {
 
             docOut.setState(stateService.getStateById(4));
-            docOut.setCreator(userService.getCurrentUser(1));
-            docOut.setDocType(docTypeService.getDocTypeById(1));
-            docOut.setIsGenerated(false);
-
             docOutService.save(docOut);
+        }
             return "redirect:/docs/out";
-        } else return "redirect:/docs/out";
     }
-
-
-    //    @PostMapping("/card")
-//    public String registrationDoc(@ModelAttribute(name = "newDocOut") DocOutDTO docOutDTO) {
-//        DocOut docOut = docOutDTO.convertToDocOut();
-//        docOutService.save(docOut);
-//        return "redirect:/docs/out";
-//    }
-//
-//    @PostMapping("/mod/card")
-//    public String modificationDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
-//        DocOut docOut = docOutDTO.convertToDocOut();
-//        docOutService.save(docOut);
-//        return "redirect:/docs/out";
-//    }
-//
-//    @PostMapping("/delete")
-//    public String delete(@RequestParam(name = "docOut", required = false) DocOutDTO docOutDTO) {
-//        Long id = docOutDTO.getId();
-//        docOutService.deleteById(id);
-//        return "redirect:/docs/out";
-//    }
 }
