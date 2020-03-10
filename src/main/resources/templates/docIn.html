@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!--    <script src=/javascript/docIn.js></script>-->
 </head>
 <body>
 
@@ -30,8 +32,7 @@
                     <a role="button"
                        aria-pressed="true"
                        class="btn btn-secondary"
-                       data-toggle="modal"
-                       href="#showDoc"
+                       href="#"
                        th:onclick="'javascript:openModal(-1);'">Зарегистрировать</a>
                 </div>
             </div>
@@ -81,8 +82,7 @@
                                 <td>
                                     <a role="button"
                                        aria-pressed="true"
-                                       data-toggle="modal"
-                                       href="#showDoc"
+                                       href="#"
                                        th:text="${docIn.regNumber}"
                                        th:onclick="'javascript:openModal(\'' + ${docIn.id} + '\');'" />
                                 </td>
@@ -124,9 +124,8 @@
 </div>
 
 
-<!--После добавления всех скриптов вынести в отдельный файл-->
+<!--После добавления всех скриптов вынесу в отдельный файл, при разработке удобнее работать в одном окне-->
 <script th:inline="javascript">
-
     $.dateCut = function(date) {
         var d = new Date(date);
         var day = d.getDate();
@@ -157,8 +156,16 @@
 <!--        $('.reset').prop('checked', false);-->
     }
 
+    function closeModal() {
+        var modal  = document.querySelector('#showDoc');
+        modal.classList.toggle('show');
+        modal.style.display = "none";
+    }
 
     function openModal(id){
+            var modal  = document.querySelector('#showDoc');
+            modal.classList.toggle('show');
+            modal.style.display = "block";
         $.ajax({
             url: "/docs/in/card/" + id,
             success: function (doc) {
@@ -189,7 +196,7 @@
                     if (doc.taskId != null) {
                         addButton('taskId', '/tasks/' + doc.id, 'Поручение', doc.taskId);<!-- добавить ссыль на нужный метод -->
                     } else {
-                        addButton('taskId', '/tasks/' + doc.id, 'Поручение', 'Создать');<!-- добавить ссыль на нужный метод -->
+                        addButton('taskId', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');<!-- добавить ссыль на нужный метод -->
                     }
 <!--                    if (doc.taskId != null) {-->
 <!--                        addButton('docOutId', '/docs/out/' + doc.id, 'Ответ', doc.docOutId);-->
@@ -205,6 +212,14 @@
         $('.addBtn').append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
         $('.addBtn').append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
     }
+
+    $(document).ready(function() {
+        var url = new URLSearchParams(window.location.search);
+        var openDI = url.get('openDI');
+        if (openDI != null) {
+            openModal(openDI)
+        }
+    });
 </script>
 
 <!-- Modal delete document-->
@@ -253,7 +268,7 @@
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
+                <a role="button" aria-pressed="true" class="close" href="#" th:onclick="'javascript:closeModal();'">x</a>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
@@ -353,7 +368,7 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                <a role="button" aria-pressed="true" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
         </div>

@@ -2,6 +2,7 @@ package com.documentflow.controllers;
 
 import com.documentflow.entities.*;
 import com.documentflow.entities.dto.DocInDto;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import com.documentflow.utils.DocInFilter;
 import com.documentflow.utils.DocInUtils;
@@ -41,7 +42,6 @@ public class DocInController {
     public String showIn(
             Model model,
             HttpServletRequest request,
-
             @RequestParam(value = "currentPage", required = false) Integer currentPage) {
         if (currentPage == null || currentPage < 1) {
             currentPage = 1;
@@ -49,7 +49,6 @@ public class DocInController {
         model.addAttribute("currentPage", currentPage);
         DocInFilter filter = new DocInFilter(request);
         model.addAttribute("filter", filter.getFiltersStr());
-//        Page<DocInDto> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate")).map(d -> docInUtils.convertToDTO(d));
         Page<DocInDto> page = docInService.findAllByPagingAndFiltering(filter.getSpecification(), PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"))
                 .map(d -> docInUtils.convertToDTO(d));
         model.addAttribute("docs", page);
@@ -70,6 +69,7 @@ public class DocInController {
         DocIn docIn = docInUtils.convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(docInUtils.getRegNumber());
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
         }
         docInService.save(docIn);
         return "redirect:/docs/in";
@@ -77,7 +77,7 @@ public class DocInController {
 
     @PostMapping("/del")
     public String delete(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        docInService.deleteById(docInDto.getId());
+        docInUtils.editState(docInDto.getId(), BusinessKeyState.DELETED);
         return "redirect:/docs/in";
     }
 }

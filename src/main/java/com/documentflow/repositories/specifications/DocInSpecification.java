@@ -42,4 +42,9 @@ public class DocInSpecification {
         return ((root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("state").get("id"), id));
     }
+
+    public static Specification<DocIn> stateIdNotEqual(Integer id) {
+        return ((root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.notEqual(root.get("state").get("id"), id));
+    }
 }

@@ -1,8 +1,10 @@
 package com.documentflow.utils;
 
+import com.documentflow.entities.Task;
 import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.User;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,8 @@ import java.util.Date;
 @Component
 public class DocInUtils {
 
+    private DocIn docIn;
+    private DocInDto docInDto;
     private UserService userService;
     private DepartmentService departmentService;
     private StateService stateService;
@@ -37,7 +41,7 @@ public class DocInUtils {
 
     public String getRegNumber() {
         String regNumber;
-        DocIn docIn = docInService.findFirstByOrderByIdDesc();
+        docIn = docInService.findFirstByOrderByIdDesc();
         LocalDate date = LocalDate.now();
         if (docIn != null && docIn.getRegDate().getYear() == date.getYear()) {
             Integer number = Integer.parseInt(docIn.getRegNumber().substring(3, docIn.getRegNumber().length()-3));
@@ -49,14 +53,14 @@ public class DocInUtils {
     }
 
     public DocInDto getDocIn(Long id, String login) {
-        DocInDto docIn = new DocInDto();
+        docInDto = new DocInDto();
         if (id > 0) {
-            docIn = convertToDTO(docInService.findById(id));
+            docInDto = convertToDTO(docInService.findById(id));
         } else {
-            docIn.setUserFIO(getUserFIO(userService.getCurrentUser(1)));
-            docIn.setUserId(userService.getCurrentUser(1).getId()); //Заменить на релаьно авторизованного юзера
+            docInDto.setUserFIO(getUserFIO(userService.getCurrentUser(1)));
+            docInDto.setUserId(userService.getCurrentUser(1).getId()); //Заменить на релаьно авторизованного юзера
         }
-        return docIn;
+        return docInDto;
     }
 
     private LocalDateTime convertToLocalDate(Date date) {
@@ -80,7 +84,7 @@ public class DocInUtils {
     }
 
     public DocIn convertFromDTO(DocInDto docInDto) {
-        DocIn docIn = new DocIn(
+        docIn = new DocIn(
                 docInDto.getId(),
                 docInDto.getRegNumber(),
                 convertToLocalDate(docInDto.getRegDate()),
@@ -111,7 +115,7 @@ public class DocInUtils {
     }
 
     public DocInDto convertToDTO(DocIn docIn) {
-        DocInDto docInDto = new DocInDto(
+        docInDto = new DocInDto(
                 docIn.getId(),
                 docIn.getRegNumber(),
                 convertToDate(docIn.getRegDate()),
@@ -138,4 +142,36 @@ public class DocInUtils {
         }
         return docInDto;
     }
+
+    public void editState(Long id, BusinessKeyState state) {
+        docIn = docInService.findById(id);
+        switch (state) {
+            case EXECUTION:
+                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+                break;
+            case EXECUTED:
+                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTED.toString()));
+                break;
+            case RECALLED:
+                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.RECALLED.toString()));
+                break;
+            case DELETED:
+                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.DELETED.toString()));
+                break;
+        }
+        docInService.save(docIn);
+    }
+
+    public void addTaskToDocIn(Long id, Task task) {
+        docIn = docInService.findById(id);
+        docIn.setTask(task);
+        docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+        docInService.save(docIn);
+    }
+
+//    public void addDocOutToDocIn(Long id, DocOut docOut) {
+//        DocIn docIn = docInRepository.getOne(id);
+//        docIn.setDocOut(docOut);
+//        docInRepository.save(docIn);
+//    }
 }

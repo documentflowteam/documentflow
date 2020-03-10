@@ -2,7 +2,9 @@ package com.documentflow.services;
 
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.State;
 import com.documentflow.entities.Task;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.repositories.DocInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +21,13 @@ import java.util.List;
 public class DocInService {
 
     private DocInRepository docInRepository;
+    private StateService stateService;
+    private DocIn docIn;
 
     @Autowired
-    public void setDocInRepository(DocInRepository docInRepository) {
+    public void setDocInRepository(DocInRepository docInRepository, StateService stateService) {
         this.docInRepository = docInRepository;
+        this.stateService = stateService;
     }
 
     public DocIn findById(Long id) {
@@ -41,10 +46,6 @@ public class DocInService {
         return docInRepository.save(s);
     }
 
-    public void deleteById(Long aLong) {
-        docInRepository.deleteById(aLong);
-    }
-
     public DocIn findByTask(Task task) {
         return docInRepository.findByTask(task);
     }
@@ -61,15 +62,4 @@ public class DocInService {
         return docInRepository.findByRegNumber(regNumber);
     }
 
-    public void addTaskToDocIn(Long id, Task task) {
-        DocIn docIn = docInRepository.getOne(id);
-        docIn.setTask(task);
-        docInRepository.save(docIn);
-    }
-
-//    public void addDocOutToDocIn(Long id, DocOut docOut) {
-//        DocIn docIn = docInRepository.getOne(id);
-//        docIn.setDocOut(docOut);
-//        docInRepository.save(docIn);
-//    }
 }
