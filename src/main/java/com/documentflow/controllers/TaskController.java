@@ -1,6 +1,7 @@
 package com.documentflow.controllers;
 
 import com.documentflow.entities.*;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.model.enums.BusinessKeyTask;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class TaskController {
     private TaskService taskService;
     private TaskHistoryService taskHistoryService;
     private TaskTypeService taskTypeService;
+    private StateService stateService;
     private DocInService docInService;
     private DocOutService docOutService;
 
@@ -36,6 +38,11 @@ public class TaskController {
     @Autowired
     public void setTaskTypeService(TaskTypeService taskTypeService) {
         this.taskTypeService = taskTypeService;
+    }
+
+    @Autowired
+    public void setStateService(StateService stateService) {
+        this.stateService = stateService;
     }
 
     @Autowired
@@ -83,11 +90,39 @@ public class TaskController {
 
     @GetMapping("/card")
     public String ShowTaskCreationForm(Model model,
+                               Principal principal,
                                @RequestParam(name = "type") Integer typeId,
-                               @RequestParam(name = "docNum") Long docId) {
+                               @RequestParam(name = "docId") Long docId) {
+        User user = null;
+        if (principal != null) {
+            user = userService.getUserByUsername(principal.getName());
+        }
+
+        List<User> users = userService.getAllUsers();
+
         Task task = new Task();
-        task.setTaskType(taskTypeService.getTaskTypeById(typeId));
+        TaskType taskType = taskTypeService.getTaskTypeById(typeId);
+        TaskHistory newTaskHistory = new TaskHistory();
+
+        State taskState = null;
+
+        task.setTaskType(taskType);
+        task.setAuthor(user);
+
+        if (taskType.getBusinessKey().equals(BusinessKeyTask.EXECUTION.name())) {
+            DocIn docIn = docInService.findById(docId);
+            taskState = stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.name());
+            task.setState(taskState);
+            model.addAttribute("docIn", docIn);
+        } else if (taskType.getBusinessKey().equals(BusinessKeyTask.APPROVING.name())) {
+            DocOut docOut = docOutService.findOneById(docId);
+            taskState = stateService.getStateByBusinessKey(BusinessKeyState.APPROVING.name());
+            task.setState(taskState);
+            model.addAttribute("docOut", docOut);
+        }
         model.addAttribute("task", task);
+        model.addAttribute("newTaskHistory", newTaskHistory);
+        model.addAttribute("users", users);
         return "task_form";
     }
 
@@ -104,7 +139,7 @@ public class TaskController {
 
         String taskType = task.getTaskType().getBusinessKey();
         if (taskType.equals(BusinessKeyTask.EXECUTION.name())) {
-            DocIn docIn = docInService.findById(1L);
+            DocIn docIn = docInService.findById(18L);
             model.addAttribute("docIn", docIn);
         } else if (taskType.equals(BusinessKeyTask.APPROVING.name())) {
             DocOut docOut = docOutService.findOneById(1L);
@@ -121,9 +156,13 @@ public class TaskController {
     }
 
     @PostMapping("/save")
-    public String saveTask(@ModelAttribute(name = "task") Task task) {
+    public String saveTask(@ModelAttribute(name = "task") Task task, @ModelAttribute(name = "newTaskHistory") TaskHistory taskHistory) {
+        taskHistory.setTask(task);
+        taskHistory.setUser(task.getAuthor());
+        taskHistory.setState(task.getState());
         taskService.save(task);
-        return "redirect:/docs/in";
+        taskHistoryService.save(taskHistory);
+        return "redirect:/tasks/";
     }
 
     @PostMapping("/save/history")
