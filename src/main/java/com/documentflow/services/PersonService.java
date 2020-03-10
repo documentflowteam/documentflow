@@ -45,6 +45,15 @@ public interface PersonService {
     List<Person> findAll(String firstName, String middleName, String lastName);
 
     /**
+     * We search person who meet the search conditions. Strict search. If the field value is
+     * not specifying this field is equal to null in the database query
+     *
+     * @param person
+     * @return person or null if not found
+     */
+    Person strongFind(Person person);
+
+    /**
      * Find by id
      *
      * @param id id person
