@@ -29,6 +29,14 @@ public class ContragentUtils {
                 (parameters.getNameCompany() == null || parameters.getNameCompany().trim().isEmpty()));
     }
 
+    public static boolean isEmpty(ContragentDtoAddress[] addresses) {
+        return addresses.length == 0 || Arrays.stream(addresses).anyMatch(address -> {
+           return  ((address.getCountry() == null || address.getCountry().trim().isEmpty()) ||
+                    (address.getCity() == null || address.getCity().trim().isEmpty()) ||
+                    (address.getStreet() == null || address.getStreet().trim().isEmpty()));
+        });
+    }
+
     public static boolean isNotEmpty(@NonNull ContragentDtoEmployee employee) {
         return !(
                 (employee.getMiddleName() == null || employee.getMiddleName().trim().isEmpty()) &&

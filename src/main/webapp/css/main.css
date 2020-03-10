@@ -20,25 +20,30 @@
     list-style: none;
 }
 
-.contragent-item-box {
-    margin: 10px;
-    padding: 5px;
-    border: burlywood solid 3px;
-    border-radius: 10px;
+.contragent-main-caption h3 {
+    text-align: center;
 }
 
-.contragent-search-panel {
-    display: none;
-    flex-direction: row;
-    justify-content: space-between;
+.contragent-list-radio-buttons {
+    display: block;
 }
 
 .contragent-command-button {
-    flex-grow: 1;
+    display: flex;
+    justify-content: center;
 }
 
-.contragent-edit-box {
-    flex-grow: 1;
+.contragent-table-found-values {
+    background-color: azure;
+    padding: 10px;
+}
+
+.contragent-command-button button {
+    margin: 5px;
+}
+
+.edit-button, .delete-button {
+    margin: 2px;
 }
 
 /*login */
@@ -61,6 +66,7 @@
     left: 0;
     margin: auto;
 }
+
 /*end login*/
 
 .inline {

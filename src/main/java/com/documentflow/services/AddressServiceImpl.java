@@ -32,14 +32,15 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<Address> save(@NonNull ContragentDtoAddress[] addressesDto) {
 
+        if (ContragentUtils.isEmpty(addressesDto)) {
+            throw new NotFoundAddressException();
+        }
+
         List<Address> addresses = Arrays.stream(addressesDto)
                 .map(Address::new)
                 .filter(ContragentUtils::isNotEmpty)
                 .collect(Collectors.toList());
 
-        if (CollectionUtils.isEmpty(addresses)) {
-            throw new NotFoundAddressException();
-        }
         return addressRepository.saveAll(addresses);
     }
 
