@@ -131,7 +131,8 @@
                                     <td th:text="${docOutDTO.docTypeName}" />
                                     <td th:text="${docOutDTO.creatorFIO}" />
                                     <td th:text="${docOutDTO.state.name}" />
-                                    <td><i th:if="${docOutDTO.appendix != null}" class="far fa-file-pdf" href="#"></i></td>
+                                    <td><a th:if="${docOutDTO.appendix != null}" class="far fa-file-pdf" th:href="@{'/createPdf'}"></a></td>
+<!--                                    <td><i th:if="${docOutDTO.appendix != null}" class="far fa-file-pdf" href="#"></i></td>-->
                                     <td>
                                         <a role="button"
                                            aria-pressed="true"
