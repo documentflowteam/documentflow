@@ -47,7 +47,7 @@ public class DocInFilter {
             specification = getSpecification().and(DocInSpecification.stateId(Integer.valueOf(request.getParameter("stateId"))));
             filtersStr.append("&stateId=" + request.getParameter("stateId"));
         } else {
-            specification = getSpecification().and(DocInSpecification.stateIdNotEqual(Integer.valueOf(request.getParameter("stateId"))));
+            specification = getSpecification().and(DocInSpecification.stateIdNotEqual(4));
         }
     }
 }

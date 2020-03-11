@@ -68,7 +68,7 @@
                                     <td>
                                         <select class="form-control reset" th:name="stateId">
                                             <option th:text="' '" th:value="null"/>
-                                            <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
+                                            <option th:if="${state.id < 6}" th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
                                         </select>
                                     </td>
                                     <td></td>
