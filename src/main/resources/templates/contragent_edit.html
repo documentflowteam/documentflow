@@ -7,29 +7,32 @@
     <title>Contragent edit</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 </head>
 <body>
 <div th:class="contragent-main-caption">
-    <p th:text="'Редактирование параметров контрагента'"></p>
+    <h3 th:text="'Редактирование параметров контрагента'"></h3>
 </div>
-<div th:class="contragent-list-radio-buttons">
-    <input type="radio" name="type_person" th:value="person" th:text="'Персона'">
-    <input type="radio" name="type_person" th:value="company" th:text="'Компания'">
-    <input type="radio" name="type_person" th:value="address" th:text="'Адрес'">
-    <input type="radio" name="type_person" th:value="employee" th:text="'Контактное лицо'">
-    <div th:class="contragent-search-panel">
-        <div th:class="contragent-command-button">
-            <button th:name="search" th:text="'Поиск'"></button>
-            <button th:name="add" th:text="'Добавить'" th:disabled="disabled"></button>
-            <button th:name="cancel" th:text="'Очистить'"></button>
-        </div>
+<div class="contragent-list-radio-buttons btn-group btn-group-toggle" data-toggle="buttons">
+
+    <button type="button" class="radio-button btn btn-lg btn-block" th:value="person" th:text="'Персона'"></button>
+    <button type="button" class="radio-button btn btn-lg btn-block" th:value="company" th:text="'Компания'"></button>
+    <button type="button" class="radio-button btn btn-lg btn-block" th:value="address" th:text="'Адрес'"></button>
+    <button type="button" class="radio-button btn btn-lg btn-block" th:value="employee" th:text="'Контактное лицо'"></button>
+
+    <div th:class="contragent-command-button">
+        <button class="btn btn-outline-info" th:name="search" th:text="'Поиск'"></button>
+        <button class="btn btn-outline-info" th:name="add" th:text="'Добавить'" th:style="'display: none'"></button>
+        <button class="btn btn-outline-dark" th:name="cancel" th:text="'Очистить'"></button>
     </div>
+
 </div>
 <div th:class="contragent-table-found-values"></div>
 <div th:class="dialog-search-person" title="Введите параметры поиска"
@@ -170,16 +173,20 @@
                         });
                     });
 
-                    json_for_send = {
-                        type_person: type_person,
-                        parameters: {
-                            name_company: name_company
-                        },
-                        addresses: arrayAddress,
-                        employees: arrayEmployee
-                    };
+                    if (arrayAddress.length === 0) {
+                        notFoundAddress();
+                    } else {
+                        json_for_send = {
+                            type_person: type_person,
+                            parameters: {
+                                name_company: name_company
+                            },
+                            addresses: arrayAddress,
+                            employees: arrayEmployee
+                        };
 
-                    sendPostRequestToServerAdd(json_for_send, $(this));
+                        sendPostRequestToServerAdd(json_for_send, $(this));
+                    }
                 }
             },
             "Добавить адрес": function () {
@@ -196,6 +203,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-company table tbody").empty();
+            $("div.dialog-add-company input").val('');
         },
     });
 
@@ -258,18 +266,21 @@
                             apartrment_number: apartrment_number
                         });
                     });
+                    if (arrayAddress.length === 0) {
+                        notFoundAddress();
+                    } else {
+                        json_for_send = {
+                            type_person: type_person,
+                            parameters: {
+                                first_name: $("div.dialog-add-person input.first_name").val(),
+                                middle_name: $("div.dialog-add-person input.middle_name").val(),
+                                last_name: $("div.dialog-add-person input.last_name").val()
+                            },
+                            addresses: arrayAddress
+                        };
 
-                    json_for_send = {
-                        type_person: type_person,
-                        parameters: {
-                            first_name: $("div.dialog-add-person input.first_name").val(),
-                            middle_name: $("div.dialog-add-person input.middle_name").val(),
-                            last_name: $("div.dialog-add-person input.last_name").val()
-                        },
-                        addresses: arrayAddress
-                    };
-
-                    sendPostRequestToServerAdd(json_for_send, $(this));
+                        sendPostRequestToServerAdd(json_for_send, $(this));
+                    }
                 }
             },
             "Добавить адрес": function () {
@@ -282,6 +293,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-add-person table tbody").empty();
+            $("div.dialog-add-person input").val('');
         },
     });
 
@@ -338,6 +350,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-employee-address-company").data("key", "");
             $("div.dialog-add-employee-address-company").data("type", "");
+            $("div.dialog-add-employee-address-company input").val('');
         },
     });
 
@@ -384,15 +397,15 @@
                                 "<td id='last_name'>" + lastName + "</td>" +
                                 "<td id='position'>" + position + "</td>" +
                                 "<td>" +
-                                "<button name='delete_employee_company'>Удалить</button>" +
+                                "<a class='delete-button btn btn-danger' href='#'>" +
+                                "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                "</a>" +
                                 "</td>" +
                                 "</tr>"
                             );
-                            $("div.dialog-add-company table tbody tr td button[name='delete_employee_company']").off('click');
-                            $("div.dialog-add-company table tbody tr td button[name='delete_employee_company']").on('click', function () {
-                                if (confirm("Вы действительно хотите удалить запись?")) {
-                                    $(this).parent().parent().remove();
-                                }
+                            $("div.dialog-add-company table tbody tr td a.delete-button").off('click');
+                            $("div.dialog-add-company table tbody tr td a.delete-button").on('click', function () {
+                                confirmDeleteAction(null, $(this).parent().parent());
                             });
                             $(this).dialog("close");
                             break;
@@ -406,6 +419,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-employee-company").data("key", "");
             $("div.dialog-add-employee-company").data("type", "");
+            $("div.dialog-add-employee-company input").val('');
         },
     });
 
@@ -464,15 +478,15 @@
                                 "<td id='house_number'>" + houseNumber + "</td>" +
                                 "<td id='apartrment_number'>" + apartrmentNumber + "</td>" +
                                 "<td>" +
-                                "<button name='delete_address_person'>Удалить</button>" +
+                                "<a class='delete-button btn btn-danger' href='#'>" +
+                                "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                "</a>" +
                                 "</td>" +
                                 "</tr>"
                             );
-                            $("div.dialog-add-person table tbody tr td button[name='delete_address_person']").off('click');
-                            $("div.dialog-add-person table tbody tr td button[name='delete_address_person']").on('click', function () {
-                                if (confirm("Вы действительно хотите удалить запись?")) {
-                                    $(this).parent().parent().remove();
-                                }
+                            $("div.dialog-add-person table tbody tr td a.delete-button").off('click');
+                            $("div.dialog-add-person table tbody tr td a.delete-button").on('click', function () {
+                                confirmDeleteAction(null, $(this).parent().parent());
                             });
                             $(this).dialog("close");
                             break;
@@ -486,6 +500,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-address-person").data("key", "");
             $("div.dialog-add-address-person").data("type", "");
+            $("div.dialog-add-address-person input").val('');
         },
     });
 
@@ -544,15 +559,15 @@
                                 "<td id='house_number'>" + houseNumber + "</td>" +
                                 "<td id='apartrment_number'>" + apartrmentNumber + "</td>" +
                                 "<td>" +
-                                "<button name='delete_address_company'>Удалить</button>" +
+                                "<a class='delete-button btn btn-danger' href='#'>" +
+                                "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                "</a>" +
                                 "</td>" +
                                 "</tr>"
                             );
-                            $("div.dialog-add-company table tbody tr td button[name='delete_address_company']").off('click');
-                            $("div.dialog-add-company table tbody tr td button[name='delete_address_company']").on('click', function () {
-                                if (confirm("Вы действительно хотите удалить запись?")) {
-                                    $(this).parent().parent().remove();
-                                }
+                            $("div.dialog-add-company table tbody tr td a.delete-button").off('click');
+                            $("div.dialog-add-company table tbody tr td a.delete-button").on('click', function () {
+                                confirmDeleteAction(null, $(this).parent().parent());
                             });
                             $(this).dialog("close");
                             break;
@@ -566,6 +581,7 @@
         beforeClose(event, ui) {
             $("div.dialog-add-address-company").data("key", "");
             $("div.dialog-add-address-company").data("type", "");
+            $("div.dialog-add-address-company input").val('');
         },
     });
 
@@ -613,6 +629,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-edit-company table tbody").empty();
+            $("div.dialog-edit-company input").val('');
         },
     });
 
@@ -652,6 +669,7 @@
         },
         beforeClose(event, ui) {
             $("div.dialog-edit-person table tbody").empty();
+            $("div.dialog-edit-person input").val('');
         },
     });
 
@@ -683,6 +701,9 @@
             "Отмена": function () {
                 $(this).dialog("close");
             }
+        },
+        beforeClose(event, ui) {
+            $("div.dialog-edit-employee input").val('');
         },
     });
 
@@ -723,9 +744,13 @@
                 $(this).dialog("close");
             }
         },
+        beforeClose(event, ui) {
+            $("div.dialog-edit-address input").val('');
+        },
     });
 
     $(document).ready(function () {
+        
         $("div.dialog-search-person").dialog({
             autoOpen: false,
             resizable: false,
@@ -759,15 +784,18 @@
                                         "<td id='middle_name'>" + value.middle_name + "</td>" +
                                         "<td id='last_name'>" + value.last_name + "</td>" +
                                         "<td>" +
-                                        "<button name='edit_button'>Редактировать</button>" +
-                                        "<br>" +
-                                        "<button name='delete_button'>Удалить</button>" +
+                                        "<a class='edit-button btn btn-danger' href='#'>" +
+                                        "<i class='fa fa-pencil' aria-hidden='true'></i>" +
+                                        "</a>" +
+                                        "<a class='delete-button btn btn-danger' href='#'>" +
+                                        "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                        "</a>" +
                                         "</td>" +
                                         "</tr>"
                                     );
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                $("div.contragent-table-found-values table tbody tr td a.edit-button").on('click', function () {
                                     $("div.dialog-edit-person").data("key", $(this).parent().parent().children("#id").text());
                                     $("div.dialog-edit-person input.first_name").val($(this).parent().parent().children("#first_name").text());
                                     $("div.dialog-edit-person input.middle_name").val($(this).parent().parent().children("#middle_name").text());
@@ -777,22 +805,26 @@
                                     $("div.dialog-edit-person").dialog("open");
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                                    if (confirm("Вы действительно хотите удалить запись?")) {
-                                        url = url + '/' + $(this).parent().parent().children("#id").text();
-                                        sendDeleteRequestToServer(url, $(this).parent().parent());
-                                    }
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").off('click');
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").on('click', function () {
+
+                                    url = url + '/' + $(this).parent().parent().children("#id").text();
+                                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                                    confirmDeleteAction(url, linkToThisDialogWindow);
                                 });
                             })
                             .fail(function (jqXHR, textStatus, errorThrown) {
-                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                                showError(jqXHR);
                             });
                     }
                 },
                 Cancel: function () {
                     $(this).dialog("close");
                 }
+            },
+            beforeClose(event, ui) {
+                $("div.dialog-search-person input").val('');
             },
         });
         $("div.dialog-search-address").dialog({
@@ -839,15 +871,18 @@
                                         "<td id='house_number'>" + value.house_number + "</td>" +
                                         "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
                                         "<td>" +
-                                        "<button name='edit_button'>Редактировать</button>" +
-                                        "<br>" +
-                                        "<button name='delete_button'>Удалить</button>" +
+                                        "<a class='edit-button btn btn-danger' href='#'>" +
+                                        "<i class='fa fa-pencil' aria-hidden='true'></i>" +
+                                        "</a>" +
+                                        "<a class='delete-button btn btn-danger' href='#'>" +
+                                        "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                        "</a>" +
                                         "</td>" +
                                         "</tr>"
                                     );
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                $("div.contragent-table-found-values table tbody tr td a.edit-button").on('click', function () {
                                     $("div.dialog-edit-address").data("key", $(this).parent().parent().children("#id").text());
                                     $("div.dialog-edit-address input.post_index").val($(this).parent().parent().children("#post_index").text());
                                     $("div.dialog-edit-address input.country").val($(this).parent().parent().children("#country").text());
@@ -859,22 +894,26 @@
                                     $("div.dialog-edit-address").dialog("open");
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                                    if (confirm("Вы действительно хотите удалить запись?")) {
-                                        url = url + '/' + $(this).parent().parent().children("#id").text();
-                                        sendDeleteRequestToServer(url, $(this).parent().parent());
-                                    }
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").off('click');
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").on('click', function () {
+
+                                    url = url + '/' + $(this).parent().parent().children("#id").text();
+                                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                                    confirmDeleteAction(url, linkToThisDialogWindow);
                                 });
                             })
                             .fail(function (jqXHR, textStatus, errorThrown) {
-                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                                showError(jqXHR);
                             });
                     }
                 },
                 Cancel: function () {
                     $(this).dialog("close");
                 }
+            },
+            beforeClose(event, ui) {
+                $("div.dialog-search-address input").val('');
             },
         });
         $("div.dialog-search-company").dialog({
@@ -905,15 +944,18 @@
                                         "<td id='id'>" + value.id + "</td>" +
                                         "<td id='name_company'>" + value.name_company + "</td>" +
                                         "<td>" +
-                                        "<button name='edit_button'>Редактировать</button>" +
-                                        "<br>" +
-                                        "<button name='delete_button'>Удалить</button>" +
+                                            "<a class='edit-button btn btn-danger' href='#'>" +
+                                                "<i class='fa fa-pencil' aria-hidden='true'></i>" +
+                                            "</a>" +
+                                            "<a class='delete-button btn btn-danger' href='#'>" +
+                                                "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                            "</a>" +
                                         "</td>" +
                                         "</tr>"
                                     );
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                $("div.contragent-table-found-values table tbody tr td a.edit-button").on('click', function () {
                                     $("div.dialog-edit-company").data("key", $(this).parent().parent().children("#id").text());
                                     $("div.dialog-edit-company input.name_company").val($(this).parent().parent().children("#name_company").text());
                                     objectTrTable = $(this).parent().parent();
@@ -922,22 +964,26 @@
                                     $("div.dialog-edit-company").dialog("open");
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                                    if (confirm("Вы действительно хотите удалить запись?")) {
-                                        url = url + '/' + $(this).parent().parent().children("#id").text();
-                                        sendDeleteRequestToServer(url, $(this).parent().parent());
-                                    }
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").off('click');
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").on('click', function () {
+
+                                    url = url + '/' + $(this).parent().parent().children("#id").text();
+                                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                                    confirmDeleteAction(url, linkToThisDialogWindow);
                                 });
                             })
                             .fail(function (jqXHR, textStatus, errorThrown) {
-                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                                showError(jqXHR);
                             });
                     }
                 },
                 Cancel: function () {
                     $(this).dialog("close");
                 }
+            },
+            beforeClose(event, ui) {
+                $("div.dialog-search-company input").val('');
             },
         });
         $("div.dialog-search-employee").dialog({
@@ -974,15 +1020,18 @@
                                         "<td id='last_name'>" + value.last_name + "</td>" +
                                         "<td id='position'>" + value.position + "</td>" +
                                         "<td>" +
-                                        "<button name='edit_button'>Редактировать</button>" +
-                                        "<br>" +
-                                        "<button name='delete_button'>Удалить</button>" +
+                                        "<a class='edit-button btn btn-danger' href='#'>" +
+                                        "<i class='fa fa-pencil' aria-hidden='true'></i>" +
+                                        "</a>" +
+                                        "<a class='delete-button btn btn-danger' href='#'>" +
+                                        "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                                        "</a>" +
                                         "</td>" +
                                         "</tr>"
                                     );
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='edit_button']").on('click', function () {
+                                $("div.contragent-table-found-values table tbody tr td a.edit-button").on('click', function () {
                                     $("div.dialog-edit-employee").data("key", $(this).parent().parent().children("#id").text());
                                     $("div.dialog-edit-employee input.first_name").val($(this).parent().parent().children("#first_name").text());
                                     $("div.dialog-edit-employee input.middle_name").val($(this).parent().parent().children("#middle_name").text());
@@ -992,16 +1041,17 @@
                                     $("div.dialog-edit-employee").dialog("open");
                                 });
 
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").off('click');
-                                $("div.contragent-table-found-values table tbody tr td button[name='delete_button']").on('click', function () {
-                                    if (confirm("Вы действительно хотите удалить запись?")) {
-                                        url = url + '/' + $(this).parent().parent().children("#id").text();
-                                        sendDeleteRequestToServer(url, $(this).parent().parent());
-                                    }
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").off('click');
+                                $("div.contragent-table-found-values table tbody tr td a.delete-button").on('click', function () {
+
+                                    url = url + '/' + $(this).parent().parent().children("#id").text();
+                                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                                    confirmDeleteAction(url, linkToThisDialogWindow);
                                 });
                             })
                             .fail(function (jqXHR, textStatus, errorThrown) {
-                                alert(jQuery.parseJSON(jqXHR.responseText).message);
+                                showError(jqXHR);
                             });
                     }
                 },
@@ -1009,9 +1059,12 @@
                     $(this).dialog("close");
                 }
             },
+            beforeClose(event, ui) {
+                $("div.dialog-search-employee input").val('');
+            },
         });
         $("div.contragent-command-button button[name='search']").click(function () {
-            switch ($("div.contragent-list-radio-buttons input[type='radio']:checked").val()) {
+            switch ($("div.contragent-list-radio-buttons button.btn-secondary").val()) {
                 case "person":
                     $("div.dialog-search-person").dialog("open");
                     break;
@@ -1024,11 +1077,10 @@
                 case "employee":
                     $("div.dialog-search-employee").dialog("open");
                     break;
-            }
-            ;
+            };
         });
         $("div.contragent-command-button button[name='add']").click(function () {
-            switch ($("div.contragent-list-radio-buttons input[type='radio']:checked").val()) {
+            switch ($("div.contragent-list-radio-buttons button.btn-secondary").val()) {
                 case "person":
                     $("div.dialog-add-person").dialog("open");
                     break;
@@ -1037,21 +1089,24 @@
                     break;
                 default:
                     break;
-            }
-            ;
+            };
         });
     });
 
-    $("div.contragent-list-radio-buttons input[type='radio']").on('click', function () {
-        const buttonAdd = $("div.contragent-search-panel .contragent-command-button button[name='add']");
+    $("div.contragent-list-radio-buttons button.radio-button").on('click', function () {
+
+        $("div.contragent-list-radio-buttons button.radio-button").removeClass("btn-secondary");
+        $(this).addClass("btn-secondary");
+
+        const buttonAdd = $("div.contragent-command-button button[name='add']");
         const tableHeader = $("div.contragent-table-found-values");
         tableHeader.empty();
         switch ($(this).val()) {
             case "person":
-                buttonAdd.removeAttr("disabled");
+                buttonAdd.css("display", "block");
                 tableHeader.append(
-                    "<table class=\"table table-bordered table-sm\">" +
-                    "    <thead class=\"thead-dark\">" +
+                    "<table class=\"table table-light table-striped table-hover\">" +
+                    "    <thead>" +
                     "        <tr>" +
                     "               <th>ID</th>" +
                     "               <th>Имя</th>" +
@@ -1065,10 +1120,10 @@
                     "</table>");
                 break;
             case "company":
-                buttonAdd.removeAttr("disabled");
+                buttonAdd.css("display", "block");
                 tableHeader.append(
-                    "<table class=\"table table-bordered table-sm\">" +
-                    "    <thead class=\"thead-dark\">" +
+                    "<table class=\"table table-light table-striped table-hover\">" +
+                    "    <thead>" +
                     "        <tr>" +
                     "               <th>ID</th>" +
                     "               <th>Наименование компании</th>" +
@@ -1080,10 +1135,10 @@
                     "</table>");
                 break;
             case "address":
-                buttonAdd.attr("disabled", "disabled");
+                buttonAdd.css("display", "none");
                 tableHeader.append(
-                    "<table class=\"table table-bordered table-sm\">" +
-                    "    <thead class=\"thead-dark\">" +
+                    "<table class=\"table table-light table-striped table-hover\">" +
+                    "    <thead>" +
                     "        <tr>" +
                     "               <th>ID</th>" +
                     "               <th>Почтовый индекс</th>" +
@@ -1100,10 +1155,10 @@
                     "</table>");
                 break;
             case "employee":
-                buttonAdd.attr("disabled", "disabled");
+                buttonAdd.css("display", "none");
                 tableHeader.append(
-                    "<table class=\"table table-bordered table-sm\">" +
-                    "    <thead class=\"thead-dark\">" +
+                    "<table class=\"table table-light table-striped table-hover\">" +
+                    "    <thead>" +
                     "        <tr>" +
                     "               <th>ID</th>" +
                     "               <th>Имя</th>" +
@@ -1119,7 +1174,6 @@
                 break;
         }
         ;
-        $("div.contragent-search-panel").css('display', 'flex');
     });
 
     $("div.contragent-command-button button[name='cancel']").on('click', function () {
@@ -1138,11 +1192,11 @@
             contentType: 'application/json',
             data: JSON.stringify(json_for_send),
             success: function () {
-                alert("Данные успешно сохранены");
+                $.alert('Данные успешно сохранены!');
                 dialogWindow.dialog("close");
             },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         });
     }
@@ -1159,12 +1213,12 @@
             contentType: 'application/json',
             data: JSON.stringify(json_for_send),
             success: function () {
-                alert("Данные успешно обновлены");
+                $.alert('Данные успешно обновлены!');
                 dialogWindow.dialog("close");
                 updateTable(typeEntity, json_for_send);
             },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         });
     }
@@ -1178,11 +1232,11 @@
             },
             url: url,
             success: function () {
-                alert("Данные успешно удалены");
+                $.alert('Данные успешно удалены!');
                 linkTrElementToDelete.remove();
             },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         });
     }
@@ -1198,10 +1252,8 @@
             datatype: 'application/json',
             contentType: 'application/json',
             data: JSON.stringify(json_for_send),
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1215,15 +1267,19 @@
                     "<td id='house_number'>" + data.house_number + "</td>" +
                     "<td id='apartrment_number'>" + data.apartrment_number + "</td>" +
                     "<td>" +
-                    "<button name='delete_address_person'>Удалить</button>" +
+                    "<a class='delete-button btn btn-danger' href='#'>" +
+                    "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                    "</a>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-person table tbody tr td button[name='delete_address_person']").off('click');
-                $("div.dialog-edit-person table tbody tr td button[name='delete_address_person']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/person/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-person table tbody tr td a.delete-button").off('click');
+                $("div.dialog-edit-person table tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/person/address/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
                 dialogWindow.dialog("close");
             });
@@ -1240,10 +1296,8 @@
             datatype: 'application/json',
             contentType: 'application/json',
             data: JSON.stringify(json_for_send),
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1257,15 +1311,19 @@
                     "<td id='house_number'>" + data.house_number + "</td>" +
                     "<td id='apartrment_number'>" + data.apartrment_number + "</td>" +
                     "<td>" +
-                    "<button name='delete_address'>Удалить</button>" +
+                    "<a class='delete-button btn btn-danger' href='#'>" +
+                    "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                    "</a>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").off('click');
-                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-company table.table-edit-address tbody tr td a.delete-button").off('click');
+                $("div.dialog-edit-company table.table-edit-address tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
                 dialogWindow.dialog("close");
             });
@@ -1282,10 +1340,8 @@
             datatype: 'application/json',
             contentType: 'application/json',
             data: JSON.stringify(json_for_send),
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1297,15 +1353,18 @@
                     "<td id='last_name'>" + data.last_name + "</td>" +
                     "<td id='position'>" + data.position + "</td>" +
                     "<td>" +
-                    "<button name='delete_employee'>Удалить</button>" +
+                    "<a class='delete-button btn btn-danger' href='#'>" +
+                    "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                    "</a>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").off('click');
-                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td a.delete-button").off('click');
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td a.delete-button").on('click', function () {
+                    var url = "http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
                 dialogWindow.dialog("close");
             });
@@ -1322,10 +1381,8 @@
             datatype: 'application/json',
             contentType: 'application/json',
             data: JSON.stringify(json_for_send),
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1337,7 +1394,9 @@
                     "<td id='last_name'>" + data.employee.last_name + "</td>" +
                     "<td id='position'>" + data.employee.position + "</td>" +
                     "<td>" +
-                    "<button name='delete_employee'>Удалить</button>" +
+                    "<a class='delete-button btn btn-danger' href='#'>" +
+                    "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                    "</a>" +
                     "</td>" +
                     "</tr>"
                 );
@@ -1351,22 +1410,28 @@
                     "<td id='house_number'>" + data.address.house_number + "</td>" +
                     "<td id='apartrment_number'>" + data.address.apartrment_number + "</td>" +
                     "<td>" +
-                    "<button name='delete_address'>Удалить</button>" +
+                    "<a class='delete-button btn btn-danger' href='#'>" +
+                    "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                    "</a>" +
                     "</td>" +
                     "</tr>"
                 );
-                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").off('click');
-                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-company table.table-edit-address tbody tr td a.delete-button").off('click');
+                $("div.dialog-edit-company table.table-edit-address tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
                 dialogWindow.dialog("close");
-                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").off('click');
-                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td a.delete-button").off('click');
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
                 dialogWindow.dialog("close");
             });
@@ -1376,10 +1441,8 @@
         $.ajax({
             method: "GET",
             url: 'http://localhost:8090/contragent/edit/person/' + idPerson + "/address",
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1394,16 +1457,20 @@
                         "<td id='house_number'>" + value.house_number + "</td>" +
                         "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
                         "<td>" +
-                        "<button name='delete_address_person'>Удалить</button>" +
+                        "<a class='delete-button btn btn-danger' href='#'>" +
+                        "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                        "</a>" +
                         "</td>" +
                         "</tr>"
                     );
                 });
 
-                $("div.dialog-edit-person table tbody tr td button[name='delete_address_person']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/person/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-person table tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/person/address/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
             })
     };
@@ -1412,10 +1479,8 @@
         $.ajax({
             method: "GET",
             url: 'http://localhost:8090/contragent/edit/company/' + idCompany + "/address",
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1430,16 +1495,20 @@
                         "<td id='house_number'>" + value.house_number + "</td>" +
                         "<td id='apartrment_number'>" + value.apartrment_number + "</td>" +
                         "<td>" +
-                        "<button name='delete_address'>Удалить</button>" +
+                        "<a class='delete-button btn btn-danger' href='#'>" +
+                        "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                        "</a>" +
                         "</td>" +
                         "</tr>"
                     );
                 });
 
-                $("div.dialog-edit-company table.table-edit-address tbody tr td button[name='delete_address']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-company table.table-edit-address tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/company/address/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
             })
     };
@@ -1448,10 +1517,8 @@
         $.ajax({
             method: "GET",
             url: 'http://localhost:8090/contragent/edit/company/' + idCompany + "/employee",
-            success: function () {
-            },
-            error: function (error) {
-                alert("Error")
+            error: function (jqXHR, textStatus, errorThrown) {
+                showError(jqXHR);
             },
         })
             .done(function (data) {
@@ -1464,19 +1531,62 @@
                         "<td id='last_name'>" + value.last_name + "</td>" +
                         "<td id='position'>" + value.position + "</td>" +
                         "<td>" +
-                        "<button name='delete_employee'>Удалить</button>" +
+                        "<a class='delete-button btn btn-danger' href='#'>" +
+                        "<i class='fa fa-trash-o' aria-hidden='true'></i>" +
+                        "</a>" +
                         "</td>" +
                         "</tr>"
                     );
                 });
 
-                $("div.dialog-edit-company table.table-edit-employee tbody tr td button[name='delete_employee']").on('click', function () {
-                    if (confirm("Вы действительно хотите удалить запись?")) {
-                        sendDeleteRequestToServer("http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text(), $(this).parent().parent());
-                    }
+                $("div.dialog-edit-company table.table-edit-employee tbody tr td a.delete-button").on('click', function () {
+
+                    var url = "http://localhost:8090/contragent/edit/company/employee/" + $(this).parent().parent().children("#id").text();
+                    var linkToThisDialogWindow = $(this).parent().parent();
+
+                    confirmDeleteAction(url, linkToThisDialogWindow);
                 });
             })
     };
+    
+    function notFoundAddress() {
+        $.alert({
+            title: 'Внимание!',
+            content: 'Не указан адрес!',
+        });
+    }
+
+    function showError(jqXHR) {
+        $.alert("Код статуса:\t" + jqXHR.status + "\n" +
+            "Описание статуса:\t" + jqXHR.statusText + "\n" +
+            "Сообщение:\t" + jQuery.parseJSON(jqXHR.responseText).message);
+    }
+
+    function confirmDeleteAction(url, linkToElement){
+        $.confirm({
+            title: 'Подтверждение действия',
+            content: 'Вы действительно хотите удалить запись?',
+            autoClose: 'cancel|9000',
+            buttons: {
+                confirm: {
+                    text: 'Продолжить',
+                    btnClass: 'btn-danger',
+                    action: function () {
+                        if(url !== null) { sendDeleteRequestToServer(url, linkToElement); }
+                        if(url === null) { linkToElement.remove(); }
+                    }
+                },
+                cancel: {
+                    text: 'Отмена',
+                    btnClass: 'btn-success',
+                    keys: ['enter'],
+                    action: function () {
+                        $.alert('Операция отменена!');
+                    }
+                }
+            }
+        });
+    }
 
     function updateTable(typeEntity, objectToUpdateTable) {
         switch (typeEntity) {
