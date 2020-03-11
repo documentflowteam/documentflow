@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!--    <script src=/javascript/docIn.js></script>-->
 </head>
 <body>
 
@@ -30,8 +32,7 @@
                     <a role="button"
                        aria-pressed="true"
                        class="btn btn-secondary"
-                       data-toggle="modal"
-                       href="#showDoc"
+                       href="#"
                        th:onclick="'javascript:openModal(-1);'">Зарегистрировать</a>
                 </div>
             </div>
@@ -51,35 +52,37 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <form th:action="@{/docs/in}" method="GET">
-                                    <td><input th:value="${param.regNumber != null} ? ${param.regNumber}" class="form-control" th:name="regNumber" type="text"></td>
+                                <form id="filterForm" th:action="@{/docs/in}" method="GET">
+                                    <td><input th:value="${param.regNumber != null} ? ${param.regNumber}" class="form-control reset" th:name="regNumber" type="text"></td>
                                     <td class="inline">
-                                        <input th:value="${param.regDateMin != null} ? ${param.regDateMin}" class="form-control" th:name="regDateMin" type="date">
-                                        <input th:value="${param.regDateMax != null} ? ${param.regDateMax}" class="form-control" th:name="regDateMax" type="date">
+                                        <input th:value="${param.regDateMin != null} ? ${param.regDateMin}" class="form-control reset" th:name="regDateMin" type="date">
+                                        <input th:value="${param.regDateMax != null} ? ${param.regDateMax}" class="form-control reset" th:name="regDateMax" type="date">
                                     </td>
                                     <td>
-                                        <select class="form-control" th:name="docTypeId">
+                                        <select class="form-control reset" th:name="docTypeId">
                                             <option th:text="' '" th:value="null"/>
                                             <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:selected="${{param.docTypeId}} == ${{docT.id}}" />
                                         </select>
                                     </td>
-                                    <td><input th:value="${param.sender != null} ? ${param.sender}" class="form-control" th:name="sender" type="text"></td>
+                                    <td><input th:value="${param.sender != null} ? ${param.sender}" class="form-control reset" th:name="sender" type="text"></td>
                                     <td>
-                                        <select class="form-control" th:name="stateId">
+                                        <select class="form-control reset" th:name="stateId">
                                             <option th:text="' '" th:value="null"/>
-                                            <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
+                                            <option th:if="${state.id < 6}" th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
                                         </select>
                                     </td>
                                     <td></td>
-                                    <td><button type="submit" class="btn btn-primary">Применить</button></td>
+                                    <td>
+                                        <button type="submit"><i class="far fa-check-square"></i></button>
+                                        <button type="button" th:onclick="'javascript:clearFilter();'"><i class="far fa-window-close"></i></button>
+                                    </td>
                                 </form>
                             </tr>
                             <tr th:each="docIn : ${docs.getContent()}">
                                 <td>
                                     <a role="button"
                                        aria-pressed="true"
-                                       data-toggle="modal"
-                                       href="#showDoc"
+                                       href="#"
                                        th:text="${docIn.regNumber}"
                                        th:onclick="'javascript:openModal(\'' + ${docIn.id} + '\');'" />
                                 </td>
@@ -121,9 +124,8 @@
 </div>
 
 
-<!--После добавления всех скриптов вынести в отдельный файл-->
+<!--После добавления всех скриптов вынесу в отдельный файл, при разработке удобнее работать в одном окне-->
 <script th:inline="javascript">
-
     $.dateCut = function(date) {
         var d = new Date(date);
         var day = d.getDate();
@@ -149,7 +151,21 @@
         });
     }
 
+    function clearFilter() {
+        $('.reset').val('');
+<!--        $('.reset').prop('checked', false);-->
+    }
+
+    function closeModal() {
+        var modal  = document.querySelector('#showDoc');
+        modal.classList.toggle('show');
+        modal.style.display = "none";
+    }
+
     function openModal(id){
+            var modal  = document.querySelector('#showDoc');
+            modal.classList.toggle('show');
+            modal.style.display = "block";
         $.ajax({
             url: "/docs/in/card/" + id,
             success: function (doc) {
@@ -175,22 +191,38 @@
                 $('#pages').val(doc.pages);
                 $('#appendix').val(doc.appendix);
                 $('#note').val(doc.note);
-                if (doc.taskId != null || doc.docOutId != null) {
+                if (doc.id != null) {
                     $('#communication').text('Связи');
+                    if (doc.taskId != null) {
+                        addButton('.addBtnTask', 'taskBtn', '/tasks/card/' + doc.taskId, 'Поручение', doc.taskId);
+                    } else {
+                        addButton('.addBtnTask', 'taskBtn', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');
+                    }
+                    if (doc.docOutId != null) {
+                        addButton('.addBtnDO', 'docOutBtn', '/docs/out/' + doc.id, 'Ответ', doc.docOutId);<!-- добавить ссыль на нужный метод -->
+                    } else {
+                        addButton('.addBtnDO', 'docOutBtn', '/docs/out/' + doc.id, 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
+                    }
                 }
-                if (doc.taskId != null) {
-                    $('#taskLabel').text('Поручение ');
-                    $('#taskT').text(doc.taskId);
-                    $('#taskId').val(doc.taskId);
-                }
-<!--                if (doc.docOutId != null) {-->
-<!--                    $('#docOutLabel').text('Ответ ');-->
-<!--                    $('#docOutIdT').text(doc.docOutId);-->
-<!--                    $('#docOutId').val(doc.docOutId);-->
-<!--                }-->
             }
         });
     }
+
+    function addButton(dest, linkId, urlMethod, linkTxt, aTxt) {
+        var check  = document.querySelector('#' + linkId);
+        if (check == null) {
+            $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
+            $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
+        }
+    }
+
+    $(document).ready(function() {
+        var url = new URLSearchParams(window.location.search);
+        var openDI = url.get('openDI');
+        if (openDI != null) {
+            openModal(openDI)
+        }
+    });
 </script>
 
 <!-- Modal delete document-->
@@ -239,7 +271,7 @@
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
+                <a role="button" aria-pressed="true" class="close" href="#" th:onclick="'javascript:closeModal();'">x</a>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
@@ -252,7 +284,7 @@
                     <input id="regNumber" name="regNumber" type="hidden" class="form-control">
                     <input id="regDate" name="regDate" type="hidden" class="form-control">
                     <input id="taskId" name="taskId" type="hidden" class="form-control">
-<!--                    <input id="docOutId" name="docOutId" type="hidden" class="form-control">-->
+                    <input id="docOutId" name="docOutId" type="hidden" class="form-control">
 
                     <div class="form-row">
                         <h5 class="modal-title" id="titleM"></h5>
@@ -325,22 +357,15 @@
                     </div>
                     <div>
                         <h5 id="communication"></h5>
-
-<!--                        <div class="form-row">-->
-<!--                            <label id="docOutLabel" for="docOutIdT" class="col-sm-3 col-form-label"></label>-->
-<!--                            <a id="docOutIdT" href="#" name="docOutIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-<!--                        </div>-->
-                        <div class="form-row" >
-                            <label id="taskLabel" for="taskId" class="col-sm-3 col-form-label"></label>
-                            <a id="taskT" href="#" name="taskT"></a> <!-- добавить ссыль на нужный метод -->
-                        </div>
+                        <div class="form-row addBtnTask" ></div>
+                        <div class="form-row addBtnDO" ></div>
                     </div>
                 </form>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                <a role="button" aria-pressed="true" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
         </div>

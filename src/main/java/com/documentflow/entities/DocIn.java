@@ -66,9 +66,9 @@ public class DocIn implements Serializable {
     @JoinColumn(name = "state_id")
     private State state;
 
-//    @OneToOne(cascade = CascadeType.PERSIST)
-//    @JoinColumn(name = "doc_out_id")
-//    private DocOut docOut;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "doc_out_id")
+    private DocOut docOut;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_id")
