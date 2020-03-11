@@ -1,6 +1,7 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
 import com.documentflow.repositories.DocOutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class DocOutService {
 
     public <S extends DocOut> S save(S s) {
         return docOutRepository.save(s);
+    }
+
+    public DocOut findByTask(Task task) {
+        return docOutRepository.findByTask(task);
     }
 
 //    public Page<DocOut> findAllByCreator(User creator, Pageable pageable){

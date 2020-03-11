@@ -75,20 +75,44 @@ public class DocOutController {
         model.addAttribute("tasks", taskService.findAll(Pageable.unpaged()));
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
         model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
-        model.addAttribute("appendix", docOutService.findOneById(1L).getAppendix());
+//        model.addAttribute("appendix", docOutService.findOneById(1L).getAppendix());
         return "doc_out";
 
     }
 
-    @PostMapping("/card")
-    public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
+    @RequestMapping(value = "/newcard")
+    public ModelAndView createDoc() {
+        ModelAndView result = new ModelAndView("doc_out");
 
-        DocOut docOut=docOutUtils.convertFromDocOutDTO(docOutDTO);
+        result.addObject("creators", userService.getAllUsers());
+        result.addObject("signers", userService.getAllUsers());
+        result.addObject("states", stateService.findAllStates());
+        result.addObject("tasks", taskService.findAll(Pageable.unpaged()));
+        result.addObject("docTypess", docTypeService.findAllDocTypes());
+        result.addObject("docOutAddress", docTypeService.findAllDocTypes());
+        result.addObject("docOut", new DocOutDTO());
+        return result;
+    }
+
+    @RequestMapping(value = "/card/new", method = RequestMethod.POST)
+    public String createDocNew(@ModelAttribute DocOutDTO docOutDTO) {
+        DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
+        docOutService.save(docOut);
+        return "redirect:/docs/out";
+    }
+
+    @PostMapping("/card")
+    public String regEditDoc(@ModelAttribute(name = "docOut") DocOutDTO docOutDTO) {
+      if (docOutDTO.getNumber()!=null || !docOutDTO.getNumber().equals("б/н"))   {
+          return "redirect:/docs/out";
+      } else {
+          DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
 //        if (docOut.getId() == null) {
 //            docOutDTO.setRegNumber(docOutUtils.getRegNumber());
 //        }
-        docOutService.save(docOut);
-        return "redirect:/docs/out";
+          docOutService.save(docOut);
+          return "redirect:/docs/out";
+      }
     }
 
     @ResponseBody

@@ -1,6 +1,7 @@
 package com.documentflow.repositories;
 
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,6 +19,8 @@ public interface DocOutRepository extends JpaRepository<DocOut, Long>, JpaSpecif
     void delete(DocOut docOut);
 
     User getByCreator(User user);
+
+    DocOut findByTask(Task task);
 
 //    Page<DocOut> findAllByCreator(User creator, Pageable pageable);
 //

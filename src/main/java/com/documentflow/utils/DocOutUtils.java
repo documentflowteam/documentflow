@@ -61,12 +61,12 @@ public class DocOutUtils {
             docOut.setIsGenerated(false);
         } else docOut.setIsGenerated(docOutDTO.getIsGenerated());
 
-        if (docOutDTO.getNumber()==null) {
+//        if (docOutDTO.getNumber()==null) {
             docOut.setNumber("б/н");
-        } else docOut.setNumber(docOutDTO.getNumber());
-//        docOut.setNumber(docOutDTO.getNumber());
+//        } else docOut.setNumber(docOutDTO.getNumber());
+ //       docOut.setNumber(docOutDTO.getNumber());
 
-        docOut.setRegDate(docOutDTO.getRegDate());
+        docOut.setRegDate(null);
 
 //        if (docOutDTO.getState() ==null) {
 //            docOut.setState(stateService.getStateById(1));

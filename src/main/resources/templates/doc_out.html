@@ -45,20 +45,21 @@
                        aria-pressed="true"
                        class="btn btn-secondary"
                        data-toggle="modal"
-                       href="#showDoc"
-                       th:onclick="'javascript:openModal(-1);'">Создать исходящий документ</a>
+                       href="#newDoc"
+                       th:onclick="'javascript:createModal();'">Создать исходящий документ</a>
+
 
                     <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Отозвать</a>
                     <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Сгенерировать</a>
                     <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Отправить</a>
-                    <a role="button"
-                       aria-pressed="true"
-                       class="btn btn-secondary"
-                       data-toggle="modal"
-                       href="#delDocOut">Удалить</a>
-                       <!--th:onclick="'javascript:deleteDocOut(\'' + ${docs.id} + '\');'">Удалить</a>-->
-                    <input type="text" class="input-medium search-query" name="s" value="">
-                    <button type="submit" class="add-on"> Поиск</button>
+                    <!--<a role="button"-->
+                       <!--aria-pressed="true"-->
+                       <!--class="btn btn-secondary"-->
+                       <!--data-toggle="modal"-->
+                       <!--href="#delDocOut">Удалить</a>-->
+                       <!--&lt;!&ndash;th:onclick="'javascript:deleteDocOut(\'' + ${docs.id} + '\');'">Удалить</a>&ndash;&gt;-->
+                    <!--<input type="text" class="input-medium search-query" name="s" value="">-->
+                    <!--<button type="submit" class="add-on"> Поиск</button>-->
 
 
                     <div class="row">
@@ -66,27 +67,28 @@
                             <table class="table table-bordered table-sm">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" value=" ">
-                                            </label>
-                                        </div>
-                                    </th>
+                                    <!--<th>-->
+                                        <!--<div class="checkbox">-->
+                                            <!--<label>-->
+                                                <!--<input type="checkbox" value=" ">-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+                                    <!--</th>-->
                                     <th>Номер</th>
                                     <th>Дата</th>
                                     <th>Тип документа</th>
                                     <th>Исполнитель</th>
                                     <th>Статус</th>
                                     <th>Адресат</th>
-                                    <th><i class="far fa-file"></i>Приложение</th>
+                                    <th>Приложение</th>
+                                    <th><i class="fas fa-trash-alt"></i></th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
                                 <tr>
                                     <form th:action="@{/docs/out}"  method="GET">
-                                        <td></td>
+                                        <!--<td></td>-->
                                         <td><input th:value="${param.number != null} ? ${param.number}" class="form-control" th:name="number" type="text"></td>
                                         <td class="inline">
                                             <input th:value="${param.createDateMin != null} ? ${param.createDateMin}" class="form-control" th:name="createDateMin" type="date">
@@ -113,7 +115,7 @@
                                 </tr>
 
                                 <tr th:each="docOutDTO : ${docs.getContent()}">
-                                    <td><input type="checkbox" value=" " /></td>
+                                    <!--<td><input type="checkbox" value=" " /></td>-->
                                     <td>
                                         <a role="button"
                                            aria-pressed="true"
@@ -131,7 +133,9 @@
                                     <td th:text="${docOutDTO.docTypeName}" />
                                     <td th:text="${docOutDTO.creatorFIO}" />
                                     <td th:text="${docOutDTO.state.name}" />
-                                    <td><i th:if="${docOutDTO.appendix != null}" class="far fa-file-pdf" href="#"></i></td>
+                                    <td th:text= "address"/>
+                                    <td th:text="${docOutDTO.appendix}" href="#"/>
+                                    <!--<td><i th:if="${docOutDTO.appendix != null}" class="far fa-file-pdf" href="#"></i></td>-->
                                     <td>
                                         <a role="button"
                                            aria-pressed="true"
@@ -198,24 +202,54 @@
         });
     }
 
+    function createModal() {
+        $.ajax({
+            url: "/docs/out/newcard",
+            method: 'post',
+            docOut: {docOut: 'docOut'},
+            success: function (docOut) {
+                $('#idNew').val(docOut.id);
+                $('#creatorNew').val(docOut.creator);
+                $('#docTypeIdNew').val(docOut.docTypeId);
+                $('#signerNew').val(docOut.signer);
+                $('#contentNew').val(docOut.content);
+                $('#pagesNew').val(docOut.pages);
+                $('#appendixNew').val(docOut.appendix);
+                $('#noteNew').val(docOut.note);
+                $('#isGeneratedNew').val(docOut.isGenerated);
+                // $('#number').val(docOut.number);
+                $('#stateNew').val(docOut.state);
+                // $('#stateId').val(docOut.stateId);
+
+                    $('#communication').text('Связи');
+                // if (doc.docInId != null) {
+                //     $('#docInLabel').text('Входящий ');
+                //     $('#docInId').text(doc.docInId);
+                //     $('#docInId').val(doc.docInId);
+                // }
+                // if (doc.taskId != null) {
+                    $('#taskLabel').text('Поручение ');
+                    $('#taskT').text(docOut.taskId);
+                    $('#taskIdNew').val(docOut.taskId);
+            }
+        });
+    }
 
     function openModal(id){
         $.ajax({
             url: "/docs/out/card/" + id,
             success: function (doc) {
-                if (doc.id == null) {
-                    $('#titleM').text('Исходящий документ');
-                    $('#createDateT').text($.dateCut(new Date()));
-                } else {
+                // if (doc.id == null) {
+                //     $('#titleM').text('Исходящий документ');
+                //     $('#createDateT').text($.dateCut(new Date()));
+                // } else {
                 $('#titleM').text('Исходящий №: ' + doc.number + '   ' + doc.state.name);
                 $('#createDate').val(doc.createDate);
                 $('#createDateT').text($.dateCut(doc.createDate));
-            }
+            // }
                 $('#id').val(doc.id);
                 $('#creator').val(doc.creator);
-                // $('#creatorFIO').val(doc.creatorFIO);
                 $('#docTypeId').val(doc.docTypeId);
-                // $('#docType').val(doc.docType);
                 $('#signer').val(doc.signer);
                 $('#content').val(doc.content);
                 $('#pages').val(doc.pages);
@@ -223,7 +257,6 @@
                 $('#note').val(doc.note);
                 $('#isGenerated').val(doc.isGenerated);
                 $('#number').val(doc.number);
-                $('#regDate').val(doc.regDate);
                 $('#state').val(doc.state);
                 // $('#stateId').val(doc.stateId);
                 if (doc.taskId != null || doc.docInId != null) {
@@ -245,6 +278,344 @@
     }
 
 </script>
+
+
+
+
+
+<div class="modal fade"
+     id="newDoc"
+     tabindex="-1"
+     aria-hidden="true"
+     data-backdrop="static"
+     data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form th:action="'/docs/out/card/new'" method="POST" id="docFormNew">
+
+
+
+                    <!--<div class="modal fade" id="newDoc">-->
+                    <!--<div class="modal-dialog modal-dialog-centered modal-lg">-->
+                    <!--<div class="modal-content">-->
+                    <!--&lt;!&ndash; Modal Header &ndash;&gt;-->
+                    <!--<div class="modal-header">-->
+                    <!--<button type="button" class="close" data-dismiss="modal">×</button>-->
+                    <!--</div>-->
+
+                    <!--<div class="modal-body">-->
+                <!--<form th:action="'/docs/out/card/new'" th:object="${docOut}" method="POST">-->
+                    <input id="idNew" name="idNew" type="hidden" class="form-control">
+                    <input id="noteNew" name="note" type="hidden" class="form-control">
+                    <input id="creatorNew" name="creatorNew" type="hidden" class="form-control">
+                    <input id="signerNew" name="signerNew" type="hidden" class="form-control">
+                    <input id="taskIdNew" name="taskIdNew" type="hidden" class="form-control">
+                    <input id="stateNew" name="stateNew" type="hidden" class="form-control">
+
+                    <div class="row justify-content-center">
+                        <h5>ИСХОДЯЩИЙ ДОКУМЕНТ: СОЗДАНИЕ</h5>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Дата регистрации</label>
+                        <div class="col-sm-9">
+                            <input type="date" id="datePicker" name="date" class="form-control" placeholder="date naissance">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="creatorNew" class="col-sm-3 col-form-label">Исполнитель</label>
+                        <div class="col-sm-9">
+                            <!--<input type="hidden" th:name="${creator.id}" th:value="${creator.id}"/>-->
+                            <select class="form-control" id="creatorNew" name="creator" required>
+                                <option th:each="creator : ${creator}"
+                                        th:text="${creator.lastName} +' '+ ${creator.firstName} +' '+ ${creator.firstName}"
+                                        th:value="${creator.id}"
+                                        th:selected="${creator}"/>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="docTypeIdNew" class="col-sm-3 col-form-label">Тип документа</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" input id="docTypeIdNew" name="docTypeId">
+                                <option th:each="docType : ${docTypes}" th:text="${docType.name}" th:value="${docType.id}"  required/>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="stateNew" class="col-sm-3 col-form-label">Статус документа</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" input id="stateNew" name="state">
+                                <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}"  required/>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="signerNew" class="col-sm-3 col-form-label">Согласующий</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" input id="signerNew" name="signer" required>
+                                <option th:each="signer : ${signer}" th:text="${signer.lastName}+' '+ ${signer.firstName} +' '+ ${signer.firstName}" th:value="${signer.id}"  />
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="pagesNew" class="col-sm-3 col-form-label">Кол-во листов</label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="pagesNew" th:name="pages" required/>
+                        </div>
+                        <div class="col-sm-2"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="appendixNew" class="col-sm-3 col-form-label">Приложение</label>
+                        <div class="col-sm-9">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="appendixNew" th:name="appendix"/>
+                                <label class="custom-file-label" for="appendix"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        $('.custom-file-input').on('change', function() {
+                            let fileName = $(this).val().split('\\').pop();
+                            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                        });
+                    </script>
+
+                    <div class="form-row">
+                        <label for="contentNew" class="col-sm-3 col-form-label">Краткое Содержание</label>
+                        <div class="col-sm-9">
+                            <textarea input name="content" class="form-control" id="contentNew" rows="2" required></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <label for="noteNew" class="col-sm-3 col-form-label">Примечания</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="note" class="form-control" id="noteNew" rows="2" required/>
+                        </div>
+                    </div>
+
+
+
+
+                    <!--<div class="form-group">-->
+                        <!--<label for="creatorNew">Исполнитель</label>-->
+                        <!--<input type="hidden" th:name="${creator}" th:value="${creator}"/>-->
+                        <!--<select id="creatorNew" th:field="${creator}" class="form-control">-->
+
+                            <!--<option th:each="creator : ${creators}"-->
+                                    <!--th:text="${creator.lastName}+' '+ ${creator.firstName} +' '+ ${creator.middleName}"-->
+                                    <!--th:value="${creator.id}"-->
+                                    <!--th:selected="${creator == docOut.creator}"/>-->
+                        <!--</select>-->
+                    <!--</div>-->
+
+
+                    <!--<input type="hidden" th:name="${docOut.creator}" th:value="${docOut.creator}"/>-->
+                    <!--<select id="creator" th:field="${docOut.creator}" class="form-control">-->
+                    <!--<option th:each="creator : ${creators}"-->
+                    <!--th:value="${creator.id}"-->
+                    <!--th:text="${creator.lastName}+' '+ ${creator.firstName} +' '+ ${creator.middleName}"-->
+                    <!--th:selected="${creator == docOut.creator}"/>-->
+                    <!--</select>-->
+                    <!--</div>-->
+
+
+                    <!--<div class="modal fade"-->
+                    <!--id="newDoc"-->
+
+                    <!--<div class="modal-dialog modal-dialog-centered modal-lg">-->
+                    <!--<div class="modal-content">-->
+                    <!--&lt;!&ndash; Modal Header &ndash;&gt;-->
+                    <!--<div class="modal-header">-->
+                    <!--<button type="button" class="close" data-dismiss="modal">×</button>-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash; Modal body &ndash;&gt;-->
+                    <!--<div class="modal-body">-->
+                    <!--<form th:action="@{/docs/out/card}" method="POST" id="docForm">-->
+
+                    <!--&lt;!&ndash; Hidden inputs &ndash;&gt;-->
+                    <!--<input id="id" name="id" type="hidden" class="form-control">-->
+                    <!--<input id="createDate" name="createDate" type="hidden" class="form-control">-->
+                    <!--<input id="number" name="number" type="hidden" class="form-control">-->
+                    <!--&lt;!&ndash;<input id="note" name="note" type="hidden" class="form-control">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input id="creator" name="creator" type="hidden" class="form-control">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input id="signer" name="signer" type="hidden" class="form-control">&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;<input id="state" name="state" type="hidden" class="form-control">&ndash;&gt;-->
+
+                    <!--<input id="taskId" name="taskId" type="hidden" class="form-control">-->
+
+                    <!--<div class="form-row">-->
+                    <!--<h5 class="modal-title" id="titleM"></h5>-->
+                    <!--</div>-->
+
+
+
+                    <!--<div class="form-row">-->
+                    <!--<label class="col-sm-3 col-form-label">Дата создания</label>-->
+                    <!--<label class="col-sm-2 col-form-label" id="createDateT" name="createDateT"></label>-->
+                    <!--<div class="col-sm-9"></div>-->
+                    <!--</div>-->
+                    <!--<div class="form-row">-->
+                    <!--<label for="creator" class="col-sm-3 col-form-label">Исполнитель</label>-->
+                    <!--<div class="col-sm-9">-->
+                    <!--<select class="form-control" id="creator" name="creator">-->
+                    <!--<option th:each="creator : ${creator}" th:text="${creator.lastName} +' '+ ${creator.firstName} +' '+ ${creator.firstName}" th:value="${creator.id}"  />-->
+                    <!--</select>-->
+                    <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                        <!--<label for="docTypeNew" class="col-sm-3 col-form-label">Тип документа</label>-->
+                        <!--<div class="col-sm-9">-->
+                            <!--<select class="form-control" id="docTypeNew" th:object="${docOut.docTypess}"></select>-->
+                            <!--<option th:each="docType : ${docTypess}"-->
+                                    <!--th:text="${docType.name}"-->
+                                    <!--th:value="${docType.id}"-->
+                                    <!--th:selected="${docType == docOut.docTypess}"/>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                        <!--<label for="stateNew" class="col-sm-3 col-form-label">Статус документа</label>-->
+                        <!--<div class="col-sm-9">-->
+                            <!--<select class="form-control" id="stateNew" th:object="${docOut.state}"></select>-->
+                            <!--<option th:each="state : ${states}"-->
+                                    <!--th:text="${state.name}"-->
+                                    <!--th:value="${state.id}"-->
+                                    <!--th:selected="${state == docOut.state}"/>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                        <!--<label for="signerNew" class="col-sm-3 col-form-label">Согласующий</label>-->
+                        <!--<div class="col-sm-9">-->
+                            <!--<select class="form-control" id="signerNew" th:object="${docOut.signer}"></select>-->
+                            <!--<option th:each="signer : ${signer}"-->
+                                    <!--th:text="${signer.lastName}+' '+ ${signer.firstName} +' '+ ${signer.middleName}"-->
+                                    <!--th:value="${signer.id}"-->
+                                    <!--th:selected="${signer == docOut.signer}"/>-->
+                            <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                        <!--<label for="pagesNew" class="col-sm-3 col-form-label">Кол-во листов</label>-->
+                        <!--<div class="col-sm-2">-->
+                            <!--<input type="number" class="form-control" id="pagesNew" th:field="*{pages}"/>-->
+                        <!--</div>-->
+                        <!--<div class="col-sm-2"></div>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                        <!--<label for="appendixNew" class="col-sm-3 col-form-label">Приложение</label>-->
+                        <!--<div class="col-sm-9">-->
+                            <!--<div class="custom-file">-->
+                                <!--<input type="file" class="custom-file-input" id="appendixNew" th:field="*{appendix}" />-->
+                                <!--<label class="custom-file-label" for="appendixNew"></label>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<script>-->
+                        <!--$('.custom-file-input').on('change', function() {-->
+                            <!--let fileName = $(this).val().split('\\').pop();-->
+                            <!--$(this).next('.custom-file-label').addClass("selected").html(fileName);-->
+                        <!--});-->
+                    <!--</script>-->
+
+                    <!--<div class="form-row">-->
+                        <!--<label for="contentNew" class="col-sm-3 col-form-label">Краткое Содержание</label>-->
+                        <!--<div class="col-sm-9">-->
+                            <!--<input type="text" name="contentNew" class="form-control" id="contentNew" rows="2" th:field="*{content}"></textarea>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<br>-->
+                    <!--<div class="form-row">-->
+                        <!--<label for="noteNew" class="col-sm-3 col-form-label">Примечания</label>-->
+                        <!--<div class="col-sm-9">-->
+                            <!--<input type="text" name="note" class="form-control" id="noteNew" rows="2" th:field="*{note}"/>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+
+                <br>
+                    <div class="row justify-content-center">
+                        <h5>СВЯЗИ</h5>
+                    </div>
+                 <br>
+
+
+
+                    <!--<div class="form-row">-->
+                    <!--<label for="docin" class="col-sm-3 col-form-label">Входящий</label>-->
+                    <!--<div class="col-sm-9">-->
+                    <!--<select class="form-control" id="docin" href="#" th:name="docin">-->
+                    <!--</select>-->
+                    <!--</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                    <!--<label for="taskId" class="col-sm-3 col-form-label">Поручение</label>-->
+                    <!--<div class="col-sm-9">-->
+                    <!--<select class="form-control" id="taskId" name="taskId">-->
+                    <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
+                    <!--</select>-->
+                    <!--</div>-->
+
+                    <!--</div>-->
+
+                    <!--<div class="form-row">-->
+                    <!--<label id="docIntLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
+                    <!--<a id="docInIdT" href="#" name="docInIdT"></a>-->
+                    <!--</div>-->
+
+                    <!--<div class="form-row" >-->
+                    <!--<label id="taskNew" for="taskId" class="col-sm-3 col-form-label"></label>-->
+                    <!--<a id="taskT" href="#" name="taskId"></a>-->
+
+                    <!--</div>-->
+
+
+
+
+
+                    <!--<div class="form-row" >-->
+                        <!--<label id="taskLabel" for="taskT" class="col-sm-3 col-form-label"></label>-->
+                        <!--<div class="col-sm-9">-->
+                           <!--<select class="form-control" id="taskNew" href="#" name="taskId">-->
+                           <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
+                           <!--</select>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </form>
+
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="docFormNew">Сохранить</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade"
      id="delDocOut"
