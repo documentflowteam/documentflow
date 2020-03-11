@@ -176,4 +176,13 @@ public class DocInUtils {
         docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
         docInService.save(docIn);
     }
+
+    public void saveDocIn(DocInDto docInDto) {
+        docIn = convertFromDTO(docInDto);
+        if (docIn.getId() == null) {
+            docIn.setRegNumber(getRegNumber());
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
+        }
+        docInService.save(docIn);
+    }
 }

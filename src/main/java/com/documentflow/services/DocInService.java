@@ -21,13 +21,10 @@ import java.util.List;
 public class DocInService {
 
     private DocInRepository docInRepository;
-    private StateService stateService;
-    private DocIn docIn;
 
     @Autowired
-    public void setDocInRepository(DocInRepository docInRepository, StateService stateService) {
+    public DocInService(DocInRepository docInRepository) {
         this.docInRepository = docInRepository;
-        this.stateService = stateService;
     }
 
     public DocIn findById(Long id) {

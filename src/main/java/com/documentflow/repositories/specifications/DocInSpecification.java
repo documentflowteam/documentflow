@@ -1,6 +1,9 @@
 package com.documentflow.repositories.specifications;
 
 import com.documentflow.entities.DocIn;
+import com.documentflow.model.enums.BusinessKeyState;
+import com.documentflow.services.StateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +11,12 @@ import java.time.LocalDateTime;
 
 @Component
 public class DocInSpecification {
+    private StateService stateService;
+
+    @Autowired
+    public DocInSpecification(StateService stateService) {
+        this.stateService = stateService;
+    }
 
     public static Specification<DocIn> regNumberContains(String regNumber) {
         return ((root, criteriaQuery, criteriaBuilder) ->
@@ -43,8 +52,8 @@ public class DocInSpecification {
                 criteriaBuilder.equal(root.get("state").get("id"), id));
     }
 
-    public static Specification<DocIn> stateIdNotEqual(Integer id) {
+    public static Specification<DocIn> stateIdNotEqual(BusinessKeyState bks) {
         return ((root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.notEqual(root.get("state").get("id"), id));
+                criteriaBuilder.notEqual(root.get("state").get("businessKey"), bks.toString()));
     }
 }

@@ -66,12 +66,7 @@ public class DocInController {
 
     @PostMapping("/card")
     public String regEditDoc(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        DocIn docIn = docInUtils.convertFromDTO(docInDto);
-        if (docIn.getId() == null) {
-            docIn.setRegNumber(docInUtils.getRegNumber());
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
-        }
-        docInService.save(docIn);
+        docInUtils.saveDocIn(docInDto);
         return "redirect:/docs/in";
     }
 
