@@ -133,13 +133,15 @@ public class TaskController {
             user = userService.getUserByUsername(principal.getName());
         }
 
+        List<User> users = userService.getAllUsers();
+
         Task task = taskService.findOneById(id);
         TaskHistory newTaskHistory = new TaskHistory();
         List<TaskHistory> taskHistory = taskHistoryService.findAllByTask(task);
 
         String taskType = task.getTaskType().getBusinessKey();
         if (taskType.equals(BusinessKeyTask.EXECUTION.name())) {
-            DocIn docIn = docInService.findById(18L);
+            DocIn docIn = docInService.findByTask(task);
             model.addAttribute("docIn", docIn);
         } else if (taskType.equals(BusinessKeyTask.APPROVING.name())) {
             DocOut docOut = docOutService.findOneById(1L);
@@ -152,6 +154,7 @@ public class TaskController {
         model.addAttribute("task", task);
         model.addAttribute("taskHistory", taskHistory);
         model.addAttribute("newTaskHistory", newTaskHistory);
+        model.addAttribute("users", users);
         return "task";
     }
 
