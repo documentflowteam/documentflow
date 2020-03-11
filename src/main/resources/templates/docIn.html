@@ -194,23 +194,26 @@
                 if (doc.id != null) {
                     $('#communication').text('Связи');
                     if (doc.taskId != null) {
-                        addButton('taskId', '/tasks/' + doc.id, 'Поручение', doc.taskId);<!-- добавить ссыль на нужный метод -->
+                        addButton('.addBtnTask', 'taskBtn', '/tasks/card/' + doc.taskId, 'Поручение', doc.taskId);
                     } else {
-                        addButton('taskId', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');<!-- добавить ссыль на нужный метод -->
+                        addButton('.addBtnTask', 'taskBtn', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');
                     }
-<!--                    if (doc.taskId != null) {-->
-<!--                        addButton('docOutId', '/docs/out/' + doc.id, 'Ответ', doc.docOutId);-->
-<!--                    } else {-->
-<!--                        addButton('docOutId', '/docs/out/' + doc.id, 'Ответ', 'Создать');-->
-<!--                    }-->
+                    if (doc.docOutId != null) {
+                        addButton('.addBtnDO', 'docOutBtn', '/docs/out/' + doc.id, 'Ответ', doc.docOutId);<!-- добавить ссыль на нужный метод -->
+                    } else {
+                        addButton('.addBtnDO', 'docOutBtn', '/docs/out/' + doc.id, 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
+                    }
                 }
             }
         });
     }
 
-    function addButton(linkId, urlMethod, linkTxt, aTxt) {
-        $('.addBtn').append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
-        $('.addBtn').append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
+    function addButton(dest, linkId, urlMethod, linkTxt, aTxt) {
+        var check  = document.querySelector('#' + linkId);
+        if (check == null) {
+            $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
+            $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
+        }
     }
 
     $(document).ready(function() {
@@ -281,7 +284,7 @@
                     <input id="regNumber" name="regNumber" type="hidden" class="form-control">
                     <input id="regDate" name="regDate" type="hidden" class="form-control">
                     <input id="taskId" name="taskId" type="hidden" class="form-control">
-<!--                    <input id="docOutId" name="docOutId" type="hidden" class="form-control">-->
+                    <input id="docOutId" name="docOutId" type="hidden" class="form-control">
 
                     <div class="form-row">
                         <h5 class="modal-title" id="titleM"></h5>
@@ -354,14 +357,8 @@
                     </div>
                     <div>
                         <h5 id="communication"></h5>
-
-<!--                        <div class="form-row">-->
-<!--                            <label id="docOutLabel" for="docOutIdT" class="col-sm-3 col-form-label"></label>-->
-<!--                            <a id="docOutIdT" href="#" name="docOutIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-<!--                        </div>-->
-                        <div class="form-row addBtn" >
-
-                        </div>
+                        <div class="form-row addBtnTask" ></div>
+                        <div class="form-row addBtnDO" ></div>
                     </div>
                 </form>
             </div>

@@ -1,5 +1,6 @@
 package com.documentflow.utils;
 
+import com.documentflow.entities.DocOut;
 import com.documentflow.entities.Task;
 import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.entities.DocIn;
@@ -99,9 +100,9 @@ public class DocInUtils {
                 docInDto.getAppendix(),
                 docInDto.getNote()
         );
-//        if (docInDto.getDocOutId() != null) {
-//            docIn.setDocOut(docOutService.findOneById(docInDto.getDocOutId()));
-//        }
+        if (docInDto.getDocOutId() != null) {
+            docIn.setDocOut(docOutService.findOneById(docInDto.getDocOutId()));
+        }
         if (docInDto.getStateId() != null) {
             docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
@@ -134,9 +135,9 @@ public class DocInUtils {
                 docIn.getState().getName(),
                 docIn.getState().getId()
         );
-//        if (docIn.getDocOut() != null) {
-//            docInDto.setDocOutId(docIn.getDocOut().getId());
-//        }
+        if (docIn.getDocOut() != null) {
+            docInDto.setDocOutId(docIn.getDocOut().getId());
+        }
         if (docIn.getTask() != null) {
             docInDto.setTaskId(docIn.getTask().getId());
         }
@@ -169,9 +170,10 @@ public class DocInUtils {
         docInService.save(docIn);
     }
 
-//    public void addDocOutToDocIn(Long id, DocOut docOut) {
-//        DocIn docIn = docInRepository.getOne(id);
-//        docIn.setDocOut(docOut);
-//        docInRepository.save(docIn);
-//    }
+    public void addDocOutToDocIn(Long id, DocOut docOut) {
+        docIn = docInService.findById(id);
+        docIn.setDocOut(docOut);
+        docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+        docInService.save(docIn);
+    }
 }
