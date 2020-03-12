@@ -145,10 +145,23 @@
         $.ajax({
             url: "/docs/in/card/" + id,
             success: function (doc) {
-                $('#delTitle').text('Входящий документ №:' + doc.regNumber + ' будет удален, вы настаиваете на удалении?');
-                $('#delId').val(doc.id);
+                $('#delIdDocIn').val(doc.id);
+                addDelTxt('.txtDocIn', 'Входящий документ №' + doc.regNumber + ' будет удален, вы настаиваете на удалении?');
+                if (doc.taskId != null) {
+                    $('#delIdTask').val(doc.taskId);
+                    addDelTxt('.txtTask', 'Входящий документ №:' + doc.regNumber + ' имеет связанное поручение №' + doc.taskId);
+                }
+                if (doc.docOutId != null) {
+                    $('#delIdDocOut').val(doc.docOutId);
+                    addDelTxt('.txtDocOut', 'Входящий документ №:' + doc.regNumber + ' имеет связанный исходящий документ №' + doc.docOutNumber);
+                }
             }
         });
+    }
+
+    function addDelTxt(dest, txt) {
+        $(dest).empty();
+        $(dest).append('<h5 class="modal-title">' + txt + '</h5>');
     }
 
     function clearFilter() {
@@ -209,11 +222,9 @@
     }
 
     function addButton(dest, linkId, urlMethod, linkTxt, aTxt) {
-        var check  = document.querySelector('#' + linkId);
-        if (check == null) {
+            $(dest).empty();
             $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
             $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
-        }
     }
 
     $(document).ready(function() {
@@ -232,7 +243,7 @@
      aria-hidden="true"
      data-backdrop="static"
      data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
@@ -243,11 +254,13 @@
                 <form th:action="@{/docs/in/del}" method="POST" id="delForm">
 
                     <!-- Hidden inputs -->
-                    <input id="delId" name="id" type="hidden" class="form-control">
+                    <input id="delIdDocIn" name="delIdDocIn" type="hidden" class="form-control">
+                    <input id="delIdDocOut" name="delIdDocOut" type="hidden" class="form-control">
+                    <input id="delIdTask" name="delIdTask" type="hidden" class="form-control">
 
-                    <div class="form-row">
-                        <h5 class="modal-title" id="delTitle"></h5>
-                    </div>
+                    <div class="form-row txtDocIn"></div>
+                    <div class="form-row txtDocOut"></div>
+                    <div class="form-row txtTask"></div>
                 </form>
             </div>
             <!-- Modal footer -->

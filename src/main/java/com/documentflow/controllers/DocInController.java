@@ -72,7 +72,7 @@ public class DocInController {
 
     @PostMapping("/del")
     public String delete(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        docInUtils.editState(docInDto.getId(), BusinessKeyState.DELETED);
+        docInUtils.deleteDocIn(docInDto);
         return "redirect:/docs/in";
     }
 }

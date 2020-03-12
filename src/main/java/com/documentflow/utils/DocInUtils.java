@@ -8,6 +8,7 @@ import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.support.TaskUtils;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ public class DocInUtils {
     private DepartmentService departmentService;
     private StateService stateService;
     private DocTypeService docTypeService;
+    private TaskUtils taskUtils;
     private TaskService taskService;
     private DocOutService docOutService;
     private DocInService docInService;
@@ -31,13 +33,16 @@ public class DocInUtils {
     @Autowired
     public DocInUtils(UserService userService, DepartmentService departmentService,
                       StateService stateService, DocTypeService docTypeService,
-                      DocOutService docOutService, DocInService docInService) {
+                      DocOutService docOutService, DocInService docInService,
+                      TaskUtils taskUtils, TaskService taskService) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.stateService = stateService;
         this.docTypeService = docTypeService;
         this.docOutService = docOutService;
         this.docInService = docInService;
+        this.taskUtils = taskUtils;
+        this.taskService = taskService;
     }
 
     public String getRegNumber() {
@@ -106,8 +111,8 @@ public class DocInUtils {
         if (docInDto.getStateId() != null) {
             docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
-//            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
-            docIn.setState(stateService.getStateById(1));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
+//            docIn.setState(stateService.getStateById(1));
         }
         if (docInDto.getTaskId() != null) {
             docIn.setTask(taskService.findOneById(docInDto.getTaskId()));
@@ -137,6 +142,7 @@ public class DocInUtils {
         );
         if (docIn.getDocOut() != null) {
             docInDto.setDocOutId(docIn.getDocOut().getId());
+            docInDto.setDocOutNumber(docIn.getDocOut().getNumber());
         }
         if (docIn.getTask() != null) {
             docInDto.setTaskId(docIn.getTask().getId());
@@ -184,5 +190,13 @@ public class DocInUtils {
             docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
         }
         docInService.save(docIn);
+    }
+
+    public void deleteDocIn(DocInDto docInDto) {
+        editState(docInDto.getId(), BusinessKeyState.DELETED);
+        if (docInDto.getTaskId() != null) {
+            taskUtils.setAsRecalled(docInService.findById(docInDto.getId()).getTask());
+        }
+//        Добавить методы удаления связанного исх. документа.
     }
 }
