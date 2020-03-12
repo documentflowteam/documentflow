@@ -137,6 +137,7 @@ public class DocInUtils {
         );
         if (docIn.getDocOut() != null) {
             docInDto.setDocOutId(docIn.getDocOut().getId());
+            docInDto.setDocOutNumber(docIn.getDocOut().getNumber());
         }
         if (docIn.getTask() != null) {
             docInDto.setTaskId(docIn.getTask().getId());
@@ -184,5 +185,10 @@ public class DocInUtils {
             docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
         }
         docInService.save(docIn);
+    }
+
+    public void deleteDocIn(DocInDto docInDto) {
+        editState(docInDto.getId(), BusinessKeyState.DELETED);
+//        Добавить методы удаления связанных поручения и исх. документа.
     }
 }

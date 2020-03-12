@@ -36,6 +36,7 @@ public class DocInDto implements Serializable {
     private String stateName;
     private Integer stateId;
     private Long docOutId;
+    private String docOutNumber;
     private Long taskId;
 
     public DocInDto(Long id, String regNumber, Date regDate, Integer userId, String userFIO, Integer docTypeId, String docTypeName, Integer departmentId, String sender, String outgoingNumber, Date outgoingDate, String content, Integer pages, String appendix, String note, String stateName, Integer stateId) {
