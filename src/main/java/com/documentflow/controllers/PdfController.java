@@ -1,11 +1,15 @@
 package com.documentflow.controllers;
 
+import com.documentflow.entities.DTO.DocOutDTO;
 import com.documentflow.services.DocOutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import com.documentflow.entities.DocOut;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +20,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 @Controller
+@RequestMapping()
 public class PdfController {
 
     @Autowired
@@ -24,17 +29,30 @@ public class PdfController {
     @Autowired
     ServletContext context;
 
-    @GetMapping(value="/")
-    public String allDocOuts(Model model) {
-        List<DocOut> docOuts = docOutService.findAll();
-        model.addAttribute("DocOut", docOuts);
-        return "view/docOuts";
-    }
+//    @GetMapping(value="/")
+//    public String allDocOuts(Model model) {
+//        List<DocOut> docOuts = docOutService.findAll();
+//        model.addAttribute("DocOut", docOuts);
+//        return "view/docOuts";
+//    }
 
-    @GetMapping(value = "/createPdf")
-    public void createPdf(HttpServletRequest request, HttpServletResponse response) {
-        List<DocOut> docOuts = docOutService.findAll();
-        boolean isFlag = docOutService.createPdf(docOuts, context, request, response);
+//    @GetMapping(value = "/createPdf")
+//    public void createPdf(HttpServletRequest request, HttpServletResponse response) {
+//        List<DocOut> docOuts = docOutService.findAll();
+//        boolean isFlag = docOutService.createPdf(docOuts, context, request, response);
+//
+//        if (isFlag) {
+//            String fullPath = request.getServletContext().getRealPath("/resources/reports/" + "docOuts" + ".pdf");
+//            filedownload(fullPath, response, "docOuts.pdf");
+//        }
+//    }
+
+    @RequestMapping("/createOnePdf/{id}")
+    public void createOnePdf(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response) {
+
+        DocOut docOut = docOutService.findOneById(id);
+
+        boolean isFlag = docOutService.createOnePdf(id, context, request, response);
 
         if (isFlag) {
             String fullPath = request.getServletContext().getRealPath("/resources/reports/" + "docOuts" + ".pdf");

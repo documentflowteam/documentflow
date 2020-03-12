@@ -153,9 +153,12 @@ public class DocOutService {
 //        return docOutRepository.save(docOut);
 //    }
 
-    public boolean createPdf(List<DocOut> docOuts, ServletContext context, HttpServletRequest request, HttpServletResponse response) {
+    public boolean createOnePdf(Long id, ServletContext context, HttpServletRequest request, HttpServletResponse response) {
+
+        DocOut docOut = docOutRepository.findOneById(id);
 
         Document document = new Document(PageSize.A4, 15, 15, 45, 30);
+
         try {
             String filePath = context.getRealPath("/resources/reports");
             File file = new File(filePath);
@@ -164,101 +167,122 @@ public class DocOutService {
                 new File(filePath).mkdirs();
             }
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file + "/" + "docOuts" + ".pdf"));
+            BaseFont times = BaseFont.createFont("c:/windows/fonts/times.ttf", "cp1251", BaseFont.EMBEDDED);
             document.open();
 
+            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+            Font font2 = new Font(times, 16, Font.NORMAL, BaseColor.BLACK);
             Font mainFont = FontFactory.getFont("Arial", 10, BaseColor.BLACK);
-            Paragraph paragraph = new Paragraph("All employees", mainFont);
+
+            Paragraph paragraph = new Paragraph("Out Document № " + docOut.getId().toString(), mainFont);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             paragraph.setIndentationLeft(50);
             paragraph.setIndentationRight(50);
             paragraph.setSpacingAfter(10);
             document.add(paragraph);
 
-            PdfPTable table = new PdfPTable(4);
-            table.setWidthPercentage(200);
-            table.setSpacingBefore(10f);
-            table.setSpacingAfter(10);
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(5);
+            table.setSpacingAfter(5);
 
             Font tableHeader = FontFactory.getFont("Arial", 10, BaseColor.BLACK);
             Font tableBody = FontFactory.getFont("Arial", 9, BaseColor.BLACK);
 
-            float[] columnWidths = {2f, 2f, 2f, 2f};
+            float[] columnWidths = {2f, 2f, 2f};
             table.setWidths(columnWidths);
 
-            PdfPCell first = new PdfPCell(new Paragraph("First name", tableHeader));
-            first.setBorderColor(BaseColor.BLACK);
-            first.setPaddingLeft(10);
-            first.setHorizontalAlignment(Element.ALIGN_CENTER);
-            first.setVerticalAlignment(Element.ALIGN_CENTER);
-            first.setBackgroundColor(BaseColor.GRAY);
-            first.setExtraParagraphSpace(5f);
-            table.addCell(first);
+            PdfPCell one = new PdfPCell(new Paragraph("Place for logo", tableHeader));
+            one.setBorderColor(BaseColor.BLACK);
+            one.setPaddingLeft(10);
+            one.setBorderWidth(0);
+            one.setHorizontalAlignment(Element.ALIGN_CENTER);
+            one.setVerticalAlignment(Element.ALIGN_CENTER);
+            one.setBackgroundColor(BaseColor.GRAY);
+            one.setExtraParagraphSpace(5f);
+            table.addCell(one);
 
-            PdfPCell last = new PdfPCell(new Paragraph("Last name", tableHeader));
-            last.setBorderColor(BaseColor.BLACK);
-            last.setPaddingLeft(10);
-            last.setHorizontalAlignment(Element.ALIGN_CENTER);
-            last.setVerticalAlignment(Element.ALIGN_CENTER);
-            last.setBackgroundColor(BaseColor.GRAY);
-            last.setExtraParagraphSpace(5f);
-            table.addCell(last);
+            PdfPCell two = new PdfPCell(new Paragraph("        ", tableHeader));
+            two.setBorderColor(BaseColor.BLACK);
+            two.setPaddingLeft(10);
+            two.setBorderWidth(0);
+            two.setHorizontalAlignment(Element.ALIGN_CENTER);
+            two.setVerticalAlignment(Element.ALIGN_CENTER);
+            two.setBackgroundColor(BaseColor.GRAY);
+            two.setExtraParagraphSpace(5f);
+            table.addCell(two);
 
-            PdfPCell email = new PdfPCell(new Paragraph("E-mail", tableHeader));
-            email.setBorderColor(BaseColor.BLACK);
-            email.setPaddingLeft(10);
-            email.setHorizontalAlignment(Element.ALIGN_CENTER);
-            email.setVerticalAlignment(Element.ALIGN_CENTER);
-            email.setBackgroundColor(BaseColor.GRAY);
-            email.setExtraParagraphSpace(5f);
-            table.addCell(email);
+            PdfPCell three = new PdfPCell(new Paragraph(docOut.getState().toString(), tableHeader));
+            three.setBorderColor(BaseColor.BLACK);
+            three.setPaddingLeft(10);
+            three.setBorderWidth(0);
+            three.setHorizontalAlignment(Element.ALIGN_CENTER);
+            three.setVerticalAlignment(Element.ALIGN_CENTER);
+            three.setBackgroundColor(BaseColor.GRAY);
+            three.setExtraParagraphSpace(5f);
+            table.addCell(three);
 
-            PdfPCell phone = new PdfPCell(new Paragraph("Phone number", tableHeader));
-            phone.setBorderColor(BaseColor.BLACK);
-            phone.setPaddingLeft(10);
-            phone.setHorizontalAlignment(Element.ALIGN_CENTER);
-            phone.setVerticalAlignment(Element.ALIGN_CENTER);
-            phone.setBackgroundColor(BaseColor.GRAY);
-            phone.setExtraParagraphSpace(5f);
-            table.addCell(phone);
 
-            for (DocOut docOut : docOuts) {
+            PdfPCell four = new PdfPCell(new Paragraph("            ", tableBody));
+            four.setBorderColor(BaseColor.BLACK);
+            four.setPaddingLeft(10);
+            four.setBorderWidth(0);
+            four.setHorizontalAlignment(Element.ALIGN_CENTER);
+            four.setVerticalAlignment(Element.ALIGN_CENTER);
+            four.setBackgroundColor(BaseColor.WHITE);
+            four.setExtraParagraphSpace(5f);
+            table.addCell(four);
 
-                PdfPCell firstValue = new PdfPCell(new Paragraph(docOut.getContent(), tableBody));
-                firstValue.setBorderColor(BaseColor.BLACK);
-                firstValue.setPaddingLeft(10);
-                firstValue.setHorizontalAlignment(Element.ALIGN_CENTER);
-                firstValue.setVerticalAlignment(Element.ALIGN_CENTER);
-                firstValue.setBackgroundColor(BaseColor.WHITE);
-                firstValue.setExtraParagraphSpace(5f);
-                table.addCell(firstValue);
+            PdfPCell five = new PdfPCell(new Paragraph(docOut.getContent(), tableBody));
+            five.setBorderColor(BaseColor.BLACK);
+            five.setPaddingLeft(10);
+            five.setBorderWidth(0);
+            five.setFixedHeight(70);
+            five.setHorizontalAlignment(Element.ALIGN_CENTER);
+            five.setVerticalAlignment(Element.ALIGN_CENTER);
+            five.setBackgroundColor(BaseColor.WHITE);
+            five.setExtraParagraphSpace(5f);
+            table.addCell(five);
 
-//                PdfPCell lastValue = new PdfPCell(new Paragraph(docOut.getLastNmae(), tableBody));
-//                lastValue.setBorderColor(BaseColor.BLACK);
-//                lastValue.setPaddingLeft(10);
-//                lastValue.setHorizontalAlignment(Element.ALIGN_CENTER);
-//                lastValue.setVerticalAlignment(Element.ALIGN_CENTER);
-//                lastValue.setBackgroundColor(BaseColor.WHITE);
-//                lastValue.setExtraParagraphSpace(5f);
-//                table.addCell(lastValue);
-//
-//                PdfPCell emailValue = new PdfPCell(new Paragraph(docOut.getEmail(), tableBody));
-//                emailValue.setBorderColor(BaseColor.BLACK);
-//                emailValue.setPaddingLeft(10);
-//                emailValue.setHorizontalAlignment(Element.ALIGN_CENTER);
-//                emailValue.setVerticalAlignment(Element.ALIGN_CENTER);
-//                emailValue.setBackgroundColor(BaseColor.WHITE);
-//                emailValue.setExtraParagraphSpace(5f);
-//                table.addCell(emailValue);
-//
-//                PdfPCell phoneValue = new PdfPCell(new Paragraph(docOut.getPhoneNumber(), tableBody));
-//                phoneValue.setBorderColor(BaseColor.BLACK);
-//                phoneValue.setPaddingLeft(10);
-//                phoneValue.setHorizontalAlignment(Element.ALIGN_CENTER);
-//                phoneValue.setVerticalAlignment(Element.ALIGN_CENTER);
-//                phoneValue.setBackgroundColor(BaseColor.WHITE);
-//                phoneValue.setExtraParagraphSpace(5f);
-//                table.addCell(phoneValue);
-            }
+            PdfPCell six = new PdfPCell(new Paragraph("           ", tableBody));
+            six.setBorderColor(BaseColor.BLACK);
+            six.setPaddingLeft(10);
+            six.setBorderWidth(0);
+            six.setHorizontalAlignment(Element.ALIGN_CENTER);
+            six.setVerticalAlignment(Element.ALIGN_CENTER);
+            six.setBackgroundColor(BaseColor.WHITE);
+            six.setExtraParagraphSpace(5f);
+            table.addCell(six);
+
+            PdfPCell seven = new PdfPCell(new Paragraph(docOut.getCreateDate().toString(), tableBody));
+            seven.setBorderColor(BaseColor.BLACK);
+            seven.setPaddingLeft(10);
+            seven.setBorderWidth(0);
+            seven.setHorizontalAlignment(Element.ALIGN_CENTER);
+            seven.setVerticalAlignment(Element.ALIGN_CENTER);
+            seven.setBackgroundColor(BaseColor.WHITE);
+            seven.setExtraParagraphSpace(5f);
+            table.addCell(seven);
+
+            PdfPCell eight = new PdfPCell(new Paragraph("                ", tableBody));
+            eight.setBorderColor(BaseColor.BLACK);
+            eight.setPaddingLeft(10);
+            eight.setBorderWidth(0);
+            eight.setHorizontalAlignment(Element.ALIGN_CENTER);
+            eight.setVerticalAlignment(Element.ALIGN_CENTER);
+            eight.setBackgroundColor(BaseColor.WHITE);
+            eight.setExtraParagraphSpace(5f);
+            table.addCell(eight);
+
+            PdfPCell nine = new PdfPCell(new Paragraph(docOut.getSigner().toString(), tableBody));
+            nine.setBorderColor(BaseColor.BLACK);
+            nine.setPaddingLeft(10);
+            nine.setBorderWidth(0);
+            nine.setHorizontalAlignment(Element.ALIGN_CENTER);
+            nine.setVerticalAlignment(Element.ALIGN_CENTER);
+            nine.setBackgroundColor(BaseColor.WHITE);
+            nine.setExtraParagraphSpace(5f);
+            table.addCell(nine);
 
             document.add(table);
             document.close();
