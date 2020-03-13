@@ -46,14 +46,16 @@
         <div class="col-9">
             <h3 th:if="${task.taskType.businessKey == 'EXECUTION'}">Поручение</h3>
             <h3 th:if="${task.taskType.businessKey == 'APPROVING'}">Согласование</h3>
-            <form th:action="@{/tasks/save}" method="POST">
-                <input th:field="*{task.author}" type="hidden" class="form-control">
-                <input th:field="*{task.state}" type="hidden" class="form-control">
-                <input th:field="*{task.taskType}" type="hidden" class="form-control">
+            <form th:action="@{/tasks/save}" method="POST" th:object="${task}">
+                <input th:field="*{author}" type="hidden" class="form-control">
+                <input th:field="*{state}" type="hidden" class="form-control">
+                <input th:field="*{taskType}" type="hidden" class="form-control">
+                <input th:if="${task.taskType.businessKey == 'EXECUTION'}" th:object="${docId}" th:value="*{longValue()}" name="docId"  type="hidden" class="form-control">
+                <input th:if="${task.taskType.businessKey == 'APPROVING'}" th:object="${docId}" th:value="*{longValue()}" name="docId" type="hidden" class="form-control">
                 <div class="form-row">
                     <label for="title" class="col-sm-3 col-form-label">Название</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="title" th:field="*{task.taskName}"/>
+                        <input type="text" class="form-control" id="title" th:field="*{taskName}"/>
                     </div>
                 </div>
                 <div class="form-row">
@@ -62,7 +64,7 @@
                         <span th:if="${task.taskType.businessKey == 'APPROVING'}">Согласующий</span>
                     </label>
                     <div class="col-sm-9">
-                        <select class="form-control" id="executor" th:field="*{task.executor}">
+                        <select class="form-control" id="executor" th:field="*{executor}">
                             <option th:each="user : ${users}" th:text="${user.lastName}" th:value="${user.id}"  />
                         </select>
                     </div>
@@ -70,7 +72,7 @@
                 <div class="form-row">
                     <label for="endDate" class="col-sm-3 col-form-label">Срок</label>
                     <div class="col-sm-9">
-                        <input type="date" class="form-control" id="endDate" th:field="*{task.endDate}"/>
+                        <input type="date" class="form-control" id="endDate" th:field="*{endDate}"/>
                     </div>
                 </div>
                 <div class="form-row">
@@ -83,7 +85,7 @@
                 <div class="form-row">
                     <label for="note" class="col-sm-3 col-form-label">Комментарий</label>
                     <div class="col-sm-9">
-                        <textarea th:field="*{newTaskHistory.note}" class="form-control" id="note" rows="4"/>
+                        <textarea th:object="${newTaskHistory}" th:field="*{note}" class="form-control" id="note" rows="4"/>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Сохранить</button>
