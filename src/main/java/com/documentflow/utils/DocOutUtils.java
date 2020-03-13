@@ -1,7 +1,9 @@
 package com.documentflow.utils;
 
 import com.documentflow.entities.DTO.DocOutDTO;
+import com.documentflow.entities.DocIn;
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
@@ -10,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Component
 public class DocOutUtils {
@@ -62,11 +61,11 @@ public class DocOutUtils {
         } else docOut.setIsGenerated(docOutDTO.getIsGenerated());
 
 //        if (docOutDTO.getNumber()==null) {
-            docOut.setNumber("б/н");
+//            docOut.setNumber("б/н");
 //        } else docOut.setNumber(docOutDTO.getNumber());
- //       docOut.setNumber(docOutDTO.getNumber());
-
-        docOut.setRegDate(null);
+        docOut.setNumber(docOutDTO.getNumber());
+      //  docOut.setRegDate(null);
+        docOut.setRegDate(docOutDTO.getRegDate());
 
 //        if (docOutDTO.getState() ==null) {
 //            docOut.setState(stateService.getStateById(1));
@@ -114,12 +113,38 @@ public class DocOutUtils {
     public String getUserFIO(User user) {
         return user.getLastName() + " " +
                 user.getFirstName().substring(0, 1) + "." +
-                user.getMiddleName().substring(0, 1);
+                user.getMiddleName().substring(0, 1)+ ".";
     }
 
     public DocOutDTO getDocOutDTO(Long id) {
         DocOutDTO docOutDTO = convertFromDocOut(docOutService.findOneById(id));
        return docOutDTO;
+    }
+
+    public void editState(Long id, BusinessKeyState state) {
+        DocOut docOut = docOutService.findOneById(id);
+        switch (state) {
+            case EXECUTION:
+                docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+                break;
+            case EXECUTED:
+                docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTED.toString()));
+                break;
+            case RECALLED:
+                docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.RECALLED.toString()));
+                break;
+            case DELETED:
+                docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.DELETED.toString()));
+                break;
+        }
+        docOutService.save(docOut);
+    }
+
+    public void addTaskToDocOut(Long id, Task task) {
+        DocOut docOut = docOutService.findOneById(id);
+        docOut.setTask(task);
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+        docOutService.save(docOut);
     }
 
 }

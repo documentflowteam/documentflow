@@ -65,7 +65,7 @@ public class DocOutController {
 
         DocOutFilter filter = new DocOutFilter(request);
         model.addAttribute("filter", filter.getFiltersString());
-        Page<DocOutDTO> page = docOutService.findAllByPagingAndFiltering(filter.getSpecification(), PageRequest.of(currentPage-1,20, Sort.Direction.DESC, "createDate"))
+        Page<DocOutDTO> page = docOutService.findAllByPagingAndFiltering(filter.getSpecification(), PageRequest.of(currentPage-1,15, Sort.Direction.DESC, "createDate"))
                 .map(d -> docOutUtils.convertFromDocOut(d));
         model.addAttribute("docs", page);
         model.addAttribute("createDate", LocalDate.now());
@@ -96,7 +96,10 @@ public class DocOutController {
 
     @RequestMapping(value = "/card/new", method = RequestMethod.POST)
     public String createDocNew(@ModelAttribute DocOutDTO docOutDTO) {
+  //      docOutDTO.setRegDate(null);
         DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
+        docOut.setNumber("б/н");
+
         docOutService.save(docOut);
         return "redirect:/docs/out";
     }

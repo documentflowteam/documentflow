@@ -107,6 +107,20 @@ public class DocOutDTO implements Serializable {
     }
 
     public DocOutDTO(Long id, LocalDate createDate, User creator, DocType docType, Integer docTypeId, User signer,
+                     String content, Integer pages, LocalDate regDate, State state) {
+        this.id = id;
+        this.createDate = createDate;
+        this.creator = creator;
+        this.docType = docType;
+        this.docTypeId=docTypeId;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.regDate=regDate;
+        this.state = state;
+    }
+
+    public DocOutDTO(Long id, LocalDate createDate, User creator, DocType docType, Integer docTypeId, User signer,
                      String content, Integer pages, State state) {
         this.id = id;
         this.createDate = createDate;
