@@ -1,6 +1,6 @@
 package com.documentflow.services;
 
-import com.documentflow.AbstractDocumentFlowTest;
+import com.documentflow.AbstractContragentTest;
 import com.documentflow.entities.Address;
 import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Organization;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class OrganizationServiceImplTest extends AbstractDocumentFlowTest {
+public class OrganizationServiceImplTest extends AbstractContragentTest {
 
     @Autowired
     private OrganizationService organizationService;

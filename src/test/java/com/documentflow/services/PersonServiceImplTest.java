@@ -1,6 +1,6 @@
 package com.documentflow.services;
 
-import com.documentflow.AbstractDocumentFlowTest;
+import com.documentflow.AbstractContragentTest;
 import com.documentflow.entities.Address;
 import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Person;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class PersonServiceImplTest extends AbstractDocumentFlowTest {
+public class PersonServiceImplTest extends AbstractContragentTest {
 
     @Autowired
     private PersonService personService;
