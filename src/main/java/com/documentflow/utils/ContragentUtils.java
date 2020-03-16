@@ -1,6 +1,7 @@
 package com.documentflow.utils;
 
 import com.documentflow.entities.Address;
+import com.documentflow.entities.Person;
 import com.documentflow.entities.dto.ContragentDtoAddress;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.entities.dto.ContragentDtoParameters;
@@ -59,6 +60,15 @@ public class ContragentUtils {
         address.setStreet(address.getStreet().toUpperCase());
 
         return address;
+    }
+
+    public static Person normalizePerson(Person person) {
+
+        person.setLastName(person.getLastName().toUpperCase());
+        person.setMiddleName(person.getMiddleName().toUpperCase());
+        person.setFirstName(person.getFirstName().toUpperCase());
+
+        return person;
     }
 
     public static String toUpperCase(String string) {

@@ -17,10 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,23 +72,51 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional(readOnly = true)
     public List<Person> findAll(String firstName, String middleName, String lastName) {
-        Specification<Person> spec = Specification.where(null);
-        if (StringUtils.isNotEmpty(firstName)) {
-            spec = spec.and(PersonSpecifications.firstNameEq(firstName.toUpperCase()));
-        }
-        if (StringUtils.isNotEmpty(middleName)) {
-            spec = spec.and(PersonSpecifications.middleNameEq(middleName.toUpperCase()));
-        }
-        if (StringUtils.isNotEmpty(lastName)) {
-            spec = spec.and(PersonSpecifications.lastNameEq(lastName.toUpperCase()));
-        }
-
-        return personRepository.findAll(spec).stream()
+        return personRepository.findAll(getSpecification(firstName, middleName, lastName)).stream()
                 .filter(person -> {
                     return person.getContragents().stream()
                             .anyMatch(c -> c.getOrganization() == null && !c.getIsDeleted());
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ContragentDtoEmployee> findAllEmployee(String firstName, String middleName, String lastName, String position) {
+
+        final String employeePosition = position == null ? null : position.toUpperCase();
+        List<ContragentDtoEmployee> result = new ArrayList<>();
+
+        personRepository.findAll(getSpecification(firstName, middleName, lastName)).stream()
+                .filter(person -> {
+                    return person.getContragents().stream()
+                            .anyMatch(c -> c.getOrganization() != null && !c.getIsDeleted());
+                }).forEach(employee -> {
+            if (employeePosition == null) {
+                employee.getContragents().forEach(contragent -> {
+                    result.add(
+                            new ContragentDtoEmployee(contragent.getId().toString(),
+                                    employee.getFirstName(),
+                                    employee.getMiddleName(),
+                                    employee.getLastName(),
+                                    contragent.getPersonPosition()
+                            ));
+                });
+            } else {
+                employee.getContragents().stream()
+                        .filter(contragent -> employeePosition.equals(contragent.getPersonPosition()))
+                        .forEach(contragent -> {
+                            result.add(
+                                    new ContragentDtoEmployee(contragent.getId().toString(),
+                                            employee.getFirstName(),
+                                            employee.getMiddleName(),
+                                            employee.getLastName(),
+                                            contragent.getPersonPosition()
+                                    ));
+                        });
+            }
+        });
+        return result;
     }
 
     @Override
@@ -149,7 +174,7 @@ public class PersonServiceImpl implements PersonService {
                     contragentService.save(contragent);
                 }
         );
-        return personRepository.save(person);
+        return person;
     }
 
     @Override
@@ -192,5 +217,19 @@ public class PersonServiceImpl implements PersonService {
                         contragent.getAddress().getApartmentNumber()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    private Specification<Person> getSpecification(String firstName, String middleName, String lastName) {
+        Specification<Person> spec = Specification.where(null);
+        if (StringUtils.isNotEmpty(firstName)) {
+            spec = spec.and(PersonSpecifications.firstNameEq(firstName.toUpperCase()));
+        }
+        if (StringUtils.isNotEmpty(middleName)) {
+            spec = spec.and(PersonSpecifications.middleNameEq(middleName.toUpperCase()));
+        }
+        if (StringUtils.isNotEmpty(lastName)) {
+            spec = spec.and(PersonSpecifications.lastNameEq(lastName.toUpperCase()));
+        }
+        return spec;
     }
 }

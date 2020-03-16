@@ -17,9 +17,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
-public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
+public abstract class AbstractContragentTest extends AbstractDocumentFlowTest {
 
     @Autowired
     private AddressRepository addressRepository;
@@ -69,7 +70,14 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
     }
 
     protected Contragent createRandomOrganizationContragent(Address address, Organization organization, Person person) {
-        String searchString = organization.getName();
+
+        String personPosition = RandomStringUtils.randomAlphabetic(7).toUpperCase();
+
+        String searchString = person.getFirstName().toUpperCase() +
+                person.getMiddleName().toUpperCase() +
+                person.getLastName().toUpperCase() +
+                personPosition +
+                organization.getName().toUpperCase();
 
         Contragent contragent = new Contragent.Builder()
                 .address(address)
@@ -77,7 +85,7 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
                 .person(person)
                 .isDeleted(false)
                 .searchName(searchString)
-                .personPosition(RandomStringUtils.randomAlphabetic(7))
+                .personPosition(personPosition)
                 .build();
         return contragentRepository.save(contragent);
     }
@@ -104,7 +112,14 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
         return new ContragentDtoParameters(RandomStringUtils.randomAlphabetic(7),
                 RandomStringUtils.randomAlphabetic(7),
                 RandomStringUtils.randomAlphabetic(7),
-                null);
+                "");
+    }
+
+    protected ContragentDtoParameters createRandomBadDtoParameters() {
+        return new ContragentDtoParameters(RandomStringUtils.randomAlphabetic(7),
+                RandomStringUtils.randomAlphabetic(7),
+                "",
+                "");
     }
 
     protected ContragentDtoParameters createRandomDtoParametersCompany() {
@@ -125,7 +140,14 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
         return new ContragentDto(PERSON,
                 createRandomDtoParametersPerson(),
                 new ContragentDtoAddress[]{createRandomDtoAddress()},
-                null);
+                new ContragentDtoEmployee[]{});
+    }
+
+    protected ContragentDto createBadDtoPerson() {
+        return new ContragentDto(PERSON,
+                createRandomBadDtoParameters(),
+                new ContragentDtoAddress[]{createRandomDtoAddress()},
+                new ContragentDtoEmployee[]{});
     }
 
     protected Address createAndSaveRandomAddress() {
@@ -155,12 +177,15 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
         person = personRepository.save(person);
 
         Contragent contragent = createRandomOrganizationContragent(address, organization, person);
-        address.setContragents(Collections.singletonList(contragent));
-        address.setOrganizations(Collections.singletonList(organization));
-        address.setPersons(Collections.singletonList(person));
-        organization.setContragents(Collections.singletonList(contragent));
-        organization.setAddresses(Collections.singletonList(address));
-        organization.setPersons(Collections.singletonList(person));
+        address.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
+        address.setOrganizations(new ArrayList<>(Collections.singletonList(organization)));
+        address.setPersons(new ArrayList<>(Collections.singletonList(person)));
+        organization.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
+        organization.setAddresses(new ArrayList<>(Collections.singletonList(address)));
+        organization.setPersons(new ArrayList<>(Collections.singletonList(person)));
+        person.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
+        person.setAddresses(new ArrayList<>(Collections.singletonList(address)));
+        person.setOrganizations(new ArrayList<>(Collections.singletonList(organization)));
         return organization;
     }
 
@@ -179,12 +204,17 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest{
     }
 
     private <T> T createAndSaveRandomEntity(Class<T> tClass) {
+
         Address address = normalizeAddress(createRandomAddress());
         address = addressRepository.save(address);
         Person person = personRepository.save(createRandomPerson());
         Contragent contragent = createRandomPersonContragent(address, person);
-        address.setContragents(Collections.singletonList(contragent));
-        person.setContragents(Collections.singletonList(contragent));
+
+        address.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
+        address.setPersons(new ArrayList<>(Collections.singletonList(person)));
+        person.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
+        person.setAddresses(new ArrayList<>(Collections.singletonList(address)));
+
         if (tClass.isInstance(address)) {
             return (T) address;
         }

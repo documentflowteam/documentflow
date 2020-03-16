@@ -11,7 +11,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -133,21 +132,18 @@ public class AddressServiceImpl implements AddressService {
         address.setHouseNumber(adr.getHouseNumber());
         address.setApartmentNumber(adr.getApartmentNumber());
 
-        return addressRepository.save(address);
+        return address;
     }
 
     @Override
     public void delete(Long id) {
-
         Optional<Address> addressOptional = addressRepository.findById(id);
         if (!addressOptional.isPresent()) {
             throw new NotFoundAddressException();
         }
         Address address = addressOptional.get();
-
         address.getContragents().forEach(contragent -> {
             contragent.setIsDeleted(true);
-            contragentService.save(contragent);
         });
     }
 }

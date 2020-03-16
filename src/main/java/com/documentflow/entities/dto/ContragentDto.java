@@ -7,9 +7,13 @@ import lombok.Getter;
 @Getter
 public class ContragentDto {
 
+    @JsonProperty("type_person")
     private String typePerson;
+    @JsonProperty("parameters")
     private ContragentDtoParameters parameters;
+    @JsonProperty("addresses")
     private ContragentDtoAddress[] address;
+    @JsonProperty("employees")
     private ContragentDtoEmployee[] employee;
 
     @JsonCreator

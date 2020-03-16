@@ -89,7 +89,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             contragentService.save(contragent);
         });
 
-        return organizationRepository.save(organization);
+        return organization;
     }
 
     @Override
