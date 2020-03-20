@@ -8,7 +8,7 @@ import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.scheduling.support.TaskUtils;
+import com.documentflow.utils.TaskUtils;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -111,7 +111,7 @@ public class DocInUtils {
         if (docInDto.getStateId() != null) {
             docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.toString()));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
 //            docIn.setState(stateService.getStateById(1));
         }
         if (docInDto.getTaskId() != null) {
@@ -187,7 +187,7 @@ public class DocInUtils {
         docIn = convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(getRegNumber());
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.toString()));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
         }
         docInService.save(docIn);
     }

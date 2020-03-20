@@ -6,6 +6,7 @@ import com.documentflow.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +38,10 @@ public class TaskService {
 
     public Task save(Task task) {
         return taskRepository.save(task);
+    }
+
+    public Page<Task> findAllByPagingAndFiltering(Specification<Task> specification, Pageable pageable) {
+        return taskRepository.findAll(specification, pageable);
     }
 
 }
