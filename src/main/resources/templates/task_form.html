@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+
+    <title th:if="${ docIn != null }">Поручение</title>
+    <title th:if="${ docOut != null }">Согласование</title>
+
+    <!-- custom  -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<div class="w-100">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-book-dead"></i>
+            Документооборот
+        </a>
+    </nav>
+</div>
+
+<div class="wrapper">
+
+    <div id="menu">
+        <div th:replace="~{sidebar}"/>
+    </div>
+
+    <div id="content" class="container-fluid">
+
+        <div class="col-9">
+            <h3 th:if="${task.taskType.businessKey == 'EXECUTION'}">Поручение</h3>
+            <h3 th:if="${task.taskType.businessKey == 'APPROVING'}">Согласование</h3>
+            <form th:action="@{/tasks/save}" method="POST" th:object="${task}">
+                <input th:field="*{author}" type="hidden" class="form-control">
+                <input th:field="*{state}" type="hidden" class="form-control">
+                <input th:field="*{taskType}" type="hidden" class="form-control">
+                <input th:if="${task.taskType.businessKey == 'EXECUTION'}" th:object="${docId}" th:value="*{longValue()}" name="docId"  type="hidden" class="form-control">
+                <input th:if="${task.taskType.businessKey == 'APPROVING'}" th:object="${docId}" th:value="*{longValue()}" name="docId" type="hidden" class="form-control">
+                <div class="form-row">
+                    <label for="title" class="col-sm-3 col-form-label">Название</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="title" th:field="*{taskName}"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="executor" class="col-sm-3 col-form-label">
+                        <span th:if="${task.taskType.businessKey == 'EXECUTION'}">Исполнитель</span>
+                        <span th:if="${task.taskType.businessKey == 'APPROVING'}">Согласующий</span>
+                    </label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="executor" th:field="*{executor}">
+                            <option th:each="user : ${users}" th:text="${user.lastName}" th:value="${user.id}"  />
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="endDate" class="col-sm-3 col-form-label">Срок</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" id="endDate" th:field="*{endDate}"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="endDate" class="col-sm-3 col-form-label">Документ</label>
+                    <div class="col-sm-9">
+                        <label th:if="${ docIn != null }" th:text="${docIn.regNumber}"/>
+                        <label th:if="${ docOut != null }" th:text="${docOut.number}"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label for="note" class="col-sm-3 col-form-label">Комментарий</label>
+                    <div class="col-sm-9">
+                        <textarea th:object="${newTaskHistory}" th:field="*{note}" class="form-control" id="note" rows="4"/>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

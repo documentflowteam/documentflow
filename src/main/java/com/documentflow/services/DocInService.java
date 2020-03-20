@@ -1,7 +1,10 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.DocIn;
+import com.documentflow.entities.DocOut;
+import com.documentflow.entities.State;
 import com.documentflow.entities.Task;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.repositories.DocInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +23,7 @@ public class DocInService {
     private DocInRepository docInRepository;
 
     @Autowired
-    public void setDocInRepository(DocInRepository docInRepository) {
+    public DocInService(DocInRepository docInRepository) {
         this.docInRepository = docInRepository;
     }
 
@@ -40,10 +43,6 @@ public class DocInService {
         return docInRepository.save(s);
     }
 
-    public void deleteById(Long aLong) {
-        docInRepository.deleteById(aLong);
-    }
-
     public DocIn findByTask(Task task) {
         return docInRepository.findByTask(task);
     }
@@ -59,4 +58,5 @@ public class DocInService {
     public DocIn findByRegNumber(String regNumber) {
         return docInRepository.findByRegNumber(regNumber);
     }
+
 }

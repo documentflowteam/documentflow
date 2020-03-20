@@ -11,6 +11,11 @@ Welcome to DocumentFlow repository.
 **INCOMING DOCUMENTS**
 - registration in system adding of scan-copies
 - creating and executing tasks by document
+- methods:
+    1. showIn - displays a register of cards of incoming documents
+    2. getCard - returns an incoming document card
+    3. regEditDoc - saves an incoming document card
+    4. delete - changes the status of the incoming document card to “deleted”
 
 **OUTGOING DOCUMENTS**
 - prepearing projects of documents

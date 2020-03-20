@@ -1,13 +1,13 @@
 package com.documentflow.utils;
 
 import com.documentflow.entities.DocIn;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.repositories.specifications.DocInSpecification;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 public class DocInFilter {
@@ -46,6 +46,8 @@ public class DocInFilter {
         if (request.getParameter("stateId") != null && !request.getParameter("stateId").isEmpty()) {
             specification = getSpecification().and(DocInSpecification.stateId(Integer.valueOf(request.getParameter("stateId"))));
             filtersStr.append("&stateId=" + request.getParameter("stateId"));
+        } else {
+            specification = getSpecification().and(DocInSpecification.stateIdNotEqual(BusinessKeyState.DELETED));
         }
     }
 }
