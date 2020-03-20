@@ -70,6 +70,28 @@ public class DocOutDTO implements Serializable {
 
     }
 
+    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO, String docTypeName,
+                     DocType docType, Integer docTypeId, User signer, String content, Integer pages, String appendix,
+                     String note, Boolean isGenerated, String number, LocalDate regDate) {
+        this.id = id;
+        this.createDate = createDate;
+        this.creator=creator;
+        this.creatorId = creatorId;
+        this.creatorFIO = creatorFIO;
+        this.docTypeName = docTypeName;
+        this.docType = docType;
+        this.docTypeId = docTypeId;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.isGenerated = isGenerated;
+        this.number = number;
+        this.regDate = regDate;
+
+    }
+
 //
 //    private Long id;
 //    private LocalDate createDate;
@@ -125,6 +147,18 @@ public class DocOutDTO implements Serializable {
         this.id = id;
         this.createDate = createDate;
         this.creator = creator;
+        this.docType = docType;
+        this.docTypeId=docTypeId;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.state = state;
+    }
+
+    public DocOutDTO(Long id, LocalDate createDate, DocType docType, Integer docTypeId, User signer,
+                     String content, Integer pages, State state) {
+        this.id = id;
+        this.createDate = createDate;
         this.docType = docType;
         this.docTypeId=docTypeId;
         this.signer = signer;

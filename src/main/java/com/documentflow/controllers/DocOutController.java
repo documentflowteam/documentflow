@@ -3,9 +3,8 @@ package com.documentflow.controllers;
 
 import com.documentflow.entities.DTO.DocOutDTO;
 import com.documentflow.entities.DocOut;
-import com.documentflow.entities.State;
-import com.documentflow.entities.User;
 import com.documentflow.services.*;
+import com.documentflow.utils.DocInUtils;
 import com.documentflow.utils.DocOutFilter;
 import com.documentflow.utils.DocOutUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.time.LocalDate;
 
 
@@ -32,18 +30,20 @@ public class DocOutController {
     private DocTypeService docTypeService;
     private UserServiceImpl userService;
     private DocOutUtils docOutUtils;
+    private DocInUtils docInUtils;
     private StateService stateService;
     private ContragentServiceImpl contragentService;
     private TaskService taskService;
 
     @Autowired
     public void setDocOutService(DocOutService docOutService, DocTypeService docTypeService, UserServiceImpl userService,
-                                 DocOutUtils docOutUtils, StateService stateService, ContragentServiceImpl contragentService,
+                                 DocOutUtils docOutUtils, DocInUtils docInUtils, StateService stateService, ContragentServiceImpl contragentService,
                                  TaskService taskService) {
         this.docOutService = docOutService;
         this.docTypeService = docTypeService;
         this.userService = userService;
         this.docOutUtils = docOutUtils;
+        this.docInUtils=docInUtils;
         this.stateService = stateService;
         this.contragentService=contragentService;
         this.taskService=taskService;
@@ -69,8 +69,8 @@ public class DocOutController {
                 .map(d -> docOutUtils.convertFromDocOut(d));
         model.addAttribute("docs", page);
         model.addAttribute("createDate", LocalDate.now());
-        model.addAttribute("creator", userService.getAllUsers());
-        model.addAttribute("signer", userService.getAllUsers());
+        model.addAttribute("creators", userService.getAllUsers());
+        model.addAttribute("signers", userService.getAllUsers());
         model.addAttribute("states", stateService.findAllStates());
         model.addAttribute("tasks", taskService.findAll(Pageable.unpaged()));
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
@@ -80,63 +80,68 @@ public class DocOutController {
 
     }
 
+
     @RequestMapping(value = "/newcard")
     public ModelAndView createDoc() {
         ModelAndView result = new ModelAndView("doc_out");
-
+        result.addObject("docOut", new DocOutDTO());
         result.addObject("creators", userService.getAllUsers());
         result.addObject("signers", userService.getAllUsers());
         result.addObject("states", stateService.findAllStates());
         result.addObject("tasks", taskService.findAll(Pageable.unpaged()));
-        result.addObject("docTypess", docTypeService.findAllDocTypes());
+        result.addObject("docTypes", docTypeService.findAllDocTypes());
         result.addObject("docOutAddress", docTypeService.findAllDocTypes());
-        result.addObject("docOut", new DocOutDTO());
+        result.addObject("docIn", docInService.findAll());
+
         return result;
     }
 
-    @RequestMapping(value = "/card/new", method = RequestMethod.POST)
-    public String createDocNew(@ModelAttribute DocOutDTO docOutDTO) {
-  //      docOutDTO.setRegDate(null);
-        DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
-        docOut.setNumber("б/н");
+    @RequestMapping(value = "/newcard/submit", method = RequestMethod.POST)
+    public String createDocNew(@ModelAttribute (name = "docOut") DocOutDTO docOutDTO) {//},
+        //                              @RequestParam(name = "idIn", required = false) Long idIn,
+        //                              @RequestParam(name = "idTask", required = false) Long idTask) {
 
-        docOutService.save(docOut);
+//        docOutUtils.addTaskToDocOutDTO(taskService.findOneById(idTask));
+
+        DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
+        docOutUtils.setNewDocOutRegDate(null);
+        docOutUtils.setNewDocOutNumber();
+
         return "redirect:/docs/out";
+
     }
 
+
     @PostMapping("/card")
-    public String regEditDoc(@ModelAttribute(name = "docOut") DocOutDTO docOutDTO) {
-      if (docOutDTO.getNumber()!=null || !docOutDTO.getNumber().equals("б/н"))   {
-          return "redirect:/docs/out";
-      } else {
-          DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
+    public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
+//      if (docOutDTO.getNumber()!=null || !docOutDTO.getNumber().equals("б/н"))   {
+//          return "redirect:/docs/out";
+//      } else {
+//          DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
+//        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
 //        if (docOut.getId() == null) {
 //            docOutDTO.setRegNumber(docOutUtils.getRegNumber());
 //        }
-          docOutService.save(docOut);
+        DocOut docOut;// = docOutUtils.convertFromDocOutDTO(docOutDTO);
+        docOutUtils.saveModifiedDocOut(docOutDTO);
+//          docOutService.save(docOut);
           return "redirect:/docs/out";
-      }
+ //     }
     }
 
     @ResponseBody
     @RequestMapping("/card/{id}")
     public DocOutDTO getCard(@PathVariable("id") Long id) {
+//   return docOutUtils.convertFromDocOut(docOutService.findOneById(id));
         return docOutUtils.getDocOutDTO(id);
     }
 
     @PostMapping("/delete")
     public String deleteDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
-       DocOut docOut = docOutService.findOneById(docOutDTO.getId());
- //      if(docOut.getIsGenerated()==true) return "redirect:/docs/out";
-        if(docOut.getState()!=stateService.getStateById(1)
-                || docOut.getState()!=stateService.getStateById(3)
-                || docOut.getState()!=stateService.getStateById(4)
-                || docOut.getState()!=stateService.getStateById(8)
-                || docOut.getState()!=stateService.getStateById(9)) {
-
-            docOut.setState(stateService.getStateById(4));
-            docOutService.save(docOut);
-        }
+//       DocOut docOut = docOutService.findOneById(docOutDTO.getId());
+        docOutUtils.delDocOut(docOutDTO);
             return "redirect:/docs/out";
     }
 }
+
+// TODO: saveModifiedDoc, deleteDoc, generateDoc, refuseDoc, sendDoc
