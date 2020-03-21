@@ -10,6 +10,7 @@ import com.documentflow.entities.dto.ContragentDtoAddress;
 import com.documentflow.entities.dto.ContragentDtoBindAddressAndEmployee;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.exceptions.BadArgumentException;
+import com.documentflow.repositories.ContragentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Assert;
@@ -18,10 +19,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.NestedServletException;
 
 import java.util.List;
 
+import static com.documentflow.utils.Urls.*;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -31,8 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ContragentControllerTest extends AbstractContragentTest {
 
-    private final String CONTRAGENT_MAIN_URL = "/contragent";
     private final ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private ContragentRepository contragentRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,7 +50,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
     @Test
     public void testSearchContragent() throws Exception {
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL)
+        mockMvc.perform(get(URL_CONTRAGENT)
                 .header("referer", "login.html")
                 .param("searchName", "someSearchValue"))
                 .andExpect(status().isOk())
@@ -56,10 +61,10 @@ public class ContragentControllerTest extends AbstractContragentTest {
     @Test
     public void testGetPage() throws Exception {
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit"))
+        mockMvc.perform(get(URL_CONTRAGENT + URL_CONTRAGENT_EDIT))
                 .andExpect(view().name("contragent_edit"));
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/add"))
+        mockMvc.perform(get(URL_CONTRAGENT + URL_CONTRAGENT_ADD))
                 .andExpect(view().name("contragent_edit"));
     }
 
@@ -69,7 +74,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         ContragentDto personDto = createRandomDtoPerson();
         String requestJson = mapper.writeValueAsString(personDto);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/add")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_CONTRAGENT_ADD)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -80,7 +85,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         requestJson = mapper.writeValueAsString(badPersonDto);
 
         try {
-            mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/add")
+            mockMvc.perform(post(URL_CONTRAGENT + URL_CONTRAGENT_ADD)
                     .with(user("TEST_USER"))
                     .with(csrf())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +101,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Person person = createAndSaveRandomPerson();
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/person")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_PERSON)
                 .param("first_name", person.getFirstName())
                 .param("middle_name", person.getMiddleName())
                 .param("last_name", person.getLastName())
@@ -109,7 +114,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(status().isOk());
 
         try {
-            mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/person")
+            mockMvc.perform(get(URL_CONTRAGENT + URL_PERSON)
                     .param("first_name", person.getFirstName())
                     .param("middle_name", person.getMiddleName())
                     .param("last_name", ""));
@@ -127,7 +132,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(updatedPerson);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/person")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_PERSON)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -146,7 +151,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Assert.assertEquals(false, person.getContragents().get(0).getIsDeleted());
 
-        mockMvc.perform(delete(CONTRAGENT_MAIN_URL + "/edit/person/" + person.getId())
+        mockMvc.perform(delete(URL_CONTRAGENT + URL_PERSON_ID, person.getId())
                 .with(user("TEST_USER"))
                 .with(csrf()))
                 .andExpect(status().isOk());
@@ -160,7 +165,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         Person person = createAndSaveRandomPerson();
         Assert.assertEquals(false, person.getContragents().get(0).getIsDeleted());
 
-        mockMvc.perform(delete(CONTRAGENT_MAIN_URL + "/edit/person/address/" + person.getContragents().get(0).getId())
+        mockMvc.perform(delete(URL_CONTRAGENT + URL_PERSON_ADDRESS_ID, person.getContragents().get(0).getId())
                 .with(user("TEST_USER"))
                 .with(csrf()))
                 .andExpect(status().isOk());
@@ -180,7 +185,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(newAddress);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/person/address")
+        MvcResult mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_PERSON_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -191,11 +196,23 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.street", is(newAddress.getStreet().toUpperCase())))
                 .andExpect(jsonPath("$.house_number", is(newAddress.getHouseNumber())))
                 .andExpect(jsonPath("$.apartrment_number", is(newAddress.getApartmentNumber())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(2, person.getContragents().size());
+        Address addressForSendToFrontend = mapper.readValue(mvcResult.getResponse().getContentAsString(), Address.class);
+        Contragent firstContragent = contragentRepository.findById(addressForSendToFrontend.getId()).get();
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/person/address")
+        Assert.assertEquals(firstContragent.getPerson().getLastName(), person.getLastName());
+        Assert.assertEquals(firstContragent.getPerson().getMiddleName(), person.getMiddleName());
+        Assert.assertEquals(firstContragent.getPerson().getFirstName(), person.getFirstName());
+        Assert.assertEquals(firstContragent.getAddress().getIndex(), newAddress.getIndex());
+        Assert.assertEquals(firstContragent.getAddress().getCountry(), newAddress.getCountry().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getCity(), newAddress.getCity().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getStreet(), newAddress.getStreet().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getHouseNumber(), newAddress.getHouseNumber().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getApartmentNumber(), newAddress.getApartmentNumber().toUpperCase());
+
+        mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_PERSON_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,12 +223,14 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.street", is(newAddress.getStreet().toUpperCase())))
                 .andExpect(jsonPath("$.house_number", is(newAddress.getHouseNumber())))
                 .andExpect(jsonPath("$.apartrment_number", is(newAddress.getApartmentNumber())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(3, person.getContragents().size());
+        addressForSendToFrontend = mapper.readValue(mvcResult.getResponse().getContentAsString(), Address.class);
+        Contragent secondContragent = contragentRepository.findById(addressForSendToFrontend.getId()).get();
 
-        long addresId1 = person.getContragents().get(1).getAddress().getId();
-        long addresId2 = person.getContragents().get(2).getAddress().getId();
+        long addresId1 = firstContragent.getAddress().getId();
+        long addresId2 = secondContragent.getAddress().getId();
 
         Assert.assertEquals(addresId1, addresId2);
     }
@@ -222,7 +241,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         Person person = createAndSaveRandomPerson();
         Address address = person.getAddresses().get(0);
 
-        mockMvc.perform(get(String.format("%s/edit/person/%d/address", CONTRAGENT_MAIN_URL, person.getId())))
+        mockMvc.perform(get(URL_CONTRAGENT + URL_ADDRESS_TO_PERSON, person.getId()))
                 .andExpect(jsonPath("$[0].post_index", is(address.getIndex())))
                 .andExpect(jsonPath("$[0].country", is(address.getCountry().toUpperCase())))
                 .andExpect(jsonPath("$[0].city", is(address.getCity().toUpperCase())))
@@ -237,7 +256,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Address address = createAndSaveRandomAddress();
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/address")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_ADDRESS)
                 .param("post_index", address.getIndex().toString())
                 .param("country", address.getCountry())
                 .param("city", address.getCity())
@@ -253,7 +272,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(status().isOk());
 
         try {
-            mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/address")
+            mockMvc.perform(get(URL_CONTRAGENT + URL_ADDRESS)
                     .param("post_index", address.getIndex().toString())
                     .param("country", "")
                     .param("city", address.getCity())
@@ -265,7 +284,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
             Assert.assertTrue(exp.getCause() instanceof BadArgumentException);
         }
         try {
-            mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/address")
+            mockMvc.perform(get(URL_CONTRAGENT + URL_ADDRESS)
                     .param("post_index", address.getIndex().toString())
                     .param("country", address.getCountry())
                     .param("city", "")
@@ -277,7 +296,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
             Assert.assertTrue(exp.getCause() instanceof BadArgumentException);
         }
         try {
-            mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/address")
+            mockMvc.perform(get(URL_CONTRAGENT + URL_ADDRESS)
                     .param("post_index", address.getIndex().toString())
                     .param("country", address.getCountry())
                     .param("city", address.getCity())
@@ -306,7 +325,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(newAddress);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/address")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -326,7 +345,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         Address address = createAndSaveRandomAddress();
         Assert.assertEquals(false, address.getContragents().get(0).getIsDeleted());
 
-        mockMvc.perform(delete(CONTRAGENT_MAIN_URL + "/edit/address/{id}", address.getId())
+        mockMvc.perform(delete(URL_CONTRAGENT + URL_ADDRESS_ID, address.getId())
                 .with(user("TEST_USER"))
                 .with(csrf()))
                 .andExpect(status().isOk());
@@ -339,13 +358,13 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Organization organization = createAndSaveRandomOrganization();
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/company")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_COMPANY)
                 .param("name_company", organization.getName()))
                 .andExpect(jsonPath("$[0].name_company", is(organization.getName())))
                 .andExpect(status().isOk());
 
         try {
-            mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/company")
+            mockMvc.perform(get(URL_CONTRAGENT + URL_COMPANY)
                     .param("name_company", ""));
             Assert.fail("the mockMvc should have thrown an exception");
         } catch (NestedServletException exp) {
@@ -359,7 +378,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         Organization organization = createAndSaveRandomOrganization();
         Address addressOrganization = organization.getAddresses().get(0);
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/company/{id}/address", organization.getId()))
+        mockMvc.perform(get(URL_CONTRAGENT + URL_ADDRESS_TO_COMPANY, organization.getId()))
                 .andExpect(jsonPath("$[0].post_index", is(addressOrganization.getIndex())))
                 .andExpect(jsonPath("$[0].country", is(addressOrganization.getCountry())))
                 .andExpect(jsonPath("$[0].city", is(addressOrganization.getCity())))
@@ -382,7 +401,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(address);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/address")
+        MvcResult mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -393,12 +412,22 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.street", is(address.getStreet().toUpperCase())))
                 .andExpect(jsonPath("$.house_number", is(address.getHouseNumber())))
                 .andExpect(jsonPath("$.apartrment_number", is(address.getApartmentNumber())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(2, organization.getAddresses().size());
+        Address addressForSendToFrontend = mapper.readValue(mvcResult.getResponse().getContentAsString(), Address.class);
+        Contragent firstContragent = contragentRepository.findById(addressForSendToFrontend.getId()).get();
+
+        Assert.assertEquals(firstContragent.getOrganization().getName(), organization.getName());
+        Assert.assertEquals(firstContragent.getAddress().getIndex(), address.getIndex());
+        Assert.assertEquals(firstContragent.getAddress().getCountry(), address.getCountry().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getCity(), address.getCity().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getStreet(), address.getStreet().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getHouseNumber(), address.getHouseNumber().toUpperCase());
+        Assert.assertEquals(firstContragent.getAddress().getApartmentNumber(), address.getApartmentNumber().toUpperCase());
 
         //проверяем то, что не будет создан дубликат
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/address")
+        mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -409,19 +438,21 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.street", is(address.getStreet().toUpperCase())))
                 .andExpect(jsonPath("$.house_number", is(address.getHouseNumber())))
                 .andExpect(jsonPath("$.apartrment_number", is(address.getApartmentNumber())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(3, organization.getAddresses().size());
+        addressForSendToFrontend = mapper.readValue(mvcResult.getResponse().getContentAsString(), Address.class);
+        Contragent secondContragent = contragentRepository.findById(addressForSendToFrontend.getId()).get();
 
-        long addresId1 = organization.getContragents().get(1).getAddress().getId();
-        long addresId2 = organization.getContragents().get(2).getAddress().getId();
+        long addresId1 = firstContragent.getAddress().getId();
+        long addresId2 = secondContragent.getAddress().getId();
 
         Assert.assertEquals(addresId1, addresId2);
 
         address.setId(null);
         requestJson = mapper.writeValueAsString(address);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/address")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -442,7 +473,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(employee);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/employee")
+        MvcResult mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_EMPLOYEE)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -450,12 +481,20 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.first_name", is(employee.getFirstName().toUpperCase())))
                 .andExpect(jsonPath("$.middle_name", is(employee.getMiddleName().toUpperCase())))
                 .andExpect(jsonPath("$.last_name", is(employee.getLastName().toUpperCase())))
-                .andExpect(jsonPath("$.position", is(employee.getPersonPosition().toUpperCase())));
+                .andExpect(jsonPath("$.position", is(employee.getPersonPosition().toUpperCase())))
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(2, organization.getPersons().size());
+        ContragentDtoEmployee contragentDtoEmployee = mapper.readValue(mvcResult.getResponse().getContentAsString(), ContragentDtoEmployee.class);
+        Contragent firstContragent = contragentRepository.findById(Long.valueOf(contragentDtoEmployee.getId())).get();
+
+        Assert.assertEquals(firstContragent.getOrganization().getName(), organization.getName());
+        Assert.assertEquals(firstContragent.getPerson().getFirstName(), employee.getFirstName().toUpperCase());
+        Assert.assertEquals(firstContragent.getPerson().getMiddleName(), employee.getMiddleName().toUpperCase());
+        Assert.assertEquals(firstContragent.getPerson().getLastName(), employee.getLastName().toUpperCase());
 
         //проверяем то, что не будет создан дубликат
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/employee")
+        mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_EMPLOYEE)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -463,19 +502,22 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.first_name", is(employee.getFirstName().toUpperCase())))
                 .andExpect(jsonPath("$.middle_name", is(employee.getMiddleName().toUpperCase())))
                 .andExpect(jsonPath("$.last_name", is(employee.getLastName().toUpperCase())))
-                .andExpect(jsonPath("$.position", is(employee.getPersonPosition().toUpperCase())));
+                .andExpect(jsonPath("$.position", is(employee.getPersonPosition().toUpperCase())))
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(3, organization.getPersons().size());
+        contragentDtoEmployee = mapper.readValue(mvcResult.getResponse().getContentAsString(), ContragentDtoEmployee.class);
+        Contragent secondContragent = contragentRepository.findById(Long.valueOf(contragentDtoEmployee.getId())).get();
 
-        long employeeId1 = organization.getContragents().get(1).getPerson().getId();
-        long employeeId2 = organization.getContragents().get(2).getPerson().getId();
+        long employeeId1 = firstContragent.getPerson().getId();
+        long employeeId2 = secondContragent.getPerson().getId();
 
         Assert.assertEquals(employeeId1, employeeId2);
 
         employee.setId(null);
         requestJson = mapper.writeValueAsString(employee);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/employee")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_EMPLOYEE)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -501,7 +543,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(newEmployeeAndAddressForOrganization);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/employee_and_address")
+        MvcResult mvcResult = mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_EMPLOYEE_AND_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -516,13 +558,24 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.employee.middle_name", is(employee.getMiddleName().toUpperCase())))
                 .andExpect(jsonPath("$.employee.last_name", is(employee.getLastName().toUpperCase())))
                 .andExpect(jsonPath("$.employee.position", is(employee.getPersonPosition().toUpperCase())))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
-        Assert.assertEquals(2, organization.getAddresses().size());
-        Assert.assertEquals(2, organization.getPersons().size());
+        ContragentDtoBindAddressAndEmployee savedContragentDtoBindAddressAndEmployee = mapper.readValue(mvcResult.getResponse().getContentAsString(), ContragentDtoBindAddressAndEmployee.class);
+        Contragent firstContragent = contragentRepository.findById(Long.valueOf(savedContragentDtoBindAddressAndEmployee.getEmployee().getId())).get();
+
+        Assert.assertEquals(firstContragent.getPersonPosition().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getEmployee().getPersonPosition());
+        Assert.assertEquals(firstContragent.getPerson().getFirstName().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getEmployee().getFirstName());
+        Assert.assertEquals(firstContragent.getPerson().getMiddleName().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getEmployee().getMiddleName());
+        Assert.assertEquals(firstContragent.getPerson().getLastName().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getEmployee().getLastName());
+        Assert.assertEquals(firstContragent.getAddress().getCountry().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getAddress().getCountry());
+        Assert.assertEquals(firstContragent.getAddress().getCity().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getAddress().getCity());
+        Assert.assertEquals(firstContragent.getAddress().getStreet().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getAddress().getStreet());
+        Assert.assertEquals(firstContragent.getAddress().getHouseNumber().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getAddress().getHouseNumber());
+        Assert.assertEquals(firstContragent.getAddress().getApartmentNumber().toUpperCase(), savedContragentDtoBindAddressAndEmployee.getAddress().getApartrmentNumber());
 
         //проверяем работу с дубликатами
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/employee_and_address")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_EMPLOYEE_AND_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -539,23 +592,23 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$.employee.position", is(employee.getPersonPosition().toUpperCase())))
                 .andExpect(status().isOk());
 
-        Assert.assertEquals(3, organization.getAddresses().size());
-        Assert.assertEquals(3, organization.getPersons().size());
+        ContragentDtoBindAddressAndEmployee savedContragentDtoBindAddressAndEmployeeSecond = mapper.readValue(mvcResult.getResponse().getContentAsString(), ContragentDtoBindAddressAndEmployee.class);
+        Contragent secondContragent = contragentRepository.findById(Long.valueOf(savedContragentDtoBindAddressAndEmployeeSecond.getEmployee().getId())).get();
 
-        long employeeId1 = organization.getContragents().get(1).getPerson().getId();
-        long employeeId2 = organization.getContragents().get(2).getPerson().getId();
+        long employeeId1 = firstContragent.getPerson().getId();
+        long employeeId2 = secondContragent.getPerson().getId();
 
         Assert.assertEquals(employeeId1, employeeId2);
 
-        long address1 = organization.getContragents().get(1).getAddress().getId();
-        long address2 = organization.getContragents().get(2).getAddress().getId();
+        long address1 = firstContragent.getAddress().getId();
+        long address2 = secondContragent.getAddress().getId();
 
         Assert.assertEquals(address1, address2);
 
         newEmployeeAndAddressForOrganization.setId(null);
         requestJson = mapper.writeValueAsString(newEmployeeAndAddressForOrganization);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company/employee_and_address")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY_EMPLOYEE_AND_ADDRESS)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -571,7 +624,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Assert.assertEquals(1, organization.getPersons().size());
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/company/{id}/employee", organization.getId()))
+        mockMvc.perform(get(URL_CONTRAGENT + URL_EMPLOYEE_TO_COMPANY, organization.getId()))
                 .andExpect(jsonPath("$[0].id", is(organization.getContragents().get(0).getId().toString())))
                 .andExpect(jsonPath("$[0].first_name", is(employee.getFirstName().toUpperCase())))
                 .andExpect(jsonPath("$[0].middle_name", is(employee.getMiddleName().toUpperCase())))
@@ -588,7 +641,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Assert.assertFalse(contragent.getIsDeleted());
 
-        mockMvc.perform(delete(CONTRAGENT_MAIN_URL + "/edit/company/address/{id}", contragent.getId())
+        mockMvc.perform(delete(URL_CONTRAGENT + URL_COMPANY_ADDRESS_ID, contragent.getId())
                 .with(user("TEST_USER"))
                 .with(csrf()))
                 .andExpect(status().isOk());
@@ -606,7 +659,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(updatedOrganization);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/company")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_COMPANY)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -625,7 +678,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         Assert.assertFalse(contragent.getIsDeleted());
 
-        mockMvc.perform(delete(CONTRAGENT_MAIN_URL + "/edit/company/{id}", organization.getId())
+        mockMvc.perform(delete(URL_CONTRAGENT + URL_COMPANY_ID, organization.getId())
                 .with(user("TEST_USER"))
                 .with(csrf()))
                 .andExpect(status().isOk());
@@ -640,7 +693,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
         Person employee = organization.getPersons().get(0);
         String employeePosition = organization.getContragents().get(0).getPersonPosition();
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/employee")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_EMPLOYEE)
                 .param("first_name", employee.getFirstName())
                 .param("middle_name", employee.getMiddleName())
                 .param("last_name", employee.getLastName())
@@ -652,7 +705,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$[0].position", is(employeePosition)))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/employee")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_EMPLOYEE)
                 .param("middle_name", employee.getMiddleName())
                 .param("last_name", employee.getLastName())
                 .param("position", employeePosition))
@@ -663,7 +716,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$[0].position", is(employeePosition)))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/employee")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_EMPLOYEE)
                 .param("first_name", employee.getFirstName())
                 .param("last_name", employee.getLastName())
                 .param("position", employeePosition))
@@ -674,7 +727,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$[0].position", is(employeePosition)))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/employee")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_EMPLOYEE)
                 .param("last_name", employee.getLastName())
                 .param("position", employeePosition))
                 .andExpect(jsonPath("$[0].id", is(organization.getContragents().get(0).getId().toString())))
@@ -684,7 +737,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
                 .andExpect(jsonPath("$[0].position", is(employeePosition)))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get(CONTRAGENT_MAIN_URL + "/edit/employee")
+        mockMvc.perform(get(URL_CONTRAGENT + URL_EMPLOYEE)
                 .param("first_name", employee.getFirstName())
                 .param("middle_name", employee.getMiddleName())
                 .param("position", employeePosition))
@@ -706,7 +759,7 @@ public class ContragentControllerTest extends AbstractContragentTest {
 
         String requestJson = mapper.writeValueAsString(updatedEmployee);
 
-        mockMvc.perform(post(CONTRAGENT_MAIN_URL + "/edit/employee")
+        mockMvc.perform(post(URL_CONTRAGENT + URL_EMPLOYEE)
                 .with(user("TEST_USER"))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)

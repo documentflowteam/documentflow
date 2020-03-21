@@ -209,11 +209,6 @@ public class ContragentServiceImpl implements ContragentService {
                 .build();
         contragent = contragentRepository.save(contragent);
 
-        correctAddress.getPersons().add(person);
-        correctAddress.getContragents().add(contragent);
-        person.getAddresses().add(correctAddress);
-        person.getContragents().add(contragent);
-
         return Address.builder()
                 //ВНИМАНИЕ. Добавляем ID контрагента для комфортного удаления записи на фронте
                 .id(contragent.getId())
@@ -247,11 +242,6 @@ public class ContragentServiceImpl implements ContragentService {
                 .isDeleted(false)
                 .build();
         contragent = contragentRepository.save(contragent);
-
-        correctAddress.getOrganizations().add(organization);
-        correctAddress.getContragents().add(contragent);
-        organization.getAddresses().add(correctAddress);
-        organization.getContragents().add(contragent);
 
         return Address.builder()
                 //ВНИМАНИЕ. Добавляем ID контрагента для комфортного удаления записи на фронте
@@ -287,11 +277,6 @@ public class ContragentServiceImpl implements ContragentService {
                 .isDeleted(false)
                 .build();
         contragent = contragentRepository.save(contragent);
-
-        person.getOrganizations().add(organization);
-        person.getContragents().add(contragent);
-        organization.getPersons().add(person);
-        organization.getContragents().add(contragent);
 
         return ContragentDtoEmployee.builder()
                 //ВНИМАНИЕ. Добавляем ID контрагента для комфортного удаления записи на фронте
@@ -351,10 +336,6 @@ public class ContragentServiceImpl implements ContragentService {
                 .organization(organization)
                 .build();
         contragent = contragentRepository.save(contragent);
-
-        organization.getPersons().add(person);
-        organization.getAddresses().add(address);
-        organization.getContragents().add(contragent);
 
         return new ContragentDtoBindAddressAndEmployee(
                 null,

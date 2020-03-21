@@ -150,6 +150,12 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest {
                 new ContragentDtoEmployee[]{});
     }
 
+    protected Contragent createBadContragent() {
+        return new Contragent.Builder()
+                .id(0L)
+                .build();
+    }
+
     protected Address createAndSaveRandomAddress() {
         return createAndSaveRandomEntity(Address.class);
     }
@@ -177,6 +183,8 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest {
         person = personRepository.save(person);
 
         Contragent contragent = createRandomOrganizationContragent(address, organization, person);
+
+        //TODO проверить работу с сущностями в состоянии persistent
         address.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
         address.setOrganizations(new ArrayList<>(Collections.singletonList(organization)));
         address.setPersons(new ArrayList<>(Collections.singletonList(person)));
@@ -210,6 +218,7 @@ public abstract class AbstractContragentTest extends AbstractDocumentFlowTest {
         Person person = personRepository.save(createRandomPerson());
         Contragent contragent = createRandomPersonContragent(address, person);
 
+        //TODO проверить работу с сущностями в состоянии persistent
         address.setContragents(new ArrayList<>(Collections.singletonList(contragent)));
         address.setPersons(new ArrayList<>(Collections.singletonList(person)));
         person.setContragents(new ArrayList<>(Collections.singletonList(contragent)));

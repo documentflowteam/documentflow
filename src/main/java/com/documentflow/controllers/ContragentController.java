@@ -27,8 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.documentflow.utils.Urls.*;
+
 @Controller
-@RequestMapping("/contragent")
+@RequestMapping(URL_CONTRAGENT)
 @Api(value = "Search for or create a new counterparty. Changing parameters of an existing counterparty.")
 public class ContragentController {
 
@@ -58,17 +60,13 @@ public class ContragentController {
         return modelAndView;
     }
 
-    private ModelAndView createDefaultModelAndView(String url) {
-        return new ModelAndView(url);
-    }
-
-    @GetMapping({"/edit", "/add"})
+    @GetMapping({URL_CONTRAGENT_EDIT, URL_CONTRAGENT_ADD})
     @ApiOperation("get contragent page")
     public String getPageToEdit() {
         return "contragent_edit";
     }
 
-    @PostMapping("/add")
+    @PostMapping(URL_CONTRAGENT_ADD)
     @ResponseBody
     @ApiOperation("add a new contragent")
     public List<Contragent> addNewContragent(@RequestBody ContragentDto contragentDto) {
@@ -79,7 +77,7 @@ public class ContragentController {
         return contragentService.save(contragentDto);
     }
 
-    @GetMapping("/edit/person")
+    @GetMapping(URL_PERSON)
     @ResponseBody
     @ApiOperation("the search for a contragent (the type of Person)")
     public List<Person> getPerson(@RequestParam(name = "first_name", required = false) String firstName,
@@ -92,28 +90,28 @@ public class ContragentController {
         return personService.findAll(firstName.toUpperCase(), middleName.toUpperCase(), lastName.toUpperCase());
     }
 
-    @PostMapping("/edit/person")
+    @PostMapping(URL_PERSON)
     @ResponseBody
     @ApiOperation("update contragent (the type of Person)")
     public Person editPerson(@Valid @RequestBody Person person) {
         return personService.update(person);
     }
 
-    @DeleteMapping("/edit/person/{id}")
+    @DeleteMapping(URL_PERSON_ID)
     @ResponseBody
     @ApiOperation("delete contragent (the type of Person)")
     public void deletePerson(@PathVariable("id") Long id) {
         personService.delete(id);
     }
 
-    @DeleteMapping("/edit/person/address/{id}")
+    @DeleteMapping(URL_PERSON_ADDRESS_ID)
     @ResponseBody
     @ApiOperation("delete the contragent address (the type of Person)")
     public void deletePersonAddress(@PathVariable("id") Long id) {
         contragentService.delete(id);
     }
 
-    @PostMapping("/edit/person/address")
+    @PostMapping(URL_PERSON_ADDRESS)
     @ResponseBody
     @ApiOperation("add the contragent address (the type of Person)")
     public Address addNewAddressToPerson(@Valid @RequestBody Address address) {
@@ -128,14 +126,14 @@ public class ContragentController {
         return contragentService.bindAddressWithPerson(idPerson, address);
     }
 
-    @GetMapping("/edit/person/{id}/address")
+    @GetMapping(URL_ADDRESS_TO_PERSON)
     @ResponseBody
     @ApiOperation("get the contragent address (the type of Person)")
     public List<Address> getAddressToPerson(@PathVariable("id") Long id) {
         return personService.getAddresses(id);
     }
 
-    @GetMapping("/edit/address")
+    @GetMapping(URL_ADDRESS)
     @ResponseBody
     @ApiOperation("get the contragent address")
     public List<Address> getAddress(@RequestParam(name = "post_index", required = false) String postIndex,
@@ -157,21 +155,21 @@ public class ContragentController {
         return addressService.findAll(postIndex, country.toUpperCase(), city.toUpperCase(), street.toUpperCase(), houseNumber, apartrmentNumber);
     }
 
-    @PostMapping("/edit/address")
+    @PostMapping(URL_ADDRESS)
     @ResponseBody
     @ApiOperation("update the contragent address")
     public Address editAddress(@Valid @RequestBody Address address) {
         return addressService.update(address);
     }
 
-    @DeleteMapping("/edit/address/{id}")
+    @DeleteMapping(URL_ADDRESS_ID)
     @ResponseBody
     @ApiOperation("find the contragent address")
     public void deleteAddress(@PathVariable("id") long id) {
         addressService.delete(id);
     }
 
-    @GetMapping("/edit/company")
+    @GetMapping(URL_COMPANY)
     @ResponseBody
     @ApiOperation("the search for a contragent (the type of Company)")
     public List<Organization> getOrganization(@RequestParam(name = "name_company") String nameCompany) {
@@ -182,14 +180,14 @@ public class ContragentController {
         return organizationService.findAll(nameCompany);
     }
 
-    @GetMapping("/edit/company/{id}/address")
+    @GetMapping(URL_ADDRESS_TO_COMPANY)
     @ResponseBody
     @ApiOperation("get the contragent address (the type of Company)")
     public List<Address> getAddressToCompany(@PathVariable("id") Long id) {
         return organizationService.getAddresses(id);
     }
 
-    @PostMapping("edit/company/address")
+    @PostMapping(URL_COMPANY_ADDRESS)
     @ResponseBody
     @ApiOperation("add the contragent address (the type of Company)")
     public Address addNewAddressToCompany(@Valid @RequestBody Address address) {
@@ -204,7 +202,7 @@ public class ContragentController {
         return contragentService.bindAddressWithOrganization(idOrganization, address);
     }
 
-    @PostMapping("edit/company/employee")
+    @PostMapping(URL_COMPANY_EMPLOYEE)
     @ResponseBody
     @ApiOperation("add an employee to the contragent (the type of Company)")
     public ContragentDtoEmployee addNewEmployeeToCompany(@Valid @RequestBody ContragentDtoEmployee employee) {
@@ -217,7 +215,7 @@ public class ContragentController {
         return contragentService.bindEmployeeWithOrganization(idOrganization, employee);
     }
 
-    @PostMapping("edit/company/employee_and_address")
+    @PostMapping(URL_COMPANY_EMPLOYEE_AND_ADDRESS)
     @ResponseBody
     @ApiOperation("add an employee with an address to the contragent (the type of Company)")
     public ContragentDtoBindAddressAndEmployee addNewEmployeeAndAddressToCompany(@Valid @RequestBody ContragentDtoBindAddressAndEmployee addressAndEmployee) {
@@ -229,42 +227,42 @@ public class ContragentController {
     }
 
 
-    @GetMapping("/edit/company/{id}/employee")
+    @GetMapping(URL_EMPLOYEE_TO_COMPANY)
     @ResponseBody
     @ApiOperation("get an employee (the type of Company)")
     public List<ContragentDtoEmployee> getEmployeeToCompany(@PathVariable("id") Long id) {
         return organizationService.getEmployees(id);
     }
 
-    @DeleteMapping("/edit/company/address/{id}")
+    @DeleteMapping(URL_COMPANY_ADDRESS_ID)
     @ResponseBody
     @ApiOperation("delete the contragent address (the type of Company)")
     public void deleteCompanyAddress(@PathVariable("id") Long id) {
         contragentService.delete(id);
     }
 
-    @DeleteMapping("/edit/company/employee/{id}")
+    @DeleteMapping(URL_COMPANY_EMPLOYEE_ID)
     @ResponseBody
     @ApiOperation("delete an employee (the type of Company)")
     public void deleteCompanyEmployee(@PathVariable("id") Long id) {
         contragentService.delete(id);
     }
 
-    @PostMapping("/edit/company")
+    @PostMapping(URL_COMPANY)
     @ResponseBody
     @ApiOperation("update contragent (the type of Company)")
     public Organization editOrganization(@Valid @RequestBody Organization organization) {
         return organizationService.update(organization);
     }
 
-    @DeleteMapping("/edit/company/{id}")
+    @DeleteMapping(URL_COMPANY_ID)
     @ResponseBody
     @ApiOperation("delete contragent (the type of Company)")
     public void deleteOrganization(@PathVariable("id") long id) {
         organizationService.delete(id);
     }
 
-    @GetMapping("/edit/employee")
+    @GetMapping(URL_EMPLOYEE)
     @ResponseBody
     @ApiOperation("find an employee (the type of Company)")
     public List<ContragentDtoEmployee> getEmployee(@RequestParam(name = "first_name", required = false) String firstName,
@@ -278,7 +276,7 @@ public class ContragentController {
         return personService.findAllEmployee(firstName, middleName, lastName, position);
     }
 
-    @PostMapping("/edit/employee")
+    @PostMapping(URL_EMPLOYEE)
     @ResponseBody
     @ApiOperation("updating parameters of the contragent employee (the type of Company)")
     public Contragent editEmployee(@RequestBody ContragentDtoEmployee employee) {
@@ -292,10 +290,14 @@ public class ContragentController {
         return contragentService.updateEmployee(employee);
     }
 
-    @DeleteMapping("/edit/employee/{id}")
+    @DeleteMapping(URL_EMPLOYEE_ID)
     @ResponseBody
     @ApiOperation("delete employee (the type of Company)")
     public void deleteEmployee(@PathVariable("id") long id) {
         contragentService.delete(id);
+    }
+
+    private ModelAndView createDefaultModelAndView(String url) {
+        return new ModelAndView(url);
     }
 }

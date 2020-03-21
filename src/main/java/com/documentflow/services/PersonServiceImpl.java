@@ -90,31 +90,26 @@ public class PersonServiceImpl implements PersonService {
         personRepository.findAll(getSpecification(firstName, middleName, lastName)).stream()
                 .filter(person -> {
                     return person.getContragents().stream()
+                            //физ.лицо привязано к какой-либо организации(т.е. является сотрудником) + запись не удалена
                             .anyMatch(c -> c.getOrganization() != null && !c.getIsDeleted());
                 }).forEach(employee -> {
-            if (employeePosition == null) {
-                employee.getContragents().forEach(contragent -> {
-                    result.add(
-                            new ContragentDtoEmployee(contragent.getId().toString(),
-                                    employee.getFirstName(),
-                                    employee.getMiddleName(),
-                                    employee.getLastName(),
-                                    contragent.getPersonPosition()
-                            ));
-                });
-            } else {
-                employee.getContragents().stream()
-                        .filter(contragent -> employeePosition.equals(contragent.getPersonPosition()))
-                        .forEach(contragent -> {
-                            result.add(
-                                    new ContragentDtoEmployee(contragent.getId().toString(),
-                                            employee.getFirstName(),
-                                            employee.getMiddleName(),
-                                            employee.getLastName(),
-                                            contragent.getPersonPosition()
-                                    ));
-                        });
-            }
+            employee.getContragents().stream()
+                    .filter(contragent -> {
+                        if (employeePosition == null) {
+                            return true;
+                        }
+                        return employeePosition.equals(contragent.getPersonPosition());
+                    })
+                    .forEach(contragent -> {
+                        result.add(
+                                new ContragentDtoEmployee(contragent.getId().toString(),
+                                        employee.getFirstName(),
+                                        employee.getMiddleName(),
+                                        employee.getLastName(),
+                                        contragent.getPersonPosition()
+                                ));
+                    });
+
         });
         return result;
     }
