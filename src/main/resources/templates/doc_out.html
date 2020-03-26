@@ -94,10 +94,6 @@
                                         <td><input th:value="${param.address != null} ? ${param.address}" class="form-control" th:name="address" type="text"></td>
                                         <td></td>
                                         <td><button type="submit" class="btn btn-primary">Применить</button></td>
-                                        <!--<td>-->
-                                            <!--<button type="submit"><i class="far fa-check-square"></i></button>-->
-                                            <!--<button type="button" th:onclick="'javascript:clearFilter();'"><i class="far fa-window-close"></i></button>-->
-                                        <!--</td>-->
                                     </form>
                                 </tr>
 
@@ -169,6 +165,7 @@
         return date;
     };
 
+
     function deleteDocOut(id){
         $.ajax({
             url: "/docs/out/card/" + id,
@@ -179,7 +176,7 @@
         });
     }
 
-    function createModal() {
+    function openModal() {
         $.ajax({
             url: "/docs/out/newcard",
             method: 'post',
@@ -201,28 +198,21 @@
                 $('#inId').val(inId);
                 $('#taskTNew').text(idTask);
                 $('#taskIdNew').val(idTask);
-
-
-                // if (doc.id != null) {
-                //     $('#comm').text('Связи');
-                //     if (doc.taskId != null) {
-                //         addButton('.addBtnTask', 'taskBtn', '/tasks/card/' + doc.taskId, 'Поручение', doc.taskId);
-                //     } else {
-                //         addButton('.addBtnTask', 'taskBtn', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');
-                //     }
-                //     if (doc.docInId != null) {
-                //         addButton('.addBtnDO', 'docInBtn', '/docs/in/' + doc.id, 'Ответ', doc.docOutId);
-                //         <!-- добавить ссыль на нужный метод -->
-                //     } else {
-                //         addButton('.addBtnDO', 'docInBtn', '/docs/in/' + doc.id, 'Ответ', 'Создать');
-                //         <!-- добавить ссыль на нужный метод -->
-                //     }
-                // }
             }
         });
     }
 
+
+    function closeModal() {
+        var modal  = document.querySelector('#showDoc');
+        modal.classList.toggle('show');
+        modal.style.display = "none";
+    }
+
     function openModal(id){
+        var modal  = document.querySelector('#showDoc');
+        modal.classList.toggle('show');
+        modal.style.display = "block";
         $.ajax({
             url: "/docs/out/card/" + id,
             docOutDTO: {docOutDTO: 'docOutDTO'},
@@ -238,10 +228,11 @@
                 $('#stateS').val(docOutDTO.state);
                 $('#stateId').val(docOutDTO.stateId);
                 $('#signer').val(docOutDTO.signer);
+                $('#signerId').val(docOutDTO.signerId);
                 $('#content').val(docOutDTO.content);
                 $('#pages').val(docOutDTO.pages);
                 $('#appendix').val(docOutDTO.appendix);
-                $('#note').val(docOutDTO.note);
+                $('#noteN').val(docOutDTO.note);
                 $('#isGenerated').val(docOutDTO.isGenerated);
                 $('#number').val(docOutDTO.number);
 
@@ -257,6 +248,13 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        var url = new URLSearchParams(window.location.search);
+        var openDO = url.get('openDO');
+            openModal(openDO);
+
+    });
 
 </script>
 
@@ -278,12 +276,8 @@
 
                     <input id="idNew" name="idNew" type="hidden" class="form-control">
                     <input id="noteNew" name="note" type="hidden" class="form-control">
-                    <!--<input id="creatorNew" name="creatorNew" type="hidden" class="form-control">-->
-                    <!--<input id="signerNew" name="signerNew" type="hidden" class="form-control">-->
                     <input id="taskIdNew" name="taskIdNew" type="hidden" class="form-control">
                     <input id="stateNew" name="stateNew" type="hidden" class="form-control">
-                    <!--<input id="numberNew" name="numberNew" type="hidden" class="form-control">-->
-                    <!--<input id="regDateNew" name="regDateNew" type="hidden" class="form-control">-->
 
                     <div class="row justify-content-center">
                         <h5>ИСХОДЯЩИЙ ДОКУМЕНТ: СОЗДАНИЕ</h5>
@@ -302,11 +296,6 @@
                             </select>
                         </div>
                     </div>
-
-                    <!--<select class="form-control reset" th:name="docTypeId">-->
-                        <!--<option th:text="' '" th:value="null"/>-->
-                        <!--<option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:selected="${{param.docTypeId}} == ${{docT.id}}" />-->
-                    <!--</select>-->
 
 
                     <div class="form-row">
@@ -373,80 +362,91 @@
                     </script>
 
                     <div class="form-row">
-                        <label for="contentNew" class="col-sm-3 col-form-label">Краткое Содержание</label>
+                        <label for="contentNew" class="col-sm-3 col-form-label">Краткое cодержание</label>
                         <div class="col-sm-9">
                             <textarea input name="content" class="form-control" id="contentNew" rows="2" required></textarea>
                         </div>
                     </div>
                     <br>
                     <div class="form-row">
-                        <label for="noteNew" class="col-sm-3 col-form-label">Примечания</label>
+                        <label for="noteNew" class="col-sm-3 col-form-label">Примечание</label>
                         <div class="col-sm-9">
                             <input type="text" name="note" class="form-control" id="noteNew" rows="2" required/>
                         </div>
                     </div>
 
-                    <!--<div>-->
-                        <!--<h5 id="comm"></h5>-->
-                        <!--<div class="form-row addBtnTask" ></div>-->
-                        <!--<div class="form-row addBtnDO" ></div>-->
-                    <!--</div>-->
-
-                <br>
                     <div class="row justify-content-center">
                         <h5>СВЯЗИ</h5>
                     </div>
-                 <br>
 
-                  <!--<div class="form-row">-->
-                      <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                      <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                  <!--</div>-->
-                    <!--<div class="form-row" >-->
-                        <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
-                        <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
-                    <div class="form-row">
-                         <label class="col-sm-3 col-form-label">Входящий</label>
-                         <div class="col-sm-9">
-                             <input type="text" name="inIdT" href="#" id="inId" class="form-control" rows="1"/>
-                         </div>
-                    </div>
-                    <br>
-                    <div class="form-row">
-                         <label class="col-sm-3 col-form-label">Поручение</label>
-                         <div class="col-sm-9">
-                             <input type="text" name="taskTNew" href="#" id="taskIdNew" class="form-control" rows="1"/>
-
-                    <!--<select class="form-control" id="taskId" name="taskId">-->
-                    <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
-                    <!--</select>-->
-                         </div>
-                    </div>
 
                     <!--<div class="form-row">-->
-                    <!--<label id="docIntLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="docInIdT"  name="docInIdT"></a>-->
+                    <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
+                    <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
                     <!--</div>-->
-
                     <!--<div class="form-row" >-->
-                    <!--<label id="taskNew" for="taskId" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="taskT" href="#" name="taskId"></a>-->
-
+                    <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
+                    <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
                     <!--</div>-->
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Входящий</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="docInIdT" href="#" id="docInId" class="form-control" rows="1"/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Поручение</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="taskT" href="#" id="taskId" class="form-control" rows="1"/>
+
+                            <!--<div class="form-row">-->
+                            <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
+                            <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
+                            <!--</div>-->
+                            <!--<div class="form-row" >-->
+                            <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
+                            <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
+                            <!--</div>-->
+
+
+                            <!--<div class="form-row">-->
+                            <!--<label for="docin" class="col-sm-3 col-form-label">Входящий</label>-->
+                            <!--<div class="col-sm-9">-->
+                            <!--<select class="form-control" id="docin" href="#" th:name="docin">-->
+                            <!--</select>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+                            <!--<div class="form-row">-->
+                            <!--<label for="taskId" class="col-sm-3 col-form-label">Поручение</label>-->
+                            <!--<div class="col-sm-9">-->
+                            <!--<select class="form-control" id="taskId" name="taskId">-->
+                            <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
+                            <!--</select>-->
+                            <!--</div>-->
+
+                            <!--</div>-->
+
+                            <!--<div class="form-row">-->
+                            <!--<label id="docIntLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
+                            <!--<a id="docInIdT" href="#" name="docInIdT"></a>-->
+                            <!--</div>-->
 
 
 
 
 
-                    <!--<div class="form-row" >-->
-                        <!--<label id="taskLabel" for="taskT" class="col-sm-3 col-form-label"></label>-->
-                        <!--<div class="col-sm-9">-->
-                           <!--<select class="form-control" id="taskNew" href="#" name="taskId">-->
-                           <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
-                           <!--</select>-->
-                        <!--</div>-->
-                    <!--</div>-->
+
+                            <!--<div class="form-row" >-->
+                            <!--<label id="taskLabel" for="taskT" class="col-sm-3 col-form-label"></label>-->
+                            <!--<div class="col-sm-9">-->
+                            <!--<select class="form-control" id="taskT" href="#" name="taskId">-->
+                            <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
+                            <!--</select>-->
+                        </div>
+                    </div>
+
                 </form>
 
             </div>
@@ -504,19 +504,19 @@
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
+                <a role="button" aria-pressed="true" data-dismiss="modal" class="close" href="#" th:onclick="'javascript:closeModal();'">x</a>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
                 <form th:action="@{/docs/out/card}" method="POST" id="docForm">
-                    <!--th:object="${docOut}"-->
+
                     <!-- Hidden inputs -->
                     <input id="id" name="id" type="hidden" class="form-control">
                     <input id="createDate" name="createDate" type="hidden" class="form-control">
                     <input id="number" name="number" type="hidden" class="form-control">
                     <!--<input id="note" name="note" type="hidden" class="form-control">-->
                     <!--<input id="creator" type="hidden" class="form-control">-->
-                    <!--<input id="signer" type="hidden" class="form-control">-->
+                    <!--<input id="signerId" name="signerId" type="hidden" class="form-control">-->
                     <!--<input id="docTypeId" name="docTypeId" type="hidden" class="form-control">-->
                     <!--<input id="stateS" name="stateS" type="hidden" class="form-control">-->
 
@@ -549,8 +549,9 @@
 
                     <div class="form-row">
                         <label for="creatorFIO" class="col-sm-3 col-form-label">Исполнитель</label>
+                        <label class="col-sm-6 col-form-label" id="creatorFIO" name="creatorFIO"></label>
                         <div class="col-sm-9">
-                            <textarea name="creatorFIO" class="form-control" id="creatorFIO" rows="1"></textarea>
+                            <!--<textarea name="creatorFIO" class="form-control" id="creatorFIO" rows="1"></textarea>-->
                         </div>
                     </div>
 
@@ -562,7 +563,6 @@
                                 <option th:each="docType : ${docTypes}"
                                         th:text="${docType.name}"
                                         th:value="${docType.id}"/>
-                                <!--th:selected="${{docType.id}}==${{docTypeId}}"/>-->
                             </select>
                         </div>
                     </div>
@@ -582,20 +582,20 @@
 
                     <div class="form-row">
                         <label for="stateT" class="col-sm-3 col-form-label">Статус документа</label>
+                        <label class="col-sm-6 col-form-label" id="stateT" name="stateT"></label>
                         <div class="col-sm-9">
-                            <textarea name="stateT" class="form-control" id="stateT" rows="1"></textarea>
                         </div>
                     </div>
 
 
                     <div class="form-row">
-                        <label for="signer" class="col-sm-3 col-form-label">Согласующий</label>
+                        <label for="signerId" class="col-sm-3 col-form-label">Согласующий</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="signer" name="signer" required>
+                            <select class="form-control" id="signerId" name="signer" required>
                                 <option th:each="chief : ${signers}"
                                         th:text="${chief.lastName}+' '+ ${chief.firstName} +' '+ ${chief.middleName}"
-                                        th:value="${chief.id}"
-                                        th:selected="${chief}"/>
+                                        th:value="${chief.id}"/>
+                                        <!--th:selected="${{chief.id}}==${{signer.id}}"-->
                             </select>
                         </div>
                     </div>
@@ -645,93 +645,20 @@
                             <textarea input name="content" class="form-control" id="content" rows="2"></textarea>
                         </div>
                     </div>
-                    <br>
+
                     <div class="form-row">
-                        <label for="note" class="col-sm-3 col-form-label">Примечания</label>
+                        <label for="noteN" class="col-sm-3 col-form-label">Примечания</label>
                         <div class="col-sm-9">
-                            <textarea input id="note" name="note" class="form-control"  rows="2"></textarea>
+                            <textarea input id="noteN" name="note" class="form-control"  rows="2"></textarea>
                         </div>
                     </div>
-
-                    <br>
-                    <div class="row justify-content-center">
-                        <h5>СВЯЗИ</h5>
-                    </div>
-                    <br>
-
-                    <!--<div class="form-row">-->
-                    <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
-                    <!--<div class="form-row" >-->
-                    <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
-                    <div class="form-row">
-                        <label class="col-sm-3 col-form-label">Входящий</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="docInIdT" href="#" id="docInId" class="form-control" rows="1"/>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-row">
-                        <label class="col-sm-3 col-form-label">Поручение</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="taskT" href="#" id="taskId" class="form-control" rows="1"/>
-
-                    <!--<div class="form-row">-->
-                    <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
-                    <!--<div class="form-row" >-->
-                    <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
-
-
-                    <!--<div class="form-row">-->
-                    <!--<label for="docin" class="col-sm-3 col-form-label">Входящий</label>-->
-                    <!--<div class="col-sm-9">-->
-                    <!--<select class="form-control" id="docin" href="#" th:name="docin">-->
-                    <!--</select>-->
-                    <!--</div>-->
-                    <!--</div>-->
-
-                    <!--<div class="form-row">-->
-                        <!--<label for="taskId" class="col-sm-3 col-form-label">Поручение</label>-->
-                        <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" id="taskId" name="taskId">-->
-                                <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
-                            <!--</select>-->
-                        <!--</div>-->
-
-                     <!--</div>-->
-
-                    <!--<div class="form-row">-->
-                        <!--<label id="docIntLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                        <!--<a id="docInIdT" href="#" name="docInIdT"></a>-->
-                    <!--</div>-->
-
-
-
-
-
-
-                        <!--<div class="form-row" >-->
-                            <!--<label id="taskLabel" for="taskT" class="col-sm-3 col-form-label"></label>-->
-                            <!--<div class="col-sm-9">-->
-                                <!--<select class="form-control" id="taskT" href="#" name="taskId">-->
-                                    <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
-                                <!--</select>-->
-                            <!--</div>-->
-                        <!--</div>-->
 
                 </form>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
         </div>

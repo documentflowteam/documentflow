@@ -111,7 +111,7 @@ public class DocInUtils {
         if (docInDto.getStateId() != null) {
             docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.toString()));
 //            docIn.setState(stateService.getStateById(1));
         }
         if (docInDto.getTaskId() != null) {
@@ -187,7 +187,7 @@ public class DocInUtils {
         docIn = convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(getRegNumber());
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.toString()));
         }
         docInService.save(docIn);
     }

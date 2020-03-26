@@ -53,76 +53,6 @@ public class DocOutService {
         return docOutRepository.findByTask(task);
     }
 
-//    public Page<DocOut> findAllByCreator(User creator, Pageable pageable){
-//        return docOutRepository.findAllByCreator(creator, pageable);
-//    }
-//
-//    public Page<DocOut> findAllBySigner(User signer, Pageable pageable){
-//        return docOutRepository.findAllBySigner(signer, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByCreateDate (LocalDate createDate, Pageable pageable){
-//        return docOutRepository.findAllByCreateDate(createDate, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByRegDate (LocalDate regDate, Pageable pageable){
-//        return docOutRepository.findAllByRegDate(regDate, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByContent (String content, Pageable pageable){
-//        return docOutRepository.findAllByContent(content, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByAppendix (String appendix, Pageable pageable){
-//        return docOutRepository.findAllByAppendix(appendix, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByNote (String note, Pageable pageable){
-//        return docOutRepository.findAllByNote(note, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByIsGenerated (Boolean isGenerated, Pageable pageable){
-//        return docOutRepository.findAllByIsGenerated(isGenerated, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByNumber (String number, Pageable pageable){
-//        return docOutRepository.findAllByNumber(number, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByState (State state, Pageable pageable){
-//        return docOutRepository.findAllByState(state, pageable);
-//    }
-//
-//    public Page<DocOut> findAllByTask (Task task, Pageable pageable){
-//        return docOutRepository.findAllByTask(task, pageable);
-//    }
-
-
-//    public DocOut save(DocOutDTO docOutDTO) {
-//        DocOut docOut=new DocOut();
-//        docOut.setCreator(docOutDTO.getCreator());
-//        docOut.setSigner(docOutDTO.getSigner());
-//        docOut.setDocType(docOutDTO.getDocType());
-//        docOut.setContent(docOutDTO.getContent());
-//        docOut.setPages(docOutDTO.getPages());
-//        docOut.setIsGenerated(docOutDTO.getIsGenerated());
-//        docOut.setAppendix(docOutDTO.getAppendix());
-//        docOut.setNote(docOutDTO.getNote());
-//        return docOutRepository.save(docOut);
-//
-//
-////        User creator=docOutDTO.getCreator();
-////        User signer=docOutDTO.getSigner();
-////        String content = docOutDTO.getContent();
-////        Integer pages=docOutDTO.getPages();
-////        String appendix = docOutDTO.getAppendix();
-////        String note = docOutDTO.getNote();
-////        State state = docOutDTO.getState();
-////
-////        DocOut docOut=new DocOut(creator, signer, content, pages, appendix, note, state);
-//  //          return docOutRepository.save(docOut);
-//    }
-
     public void deleteById (Long id){
         docOutRepository.deleteById(id);
     }
@@ -131,18 +61,6 @@ public class DocOutService {
         docOutRepository.delete(docOut);
     }
 
-//    public DocOut update(DocOutDTO docOutDTO){
-//        DocOut docOut=docOutDTO.convertToDocOut();
-////        docOut.setCreator(docOutDTO.getCreator());
-////        docOut.setSigner(docOutDTO.getSigner());
-////        docOut.setDocType(docOutDTO.getDocType());
-////        docOut.setContent(docOutDTO.getContent());
-////        docOut.setPages(docOutDTO.getPages());
-////        docOut.setIsGenerated(docOutDTO.getIsGenerated());
-////        docOut.setAppendix(docOutDTO.getAppendix());
-////        docOut.setNote(docOutDTO.getNote());
-//        return docOutRepository.save(docOut);
-//    }
 
 }
 

@@ -45,12 +45,11 @@ public class DocOutUtils {
     }
 
     public DocOut convertedFromDocOutDTO(DocOutDTO docOutDTO) {
+
         docOut=docOutService.findOneById(docOutDTO.getId());
         docOut.setCreateDate(docOutDTO.getCreateDate());
         docOut.setCreator(docOutDTO.getCreator());
         docOut.setDocType(docTypeService.getDocTypeById(docOutDTO.getDocTypeId()));
-        //          docOut.setDocType(docOutDTO.getDocType());
-        //          docOut.setDocTypeId(docTypeService.getDocTypeById(1));
         docOut.setSigner(docOutDTO.getSigner());
         docOut.setContent(docOutDTO.getContent());
         docOut.setPages(docOutDTO.getPages());
@@ -60,25 +59,10 @@ public class DocOutUtils {
             docOut.setIsGenerated(false);
         } else docOut.setIsGenerated(docOutDTO.getIsGenerated());
 
-//        if (docOutDTO.getNumber()==null) {
-//            docOut.setNumber("б/н");
-//        } else docOut.setNumber(docOutDTO.getNumber());
         docOut.setNumber(docOutDTO.getNumber());
-        //  docOut.setRegDate(null);
         docOut.setRegDate(docOutDTO.getRegDate());
-
-//        if (docOutDTO.getState() ==null) {
-//            docOut.setState(stateService.getStateById(1));
-//        } else {docOut.setState(docOutDTO.getState());
-//        }
-        //       docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
         docOut.setState(docOutDTO.getState());
         docOut.setTask(docOutDTO.getTask());
-
-
-//        if (docOutDTO.getTask() != null) {
-//            docOutDTO.setTask(taskService.findOneById(docOutDTO.getTaskId()));
-//        } else docOutDTO.setTask(null);
         docOutService.save(docOut);
         return docOut;
 
@@ -136,6 +120,7 @@ public class DocOutUtils {
                 docOut.getDocType(),
                 docOut.getDocType().getId(),
                 docOut.getSigner(),
+                docOut.getSigner().getId(),
                 docOut.getContent(),
                 docOut.getPages(),
                 docOut.getAppendix(),
@@ -208,22 +193,17 @@ public class DocOutUtils {
         docOutService.save(docOut);
     }
 
-    public void addTaskToDocOutDTO(Task task) {
-//        DocOut docOut = docOutService.findOneById(id);
+    public void addTaskToDocOutDTO(Long id, Task task) {
+      docOut = docOutService.findOneById(id);
         docOutDTO.setTask(task);
         docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
- //       docOutService.save(docOut);
+        docOutService.save(docOut);
     }
 
     public void setNewDocOutRegDate(LocalDate localDate) {
         docOut.setRegDate(localDate);
         docOutService.save(docOut);
     }
-
-//    public void setNewDocOutState() {
-//        editState(docOutDTO.getId(), BusinessKeyState.PROJECT);
-//        docOutService.save(docOut);
-//    }
 
     public void setNewDocOutNumber() {
         docOut.setNumber("б/н");

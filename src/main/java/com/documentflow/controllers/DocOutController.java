@@ -55,13 +55,6 @@ public class DocOutController {
             currentPage = 1;
         }
         model.addAttribute("currentPage", currentPage);
-//        Page<DocOut> pageOut = docOutService.findAll(PageRequest.of(currentPage - 1, 20, Sort.Direction.DESC, "createDate"));
-//        Page<DocOutDTO> pageDTOs = pageOut.map(d -> new DocOutDTO(d));
-//        pageDTOs.stream().map(d -> model.addAttribute(d));
-  //      model.addAttribute("docsOut", pageDTOs);
-
-  //      DocOutDTO docOut = new DocOutDTO();
-
 
         DocOutFilter filter = new DocOutFilter(request);
         model.addAttribute("filter", filter.getFiltersString());
@@ -91,7 +84,6 @@ public class DocOutController {
         result.addObject("tasks", taskService.findAll(Pageable.unpaged()));
         result.addObject("docTypes", docTypeService.findAllDocTypes());
         result.addObject("docOutAddress", docTypeService.findAllDocTypes());
-        result.addObject("docIn", docInService.findAll());
 
         return result;
     }
@@ -103,7 +95,8 @@ public class DocOutController {
 
 //        docOutUtils.addTaskToDocOutDTO(taskService.findOneById(idTask));
 
-        DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
+
+        docOutUtils.convertFromDocOutDTO(docOutDTO);
         docOutUtils.setNewDocOutRegDate(null);
         docOutUtils.setNewDocOutNumber();
 
@@ -111,34 +104,24 @@ public class DocOutController {
 
     }
 
-
-    @PostMapping("/card")
+    @RequestMapping("/card")
+ //   @PostMapping("/card")
     public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
-//      if (docOutDTO.getNumber()!=null || !docOutDTO.getNumber().equals("б/н"))   {
-//          return "redirect:/docs/out";
-//      } else {
-//          DocOut docOut = docOutUtils.convertFromDocOutDTO(docOutDTO);
-//        DocOut docOut = docOutService.findOneById(docOutDTO.getId());
-//        if (docOut.getId() == null) {
-//            docOutDTO.setRegNumber(docOutUtils.getRegNumber());
-//        }
-        DocOut docOut;// = docOutUtils.convertFromDocOutDTO(docOutDTO);
+
+        DocOut docOut;
         docOutUtils.saveModifiedDocOut(docOutDTO);
-//          docOutService.save(docOut);
           return "redirect:/docs/out";
- //     }
+
     }
 
     @ResponseBody
     @RequestMapping("/card/{id}")
     public DocOutDTO getCard(@PathVariable("id") Long id) {
-//   return docOutUtils.convertFromDocOut(docOutService.findOneById(id));
         return docOutUtils.getDocOutDTO(id);
     }
 
     @PostMapping("/delete")
     public String deleteDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
-//       DocOut docOut = docOutService.findOneById(docOutDTO.getId());
         docOutUtils.delDocOut(docOutDTO);
             return "redirect:/docs/out";
     }
