@@ -117,6 +117,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         List<Contragent> contragents = getListWithNotDeletedContragents(optionalOrganization.get());
         return contragents.stream()
+                .filter( contragent -> contragent.getAddress() != null)
                 //меняем ID адреса на ID контрагента, чтобы на фронте можно было удалить запись
                 .map(contragent -> new Address(contragent.getId(),
                         contragent.getAddress().getIndex(),
@@ -139,6 +140,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         List<Contragent> contragents = getListWithNotDeletedContragents(optionalOrganization.get());
         return contragents.stream()
+                .filter(contragent -> contragent.getPerson() != null)
                 .map(contragent -> new ContragentDtoEmployee(contragent.getId().toString(),
                         contragent.getPerson().getFirstName(),
                         contragent.getPerson().getMiddleName(),
@@ -149,9 +151,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     private List<Contragent> getListWithNotDeletedContragents (Organization organization) {
-        //берем список записей, которые не помечены как удаленные и в которых присутствует сущность персоны
+        //берем список записей, которые не помечены как удаленные
         return organization.getContragents().stream()
-                .filter(contragent -> !contragent.getIsDeleted() && contragent.getPerson() != null)
+                .filter(contragent -> !contragent.getIsDeleted())
                 .collect(Collectors.toList());
     }
 }

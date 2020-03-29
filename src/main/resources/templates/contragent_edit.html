@@ -17,6 +17,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 </head>
 <body>
+<div th:replace="~{header}" />
+<div class="wrapper">
+<div th:replace="~{sidebar}" />
+    <div class="container-fluid">
 <div th:class="contragent-main-caption">
     <h3 th:text="'Редактирование параметров контрагента'"></h3>
 </div>
@@ -75,6 +79,8 @@
     <div th:insert="~{contragent_fragments::company_parameters}"/>
     <div th:insert="~{contragent_fragments::table-address}"/>
     <div th:insert="~{contragent_fragments::table-employee}"/>
+</div>
+    </div>
 </div>
 <script th:type="'text/javascript'">
 
@@ -864,7 +870,7 @@
                                     $("div.contragent-table-found-values table tbody").append(
                                         "<tr>" +
                                         "<td id='id'>" + value.id + "</td>" +
-                                        "<td id='post_index'>" + value.index + "</td>" +
+                                        "<td id='post_index'>" + value.post_index + "</td>" +
                                         "<td id='country'>" + value.country + "</td>" +
                                         "<td id='city'>" + value.city + "</td>" +
                                         "<td id='street'>" + value.street + "</td>" +
@@ -1403,7 +1409,7 @@
                 $("div.dialog-edit-company table.table-edit-address tbody").append(
                     "<tr>" +
                     "<td id='id'>" + data.address.id + "</td>" +
-                    "<td id='post_index'>" + data.address.index + "</td>" +
+                    "<td id='post_index'>" + data.address.post_index + "</td>" +
                     "<td id='country'>" + data.address.country + "</td>" +
                     "<td id='city'>" + data.address.city + "</td>" +
                     "<td id='street'>" + data.address.street + "</td>" +
@@ -1450,7 +1456,7 @@
                     $("div.dialog-edit-person table tbody").append(
                         "<tr>" +
                         "<td id='id'>" + value.id + "</td>" +
-                        "<td id='post_index'>" + value.index + "</td>" +
+                        "<td id='post_index'>" + value.post_index + "</td>" +
                         "<td id='country'>" + value.country + "</td>" +
                         "<td id='city'>" + value.city + "</td>" +
                         "<td id='street'>" + value.street + "</td>" +
@@ -1488,7 +1494,7 @@
                     $("div.dialog-edit-company table.table-edit-address tbody").append(
                         "<tr>" +
                         "<td id='id'>" + value.id + "</td>" +
-                        "<td id='post_index'>" + value.index + "</td>" +
+                        "<td id='post_index'>" + value.post_index + "</td>" +
                         "<td id='country'>" + value.country + "</td>" +
                         "<td id='city'>" + value.city + "</td>" +
                         "<td id='street'>" + value.street + "</td>" +

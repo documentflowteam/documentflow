@@ -38,12 +38,12 @@ public class PersonServiceImpl implements PersonService {
         String lastName = ContragentUtils.toUpperCase(contragentDto.getLastName());
 
         Person personWithoutId = new Person(firstName, middleName, lastName);
-        return personRepository.save(personWithoutId);
+        return checkDuplicateAndGetPerson(personWithoutId);
     }
 
     @Override
     public Person save(Person person) {
-        return personRepository.save(person);
+        return checkDuplicateAndGetPerson(person);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PersonServiceImpl implements PersonService {
                 .collect(Collectors.toMap(
                         (ContragentDtoEmployee key) -> {
                             Person person = new Person(key.getFirstName(), key.getMiddleName(), key.getLastName());
-                            return personRepository.save(person);
+                            return checkDuplicateAndGetPerson(person);
                         },
                         ContragentDtoEmployee::getPersonPosition
                 ));
@@ -95,7 +95,7 @@ public class PersonServiceImpl implements PersonService {
                 }).forEach(employee -> {
             employee.getContragents().stream()
                     .filter(contragent -> {
-                        if (employeePosition == null) {
+                        if (StringUtils.isEmpty(employeePosition)) {
                             return true;
                         }
                         return employeePosition.equals(contragent.getPersonPosition());
@@ -120,12 +120,12 @@ public class PersonServiceImpl implements PersonService {
         if (StringUtils.isNotEmpty(person.getFirstName())) {
             spec = spec.and(PersonSpecifications.firstNameEq(person.getFirstName().toUpperCase()));
         } else {
-            spec = spec.and(PersonSpecifications.firstNameIsNull());
+            spec = spec.and(PersonSpecifications.firstNameEq(""));
         }
         if (StringUtils.isNotEmpty(person.getMiddleName())) {
             spec = spec.and(PersonSpecifications.middleNameEq(person.getMiddleName().toUpperCase()));
         } else {
-            spec = spec.and(PersonSpecifications.middleNameIsNull());
+            spec = spec.and(PersonSpecifications.middleNameEq(""));
         }
         if (StringUtils.isNotEmpty(person.getLastName())) {
             spec = spec.and(PersonSpecifications.lastNameEq(person.getLastName().toUpperCase()));
@@ -169,7 +169,7 @@ public class PersonServiceImpl implements PersonService {
                     contragentService.save(contragent);
                 }
         );
-        return person;
+        return personRepository.save(person);
     }
 
     @Override
@@ -226,5 +226,25 @@ public class PersonServiceImpl implements PersonService {
             spec = spec.and(PersonSpecifications.lastNameEq(lastName.toUpperCase()));
         }
         return spec;
+    }
+
+    /**
+     * We check the person for presence in the database.
+     * If the person exists, we take it, if it does not exist, we save it
+     *
+     * @param person person to check and save
+     * @return Person the person was found or saved
+     */
+    private Person checkDuplicateAndGetPerson(Person person) {
+        Person findPerson = strongFind(person);
+        Person correctPerson;
+
+        if (findPerson != null) {
+            correctPerson = findPerson;
+        } else {
+            correctPerson = personRepository.save(ContragentUtils.normalizePerson(person));
+        }
+
+        return correctPerson;
     }
 }

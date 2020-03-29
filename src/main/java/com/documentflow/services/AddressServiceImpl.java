@@ -34,18 +34,17 @@ public class AddressServiceImpl implements AddressService {
         if (ContragentUtils.isEmpty(addressesDto)) {
             throw new NotFoundAddressException();
         }
-
         List<Address> addresses = Arrays.stream(addressesDto)
                 .map(Address::new)
                 .filter(ContragentUtils::isNotEmpty)
+                .map(this::checkDuplicateAndGetAddress)
                 .collect(Collectors.toList());
-
         return addressRepository.saveAll(addresses);
     }
 
     @Override
     public Address save(@NonNull Address address) {
-        return addressRepository.save(ContragentUtils.normalizeAddress(address));
+        return checkDuplicateAndGetAddress(ContragentUtils.normalizeAddress(address));
     }
 
     @Override
@@ -89,7 +88,7 @@ public class AddressServiceImpl implements AddressService {
             spec = spec.and(AddressSpecifications.countryEq(address.getCountry().toUpperCase()));
         }
         if (!StringUtils.isEmpty(address.getCity())) {
-            spec = spec.and(AddressSpecifications.cityEq(address.getCity().toUpperCase()));
+            spec = spec.and(AddressSpecifications.countryEq(address.getCountry().toUpperCase()));
         }
         if (!StringUtils.isEmpty(address.getStreet())) {
             spec = spec.and(AddressSpecifications.streetEq(address.getStreet().toUpperCase()));
@@ -97,14 +96,13 @@ public class AddressServiceImpl implements AddressService {
         if (!ObjectUtils.isEmpty(address.getHouseNumber())) {
             spec = spec.and(AddressSpecifications.houseNumberEq(address.getHouseNumber()));
         } else {
-            spec = spec.and(AddressSpecifications.houseNumberIsNull());
+            spec = spec.and(AddressSpecifications.houseNumberEq(""));
         }
         if (!ObjectUtils.isEmpty(address.getApartmentNumber())) {
             spec = spec.and(AddressSpecifications.apartmentNumberEq(address.getApartmentNumber()));
         } else {
-            spec = spec.and(AddressSpecifications.apartmentNumberIsNull());
+            spec = spec.and(AddressSpecifications.apartmentNumberEq(""));
         }
-
         return addressRepository.findOne(spec).orElse(null);
     }
 
@@ -132,7 +130,7 @@ public class AddressServiceImpl implements AddressService {
         address.setHouseNumber(adr.getHouseNumber());
         address.setApartmentNumber(adr.getApartmentNumber());
 
-        return address;
+        return addressRepository.save(address);
     }
 
     @Override
@@ -145,5 +143,26 @@ public class AddressServiceImpl implements AddressService {
         address.getContragents().forEach(contragent -> {
             contragent.setIsDeleted(true);
         });
+    }
+
+
+    /**
+     * We check the address for presence in the database.
+     * If the address exists, we take it, if it does not exist, we save it
+     *
+     * @param address address to check and save
+     * @return Address the address was found or saved
+     */
+    private Address checkDuplicateAndGetAddress (Address address) {
+        Address findAddress = strongFind(address);
+        Address correctAddress;
+
+        if (findAddress != null) {
+            correctAddress = findAddress;
+        } else {
+            correctAddress = addressRepository.save(ContragentUtils.normalizeAddress(address));
+        }
+
+        return correctAddress;
     }
 }
