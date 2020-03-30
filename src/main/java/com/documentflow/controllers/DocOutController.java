@@ -77,7 +77,7 @@ public class DocOutController {
     @RequestMapping(value = "/newcard")
     public ModelAndView createDoc() {
         ModelAndView result = new ModelAndView("doc_out");
-        result.addObject("docOut", new DocOutDTO());
+        result.addObject("docOutDTO", new DocOutDTO());
         result.addObject("creators", userService.getAllUsers());
         result.addObject("signers", userService.getAllUsers());
         result.addObject("states", stateService.findAllStates());
@@ -89,7 +89,7 @@ public class DocOutController {
     }
 
     @RequestMapping(value = "/newcard/submit", method = RequestMethod.POST)
-    public String createDocNew(@ModelAttribute (name = "docOut") DocOutDTO docOutDTO) {//},
+    public String createDocNew(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO) {//},
         //                              @RequestParam(name = "idIn", required = false) Long idIn,
         //                              @RequestParam(name = "idTask", required = false) Long idTask) {
 
