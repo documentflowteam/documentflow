@@ -1,4 +1,4 @@
-package com.documentflow.entities.DTO;
+package com.documentflow.entities.dto;
 
 import com.documentflow.entities.DocType;
 import com.documentflow.entities.State;

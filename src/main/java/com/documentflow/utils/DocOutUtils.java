@@ -1,19 +1,15 @@
 package com.documentflow.utils;
 
-import com.documentflow.entities.DTO.DocOutDTO;
+import com.documentflow.entities.dto.DocOutDTO;
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.User;
-import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Component
 public class DocOutUtils {
