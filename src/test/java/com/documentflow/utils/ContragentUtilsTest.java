@@ -6,6 +6,9 @@ import com.documentflow.entities.dto.ContragentDtoParameters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test for {@link ContragentUtils}
+ */
 public class ContragentUtilsTest {
 
     @Test

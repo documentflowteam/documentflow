@@ -9,6 +9,7 @@ import com.documentflow.entities.dto.ContragentDtoAddress;
 import com.documentflow.entities.dto.ContragentDtoBindAddressAndEmployee;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.exceptions.NotFoundAddressException;
+import com.documentflow.exceptions.NotFoundContragentException;
 import com.documentflow.exceptions.NotFoundEmployeeException;
 import com.documentflow.repositories.ContragentRepository;
 import com.documentflow.repositories.specifications.ContragentSpecifications;
@@ -168,7 +169,7 @@ public class ContragentServiceImpl implements ContragentService {
         person.setMiddleName(employee.getMiddleName());
         person.setLastName(employee.getLastName());
         contragent.setPerson(person);
-        return contragentRepository.save(contragent);
+        return contragent;
     }
 
     @Override
@@ -180,22 +181,21 @@ public class ContragentServiceImpl implements ContragentService {
     public void delete(Long id) {
         Optional<Contragent> optionalContragent = contragentRepository.findById(id);
         if (!optionalContragent.isPresent()) {
-            throw new NotFoundAddressException();
+            throw new NotFoundContragentException();
         }
         Contragent contragent = optionalContragent.get();
         contragent.setIsDeleted(true);
-        contragentRepository.save(contragent);
     }
 
     @Override
     public Address bindAddressWithPerson(Long idPerson, Address adr) {
 
-        Address address = addressService.save(ContragentUtils.normalizeAddress(adr));
+        Address correctAddress = addressService.save(ContragentUtils.normalizeAddress(adr));
         Person person = personService.find(idPerson);
 
         String searchName = ContragentUtils.createSearchName(person.getFirstName(), person.getMiddleName(), person.getLastName());
         Contragent contragent = new Contragent.Builder()
-                .address(address)
+                .address(correctAddress)
                 .person(person)
                 .searchName(searchName)
                 .isDeleted(false)
@@ -205,24 +205,24 @@ public class ContragentServiceImpl implements ContragentService {
         return Address.builder()
                 //ВНИМАНИЕ. Добавляем ID контрагента для комфортного удаления записи на фронте
                 .id(contragent.getId())
-                .index(address.getIndex())
-                .country(address.getCountry())
-                .city(address.getCity())
-                .street(address.getStreet())
-                .houseNumber(address.getHouseNumber())
-                .apartmentNumber(address.getApartmentNumber())
+                .index(correctAddress.getIndex())
+                .country(correctAddress.getCountry())
+                .city(correctAddress.getCity())
+                .street(correctAddress.getStreet())
+                .houseNumber(correctAddress.getHouseNumber())
+                .apartmentNumber(correctAddress.getApartmentNumber())
                 .build();
     }
 
     @Override
     public Address bindAddressWithOrganization(Long idOrganization, Address adr) {
 
-        Address address = addressService.save(ContragentUtils.normalizeAddress(adr));
+        Address correctAddress = addressService.save(ContragentUtils.normalizeAddress(adr));
         Organization organization = organizationService.find(idOrganization);
 
         String searchName = ContragentUtils.createSearchName(organization.getName());
         Contragent contragent = new Contragent.Builder()
-                .address(address)
+                .address(correctAddress)
                 .organization(organization)
                 .searchName(searchName)
                 .isDeleted(false)
@@ -232,12 +232,12 @@ public class ContragentServiceImpl implements ContragentService {
         return Address.builder()
                 //ВНИМАНИЕ. Добавляем ID контрагента для комфортного удаления записи на фронте
                 .id(contragent.getId())
-                .index(address.getIndex())
-                .country(address.getCountry())
-                .city(address.getCity())
-                .street(address.getStreet())
-                .houseNumber(address.getHouseNumber())
-                .apartmentNumber(address.getApartmentNumber())
+                .index(correctAddress.getIndex())
+                .country(correctAddress.getCountry())
+                .city(correctAddress.getCity())
+                .street(correctAddress.getStreet())
+                .houseNumber(correctAddress.getHouseNumber())
+                .apartmentNumber(correctAddress.getApartmentNumber())
                 .build();
     }
 
@@ -245,12 +245,11 @@ public class ContragentServiceImpl implements ContragentService {
     public ContragentDtoEmployee bindEmployeeWithOrganization(Long idOrganization, ContragentDtoEmployee employee) {
 
         Person argumentPerson = new Person(employee.getFirstName(), employee.getMiddleName(), employee.getLastName());
+        ContragentUtils.normalizePerson(argumentPerson);
 
         //Проверяем существует ли в БД заданная персона. Если существует, то используем ее, не добавляя дубликат в БД
-        Person person = personService.strongFind(argumentPerson);
-        if (person == null) {
-            person = personService.save(argumentPerson);
-        }
+        Person person =  personService.save(argumentPerson);
+
         Organization organization = organizationService.find(idOrganization);
 
         String searchName = ContragentUtils.createSearchName(person.getFirstName(), person.getMiddleName(), person.getLastName(), employee.getPersonPosition(), organization.getName());
@@ -294,16 +293,10 @@ public class ContragentServiceImpl implements ContragentService {
         );
 
         //Проверяем существует ли в БД заданная персона. Если существует, то используем ее, не добавляя дубликат в БД
-        Person person = personService.strongFind(argumentPerson);
-        if (person == null) {
-            person = personService.save(argumentPerson);
-        }
+        Person person = personService.save(argumentPerson);
 
         //Проверяем существует ли в БД заданный адрес. Если существует, то используем его, не добавляя дубликат в БД
-        Address address = addressService.strongFind(argumentAddress);
-        if (address == null) {
-            address = addressService.save(argumentAddress);
-        }
+        Address address = addressService.save(argumentAddress);
 
         String searchName = ContragentUtils.createSearchName(
                 addressAndEmployee.getEmployee().getFirstName(),
