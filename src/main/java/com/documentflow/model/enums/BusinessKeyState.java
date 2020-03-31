@@ -5,7 +5,7 @@ package com.documentflow.model.enums;
  */
 public enum BusinessKeyState {
 
-    REGISTRATED ("REGISTERED"), // зарегистрирован
+    REGISTERED ("REGISTERED"), // зарегистрирован
     EXECUTION ("EXECUTION"), // на исполнении
     EXECUTED ("EXECUTED"), // исполнен
     DELETED ("DELETED"), // удалён
