@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Test for {@link AddressService}
+ */
 public class AddressServiceImplTest extends AbstractContragentTest {
 
     @Autowired

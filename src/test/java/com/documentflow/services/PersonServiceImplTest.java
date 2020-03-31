@@ -6,8 +6,10 @@ import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Person;
 import com.documentflow.entities.dto.ContragentDtoEmployee;
 import com.documentflow.entities.dto.ContragentDtoParameters;
+import com.documentflow.exceptions.NotFoundIdException;
 import com.documentflow.exceptions.NotFoundPersonException;
 import com.documentflow.repositories.ContragentRepository;
+import com.documentflow.utils.ContragentUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Test for {@link PersonService}
+ */
 public class PersonServiceImplTest extends AbstractContragentTest {
 
     @Autowired
@@ -109,9 +114,47 @@ public class PersonServiceImplTest extends AbstractContragentTest {
         Assert.assertNull(notFoundPerson);
     }
 
-    //TODO test for update method
     @Test
     public void testUpdate() {
+
+        Person person = createAndSaveRandomPerson();
+        Person updatedPerson = createRandomPerson();
+        updatedPerson.setId(person.getId());
+
+        Assert.assertNotEquals(person.getFirstName(), updatedPerson.getFirstName());
+        Assert.assertNotEquals(person.getMiddleName(), updatedPerson.getMiddleName());
+        Assert.assertNotEquals(person.getLastName(), updatedPerson.getLastName());
+        Assert.assertEquals(person.getId(), updatedPerson.getId());
+
+        personService.update(updatedPerson);
+
+        Assert.assertEquals(person.getFirstName(), updatedPerson.getFirstName());
+        Assert.assertEquals(person.getMiddleName(), updatedPerson.getMiddleName());
+        Assert.assertEquals(person.getLastName(), updatedPerson.getLastName());
+
+        String newFirstName = ContragentUtils.toUpperCase(updatedPerson.getFirstName());
+        String newMiddleName = ContragentUtils.toUpperCase(updatedPerson.getMiddleName());
+        String newLastName = ContragentUtils.toUpperCase(updatedPerson.getLastName());
+
+        String updatedSearchString = newFirstName + newMiddleName + newLastName;
+        String savedSearchString = person.getContragents().get(0).getSearchName();
+
+        Assert.assertEquals(updatedSearchString, savedSearchString);
+    }
+
+    @Test(expected = NotFoundIdException.class)
+    public void testUpdateNotFoundIdException() {
+
+        Person personWithoutId = createRandomPerson();
+        personService.update(personWithoutId);
+    }
+
+    @Test(expected = NotFoundPersonException.class)
+    public void testUpdateNotFoundPersonException() {
+
+        Person personWithNonexistentId = createRandomPerson();
+        personWithNonexistentId.setId(0L);
+        personService.update(personWithNonexistentId);
     }
 
     @Test
