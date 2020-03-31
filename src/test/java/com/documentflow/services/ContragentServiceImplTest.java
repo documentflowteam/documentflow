@@ -1,6 +1,6 @@
 package com.documentflow.services;
 
-import com.documentflow.AbstractDocumentFlowTest;
+import com.documentflow.AbstractContragentTest;
 import com.documentflow.entities.Contragent;
 import com.documentflow.entities.dto.ContragentDto;
 import org.junit.Assert;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class ContragentServiceImplTest extends AbstractDocumentFlowTest {
+public class ContragentServiceImplTest extends AbstractContragentTest {
 
     @Autowired
     private ContragentService contragentService;

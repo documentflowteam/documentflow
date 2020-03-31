@@ -1,9 +1,9 @@
 package com.documentflow.controllers;
 
-import com.documentflow.AbstractDocumentFlowTest;
+import com.documentflow.AbstractContragentTest;
 import org.junit.Test;
 
-public class ContragentControllerTest extends AbstractDocumentFlowTest {
+public class ContragentControllerTest extends AbstractContragentTest {
 
     @Test
     public void test(){
