@@ -8,7 +8,6 @@ import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.documentflow.utils.TaskUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -116,8 +115,7 @@ public class DocInUtils {
         if (docInDto.getStateId() != null) {
             docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
-//            docIn.setState(stateService.getStateById(1));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.name()));
         }
         if (docInDto.getTaskId() != null) {
             docIn.setTask(taskService.findOneById(docInDto.getTaskId()));
@@ -157,20 +155,7 @@ public class DocInUtils {
 
     public void editState(Long id, BusinessKeyState state) {
         docIn = docInService.findById(id);
-        switch (state) {
-            case EXECUTION:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
-                break;
-            case EXECUTED:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTED.toString()));
-                break;
-            case RECALLED:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.RECALLED.toString()));
-                break;
-            case DELETED:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.DELETED.toString()));
-                break;
-        }
+        docIn.setState(stateService.getStateByBusinessKey(state.toString()));
         docInService.save(docIn);
     }
 
@@ -192,7 +177,7 @@ public class DocInUtils {
         docIn = convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(getRegNumber());
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString()));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.name()));
         }
         docInService.save(docIn);
     }
