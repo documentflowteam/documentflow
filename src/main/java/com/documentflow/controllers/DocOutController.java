@@ -68,7 +68,7 @@ public class DocOutController {
         model.addAttribute("tasks", taskService.findAll(Pageable.unpaged()));
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
         model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
-//        model.addAttribute("appendix", docOutService.findOneById(1L).getAppendix());
+
         return "doc_out";
 
     }
@@ -105,7 +105,6 @@ public class DocOutController {
     }
 
     @RequestMapping("/card")
- //   @PostMapping("/card")
     public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
 
         DocOut docOut;
@@ -127,4 +126,3 @@ public class DocOutController {
     }
 }
 
-// TODO: saveModifiedDoc, deleteDoc, generateDoc, refuseDoc, sendDoc
