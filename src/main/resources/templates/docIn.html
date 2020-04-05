@@ -212,9 +212,9 @@
                         addButton('.addBtnTask', 'taskBtn', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');
                     }
                     if (doc.docOutId != null) {
-                        addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=' + doc.docOutId, 'Ответ', doc.docOutNumber);<!-- добавить ссыль на нужный метод -->
+                        addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=' + doc.docOutId, 'Ответ', doc.docOutNumber);
                     } else {
-                        addButton('.addBtnDO', 'docOutBtn', '/docs/out?null', 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
+                        addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1?idIn='+ doc.id, 'Ответ', 'Создать');
                     }
                 }
             }

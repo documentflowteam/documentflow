@@ -46,7 +46,7 @@
                        class="btn btn-secondary"
                        data-toggle="modal"
                        href="#newDoc"
-                       th:onclick="'javascript:openModal();'">Создать исходящий документ</a>
+                       th:onclick="'javascript:openModal(-1);'">Создать исходящий документ</a>
 
                     <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Отозвать</a>
                     <a role="button" aria-pressed="true" class="btn btn-secondary" href="#">Сгенерировать</a>
@@ -74,8 +74,8 @@
                                         <!--<td></td>-->
                                         <td><input th:value="${param.number != null} ? ${param.number}" class="form-control" th:name="number" type="text"></td>
                                         <td class="inline">
-                                            <input th:value="${param.createDateMin != null} ? ${param.createDateMin}" class="form-control" th:name="createDateMin" type="date">
-                                            <input th:value="${param.createDateMax != null} ? ${param.createDateMax}" class="form-control" th:name="createDateMax" type="date">
+                                            <input th:value="${param.createDateMin != null} ? ${param.createDateMin}" class="form-control col-sm-3" th:name="createDateMin" type="date">
+                                            <input th:value="${param.createDateMax != null} ? ${param.createDateMax}" class="form-control col-sm-3" th:name="createDateMax" type="date">
                                         </td>
                                         <td>
                                             <select class="form-control" th:name="docTypeId">
@@ -104,8 +104,8 @@
                                            data-toggle="modal"
                                            href="#showDoc"
                                            th:text="${docOutDTO.number}"
-                                           th:onclick="'javascript:openModal(\'' + ${docOutDTO.id} + '\');'"
-                                           th:data-docOutDTO="${docOutDTO}"/>
+                                           th:onclick="'javascript:openModal(\'' + ${docOutDTO.id} + '\');'"/>
+
                                     </td>
                                     <td th:text="${docOutDTO.createDate}" />
                                     <td th:text="${docOutDTO.docTypeName}" />
@@ -114,7 +114,9 @@
                                     <td th:text= "address"/>
                                     <td th:text="${docOutDTO.appendix}" href="#"/>
                                     <td>
-                                        <a role="button"
+                                        <a th:if="${docOutDTO.state.Id==2 || docOutDTO.state.Id==5 || docOutDTO.state.Id==6 ||
+                                    docOutDTO.state.Id==7 || docOutDTO.state.Id==10 || docOutDTO.state.Id==12}"
+                                           role="button"
                                            aria-pressed="true"
                                            data-toggle="modal"
                                            href="#delDocOut"
@@ -186,9 +188,9 @@
         modal1.style.display = "none";
     }
 
-    function openModal(id){
+    function openModal(id, idIn, idTask){
         var modal;
-        if(id!=null) {
+        if(id>0) {
              modal= document.querySelector('#showDoc');
         } else {
             modal = document.querySelector('#newDoc');
@@ -196,9 +198,9 @@
         modal.classList.toggle('show');
         modal.style.display = "block";
 
-        if(id!=null) {
+        if(id>0) {
             $.ajax({
-                url: "/docs/out/card/" + id,
+                url: "/docs/out/card/" + id + idIn + idTask,
                 docOutDTO: {docOutDTO: 'docOutDTO'},
                 success: function (docOutDTO) {
                     $('#titleM').text('Исходящий №: ' + docOutDTO.number + '   ' + docOutDTO.state.name);
@@ -220,13 +222,10 @@
                     $('#isGenerated').val(docOutDTO.isGenerated);
                     $('#number').val(docOutDTO.number);
 
-
                     $('#docInIdT').text(idIn);
                     $('#docInId').val(idIn);
-
-                    $('#taskT').text(doc.taskId);
-                    $('#taskId').val(doc.taskId);
-                    // $('#taskId').val(doc.task);
+                    $('#taskT').text(docOutDTO.taskId);
+                    $('#taskId').val(docOutDTO.taskId);
 
                 }
             });
@@ -235,6 +234,8 @@
                 url: "/docs/out/newcard",
                 method: 'post',
                 docOutDTO: {docOutDTO: 'docOutDTO'},
+                docIn: {docIn: 'docIn'},
+                task: {task: 'task'},
                 success: function (docOutDTO) {
                     $('#idNew').val(docOutDTO.id);
                     $('#creatorNew').val(docOutDTO.creator);
@@ -242,14 +243,14 @@
                     $('#signerNew').val(docOutDTO.signer);
                     $('#contentNew').val(docOutDTO.content);
                     $('#pagesNew').val(docOutDTO.pages);
+                    $('#regDate').val(docOutDTO.regDate);
                     $('#appendixNew').val(docOutDTO.appendix);
                     $('#noteNew').val(docOutDTO.note);
                     $('#isGeneratedNew').val(docOutDTO.isGenerated);
                     $('#numberNew').val(docOutDTO.number);
-                    // $('#regDateNew').val(docOutDTO.regDate);
                     $('#stateNew').val(docOutDTO.state);
-                    $('#inIdT').text(inId);
-                    $('#inId').val(inId);
+                    $('#inIdT').text(docIn.number);
+                    $('#inId').val(docIn.id);
                     $('#taskTNew').text(idTask);
                     $('#taskIdNew').val(idTask);
                 }
@@ -261,10 +262,10 @@
     $(document).ready(function() {
         var url = new URLSearchParams(window.location.search);
         var openDO = url.get('openDO');
-       if (openDO!=null) {
+       if (openDO>0) {
             openModal(openDO)
        } else {
-           openModal();
+           openModal(-1);
        }
     });
 
@@ -287,9 +288,9 @@
                 <form th:action="'/docs/out/newcard/submit'" method="POST" id="docFormNew">
 
                     <input id="idNew" name="idNew" type="hidden" class="form-control">
-                    <input id="noteNew" name="note" type="hidden" class="form-control">
                     <input id="taskIdNew" name="taskIdNew" type="hidden" class="form-control">
                     <input id="stateNew" name="stateNew" type="hidden" class="form-control">
+                    <input id="regDate" name="regDate" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">
                         <h5>ИСХОДЯЩИЙ ДОКУМЕНТ: СОЗДАНИЕ</h5>
@@ -320,18 +321,6 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <label for="stateNew" class="col-sm-3 col-form-label">Статус документа</label>
-                        <div class="col-sm-9">
-                            <select class="form-control reset" id="stateNew" name="state" required>
-                                <option th:text="' '" th:value="null"/>
-                                <option th:each="state : ${states}"
-                                        th:text="${state.name}"
-                                        th:value="${state.id}"/>
-
-                            </select>
-                        </div>
-                    </div>
 
                     <div class="form-row">
                         <label for="signerNew" class="col-sm-3 col-form-label">Согласующий</label>
@@ -389,71 +378,18 @@
                         <h5>СВЯЗИ</h5>
                     </div>
 
-
-                    <!--<div class="form-row">-->
-                    <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
-                    <!--<div class="form-row" >-->
-                    <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
-                    <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                    <!--</div>-->
                     <div class="form-row">
                         <label class="col-sm-3 col-form-label">Входящий</label>
                         <div class="col-sm-9">
-                            <input type="text" name="docInIdT" href="#" id="docInId" class="form-control" rows="1"/>
+                            <input type="text" name="docInIdT" href="@{'/docs/in?openDI=' + docInId" id="docInId" class="form-control" rows="1"/>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <label class="col-sm-3 col-form-label">Поручение</label>
                         <div class="col-sm-9">
-                            <input type="text" name="taskT" href="#" id="taskId" class="form-control" rows="1"/>
+                            <input type="text" name="taskT" href="@{'/tasks/card/' + taskId" id="taskId" class="form-control" rows="1"/>
 
-                            <!--<div class="form-row">-->
-                            <!--<label id="docInLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                            <!--<a id="docInIdT" href="#" name="docInIdT"></a>&lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                            <!--</div>-->
-                            <!--<div class="form-row" >-->
-                            <!--<label id="taskLabelNew" for="taskIdNew" class="col-sm-3 col-form-label"></label>-->
-                            <!--<a id="taskTNew" href="#" name="taskTNew"></a> &lt;!&ndash; добавить ссыль на нужный метод &ndash;&gt;-->
-                            <!--</div>-->
-
-
-                            <!--<div class="form-row">-->
-                            <!--<label for="docin" class="col-sm-3 col-form-label">Входящий</label>-->
-                            <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" id="docin" href="#" th:name="docin">-->
-                            <!--</select>-->
-                            <!--</div>-->
-                            <!--</div>-->
-
-                            <!--<div class="form-row">-->
-                            <!--<label for="taskId" class="col-sm-3 col-form-label">Поручение</label>-->
-                            <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" id="taskId" name="taskId">-->
-                            <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
-                            <!--</select>-->
-                            <!--</div>-->
-
-                            <!--</div>-->
-
-                            <!--<div class="form-row">-->
-                            <!--<label id="docIntLabel" for="docInIdT" class="col-sm-3 col-form-label"></label>-->
-                            <!--<a id="docInIdT" href="#" name="docInIdT"></a>-->
-                            <!--</div>-->
-
-
-
-
-
-
-                            <!--<div class="form-row" >-->
-                            <!--<label id="taskLabel" for="taskT" class="col-sm-3 col-form-label"></label>-->
-                            <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" id="taskT" href="#" name="taskId">-->
-                            <!--<option th:each="task : ${tasks}" th:text="${task.name}" th:value="${task.id}"/>-->
-                            <!--</select>-->
                         </div>
                     </div>
 
@@ -463,7 +399,8 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" form="docFormNew">Сохранить</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                <button type="submit" class="btn btn-primary" form="docFormNew">Сохранить и отправить</button>
+                <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
         </div>
@@ -498,7 +435,7 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" form="delForm">Удалить</button>
-                <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
             </div>
         </div>
     </div>
@@ -524,19 +461,11 @@
                     <input id="id" name="id" type="hidden" class="form-control">
                     <input id="createDate" name="createDate" type="hidden" class="form-control">
                     <input id="number" name="number" type="hidden" class="form-control">
-                    <!--<input id="note" name="note" type="hidden" class="form-control">-->
-                    <!--<input id="creator" type="hidden" class="form-control">-->
-                    <!--<input id="signerId" name="signerId" type="hidden" class="form-control">-->
-                    <!--<input id="docTypeId" name="docTypeId" type="hidden" class="form-control">-->
-                    <!--<input id="stateS" name="stateS" type="hidden" class="form-control">-->
-
-                      <input id="taskId" name="taskId" type="hidden" class="form-control">
+                    <input id="taskId" name="taskId" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">
                         <h5 class="modal-title" id="titleM"></h5>
                     </div>
-
-
 
                     <div class="form-row">
                         <label class="col-sm-3 col-form-label">Дата создания</label>
@@ -545,24 +474,10 @@
                     </div>
 
 
-                    <!--<div class="form-row">-->
-                        <!--<label for="creator" class="col-sm-3 col-form-label">Исполнитель</label>-->
-                        <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" id="creator" name="creator" required>-->
-                                <!--<option th:each="creatr : ${creators}"-->
-                                        <!--th:text="${creatr.lastName}+' '+ ${creatr.firstName} +' '+ ${creatr.middleName}"-->
-                                        <!--th:value="${creatr.id}"-->
-                                        <!--th:selected="${{creatr.id}}==${{creatorId}}"/>-->
-                            <!--</select>-->
-                        <!--</div>-->
-                    <!--</div>-->
-
                     <div class="form-row">
                         <label for="creatorFIO" class="col-sm-3 col-form-label">Исполнитель</label>
                         <label class="col-sm-6 col-form-label" id="creatorFIO" name="creatorFIO"></label>
-                        <div class="col-sm-9">
-                            <!--<textarea name="creatorFIO" class="form-control" id="creatorFIO" rows="1"></textarea>-->
-                        </div>
+                        <div class="col-sm-9"></div>
                     </div>
 
 
@@ -576,19 +491,6 @@
                             </select>
                         </div>
                     </div>
-
-
-                    <!--<div class="form-row">-->
-                        <!--<label for="stateS" class="col-sm-3 col-form-label">Статус документа</label>-->
-                        <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" id="stateS" name="state" required>-->
-                                <!--<option th:each="stat : ${states}"-->
-                                        <!--th:text="${stat.name}"-->
-                                        <!--th:value="${stat.id}"/>-->
-
-                            <!--</select>-->
-                        <!--</div>-->
-                    <!--</div>-->
 
                     <div class="form-row">
                         <label for="stateT" class="col-sm-3 col-form-label">Статус документа</label>
@@ -605,24 +507,9 @@
                                 <option th:each="chief : ${signers}"
                                         th:text="${chief.lastName}+' '+ ${chief.firstName} +' '+ ${chief.middleName}"
                                         th:value="${chief.id}"/>
-                                        <!--th:selected="${{chief.id}}==${{signer.id}}"-->
                             </select>
                         </div>
                     </div>
-
-                    <!--<div class="form-row">-->
-                        <!--<label for="signer" class="col-sm-3 col-form-label">Согласующий</label>-->
-
-                        <!--<div class="col-sm-9">-->
-                            <!--<select class="form-control" input id="signer" name="signer">-->
-                                <!--<option th:each="employee : ${signers}"-->
-                                        <!--th:text="${employee.lastName}+' '+ ${employee.firstName} +' '+ ${employee.middleName}"-->
-                                        <!--th:value="${employee}"-->
-                                        <!--th:selected = "${{employee}} == ${{signer}}"/>-->
-                            <!--</select>-->
-                        <!--</div>-->
-                    <!--</div>-->
-
 
                     <div class="form-row">
                         <label for="pages" class="col-sm-3 col-form-label">Кол-во листов</label>
@@ -649,7 +536,7 @@
                     });
                     </script>
 
-                    <div class="form-row">
+                    <div th:if="" class="form-row">
                         <label for="content" class="col-sm-3 col-form-label">Краткое Содержание</label>
                         <div class="col-sm-9">
                             <textarea input name="content" class="form-control" id="content" rows="2"></textarea>
@@ -663,11 +550,26 @@
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <label for="stateT" class="col-sm-3 col-form-label">Входящий</label>
+                        <label class="col-sm-6 col-form-label" id="stateT" name="stateT"></label>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="stateT" class="col-sm-3 col-form-label">Поручение</label>
+                        <label class="col-sm-6 col-form-label" id="stateT" name="stateT"></label>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+
                 </form>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
+                <button type="submit" class="btn btn-primary" form="docForm">Сохранить и отправить</button>
                 <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
