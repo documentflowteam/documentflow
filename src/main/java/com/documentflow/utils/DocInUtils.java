@@ -31,6 +31,7 @@ public class DocInUtils {
     private DocTypeService docTypeService;
     private TaskUtils taskUtils;
     private TaskService taskService;
+    private DocOutUtils docOutUtils;
     private DocOutService docOutService;
     private DocInService docInService;
 
@@ -38,7 +39,7 @@ public class DocInUtils {
     public DocInUtils(UserService userService, DepartmentService departmentService,
                       StateService stateService, DocTypeService docTypeService,
                       DocOutService docOutService, DocInService docInService,
-                      TaskUtils taskUtils, TaskService taskService) {
+                      TaskUtils taskUtils, TaskService taskService, DocOutUtils docOutUtils) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.stateService = stateService;
@@ -47,6 +48,7 @@ public class DocInUtils {
         this.docInService = docInService;
         this.taskUtils = taskUtils;
         this.taskService = taskService;
+        this.docOutUtils = docOutUtils;
     }
 
     public String getRegNumber() {
@@ -187,7 +189,9 @@ public class DocInUtils {
         if (docInDto.getTaskId() != null) {
             taskUtils.setAsRecalled(docInService.findById(docInDto.getId()).getTask());
         }
-//        Добавить методы удаления связанного исх. документа.
+        if (docInDto.getDocOutId() != null) {
+//            docOutUtils.delDocOut(docInDto.getDocOutId());
+        }
     }
 
     public void showInDocs(Model model, Integer currentPage, HttpServletRequest request) {
