@@ -1,6 +1,6 @@
 package com.documentflow.services;
 
-import com.documentflow.AbstractDocumentFlowTest;
+import com.documentflow.AbstractContragentTest;
 import com.documentflow.entities.Address;
 import com.documentflow.entities.Contragent;
 import com.documentflow.entities.dto.ContragentDtoAddress;
@@ -15,7 +15,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class AddressServiceImplTest extends AbstractDocumentFlowTest {
+/**
+ * Test for {@link AddressService}
+ */
+public class AddressServiceImplTest extends AbstractContragentTest {
 
     @Autowired
     private AddressService addressService;

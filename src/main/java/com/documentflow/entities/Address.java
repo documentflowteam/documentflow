@@ -28,27 +28,34 @@ public class Address implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonProperty("id")
     private Long id;
 
     @Column(name = "post_index")
+    @JsonProperty("post_index")
     private Integer index;
 
     @Column(name = "country")
+    @JsonProperty("country")
     @NotBlank(message = "Country can not be empty")
     private String country;
 
     @Column(name = "city")
+    @JsonProperty("city")
     @NotBlank(message = "City can not be empty")
     private String city;
 
     @Column(name = "street")
+    @JsonProperty("street")
     @NotBlank(message = "Street can not be empty")
     private String street;
 
     @Column(name = "house_number")
+    @JsonProperty("house_number")
     private String houseNumber;
 
     @Column(name = "apartrment_number")
+    @JsonProperty("apartrment_number")
     private String apartmentNumber;
 
     @JsonCreator

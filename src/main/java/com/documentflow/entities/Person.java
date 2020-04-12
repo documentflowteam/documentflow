@@ -25,15 +25,19 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonProperty("id")
     private Long id;
 
     @Column(name = "first_name")
+    @JsonProperty("first_name")
     private String firstName;
 
     @Column(name = "middle_name")
+    @JsonProperty("middle_name")
     private String middleName;
 
     @Column(name = "last_name")
+    @JsonProperty("last_name")
     @NotBlank(message = "Last name can no be empty")
     private String lastName;
 

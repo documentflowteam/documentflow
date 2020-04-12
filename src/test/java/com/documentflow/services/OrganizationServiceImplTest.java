@@ -1,6 +1,6 @@
 package com.documentflow.services;
 
-import com.documentflow.AbstractDocumentFlowTest;
+import com.documentflow.AbstractContragentTest;
 import com.documentflow.entities.Address;
 import com.documentflow.entities.Contragent;
 import com.documentflow.entities.Organization;
@@ -12,6 +12,7 @@ import com.documentflow.exceptions.NotFoundOrganizationException;
 import com.documentflow.repositories.ContragentRepository;
 import com.documentflow.repositories.OrganizationRepository;
 import com.documentflow.repositories.specifications.OrganizationSpecifications;
+import com.documentflow.utils.ContragentUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class OrganizationServiceImplTest extends AbstractDocumentFlowTest {
+/**
+ * Test for {@link OrganizationService}
+ */
+public class OrganizationServiceImplTest extends AbstractContragentTest {
 
     @Autowired
     private OrganizationService organizationService;
@@ -85,23 +89,24 @@ public class OrganizationServiceImplTest extends AbstractDocumentFlowTest {
         organizationService.find(0L);
     }
 
-    //TODO not work
-//    @Test
-//    public void testUpdate(){
-//        Organization savedOrganization = createAndSaveRandomOrganization();
-//        Organization modifiedOrganization = new Organization();
-//        modifiedOrganization.setId(savedOrganization.getId());
-//        modifiedOrganization.setName("NEW_NAME");
-//        modifiedOrganization.setContragents(savedOrganization.getContragents());
-//        modifiedOrganization.setAddresses(savedOrganization.getAddresses());
-//        modifiedOrganization.setPersons(savedOrganization.getPersons());
-//
-//        Organization updatedOrganization = organizationService.update(modifiedOrganization);
-//
-//        Assert.assertEquals(savedOrganization.getId(), updatedOrganization.getId());
-//        Assert.assertEquals("NEW_NAME", updatedOrganization.getName());
-//        Assert.assertEquals("NEW_NAME", updatedOrganization.getContragents().get(0).getSearchName());
-//    }
+    @Test
+    public void testUpdate() {
+
+        Organization organization = createAndSaveRandomOrganization();
+        Organization updatedOrganization = createRandomOrganization();
+        updatedOrganization.setId(organization.getId());
+
+        Assert.assertNotEquals(organization.getName(), updatedOrganization.getName());
+
+        organizationService.update(updatedOrganization);
+
+        Assert.assertEquals(organization.getName(), updatedOrganization.getName());
+
+        String newOrganizationName = ContragentUtils.toUpperCase(updatedOrganization.getName());
+        String savedSearchString = organization.getContragents().get(0).getSearchName();
+
+        Assert.assertTrue(savedSearchString.contains(newOrganizationName));
+    }
 
     @Test(expected = NotFoundIdException.class)
     public void testUpdateNotFoundIdException() {
