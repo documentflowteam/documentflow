@@ -59,4 +59,7 @@ public class DocInService {
         return docInRepository.findByRegNumber(regNumber);
     }
 
+    public DocIn findByDocOut(DocOut docOut) {
+        return docInRepository.findByDocOut(docOut);
+    }
 }

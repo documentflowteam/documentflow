@@ -8,9 +8,13 @@ import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.documentflow.utils.TaskUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +31,7 @@ public class DocInUtils {
     private DocTypeService docTypeService;
     private TaskUtils taskUtils;
     private TaskService taskService;
+    private DocOutUtils docOutUtils;
     private DocOutService docOutService;
     private DocInService docInService;
 
@@ -34,7 +39,7 @@ public class DocInUtils {
     public DocInUtils(UserService userService, DepartmentService departmentService,
                       StateService stateService, DocTypeService docTypeService,
                       DocOutService docOutService, DocInService docInService,
-                      TaskUtils taskUtils, TaskService taskService) {
+                      TaskUtils taskUtils, TaskService taskService, DocOutUtils docOutUtils) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.stateService = stateService;
@@ -43,14 +48,15 @@ public class DocInUtils {
         this.docInService = docInService;
         this.taskUtils = taskUtils;
         this.taskService = taskService;
+        this.docOutUtils = docOutUtils;
     }
 
     public String getRegNumber() {
         String regNumber;
-        docIn = docInService.findFirstByOrderByIdDesc();
+        DocIn prevDocIn = docInService.findFirstByOrderByIdDesc();
         LocalDate date = LocalDate.now();
-        if (docIn != null && docIn.getRegDate().getYear() == date.getYear()) {
-            Integer number = Integer.parseInt(docIn.getRegNumber().substring(3, docIn.getRegNumber().length()-3));
+        if (prevDocIn != null && prevDocIn.getRegDate().getYear() == date.getYear()) {
+            Integer number = Integer.parseInt(prevDocIn.getRegNumber().substring(3, prevDocIn.getRegNumber().length()-3));
             regNumber = "ВХ-" + (number+1) + "/" + date.getYear()%100;
         } else {
             regNumber = "ВХ-1/" + date.getYear()%100;
@@ -111,8 +117,7 @@ public class DocInUtils {
         if (docInDto.getStateId() != null) {
             docIn.setState(stateService.getStateById(docInDto.getStateId()));
         } else {
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.toString()));
-//            docIn.setState(stateService.getStateById(1));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.name()));
         }
         if (docInDto.getTaskId() != null) {
             docIn.setTask(taskService.findOneById(docInDto.getTaskId()));
@@ -152,20 +157,7 @@ public class DocInUtils {
 
     public void editState(Long id, BusinessKeyState state) {
         docIn = docInService.findById(id);
-        switch (state) {
-            case EXECUTION:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
-                break;
-            case EXECUTED:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTED.toString()));
-                break;
-            case RECALLED:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.RECALLED.toString()));
-                break;
-            case DELETED:
-                docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.DELETED.toString()));
-                break;
-        }
+        docIn.setState(stateService.getStateByBusinessKey(state.toString()));
         docInService.save(docIn);
     }
 
@@ -187,7 +179,7 @@ public class DocInUtils {
         docIn = convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(getRegNumber());
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.toString()));
+            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.name()));
         }
         docInService.save(docIn);
     }
@@ -197,6 +189,23 @@ public class DocInUtils {
         if (docInDto.getTaskId() != null) {
             taskUtils.setAsRecalled(docInService.findById(docInDto.getId()).getTask());
         }
-//        Добавить методы удаления связанного исх. документа.
+        if (docInDto.getDocOutId() != null) {
+//            docOutUtils.delDocOut(docInDto.getDocOutId());
+        }
+    }
+
+    public void showInDocs(Model model, Integer currentPage, HttpServletRequest request) {
+        if (currentPage == null || currentPage < 1) {
+            currentPage = 1;
+        }
+        model.addAttribute("currentPage", currentPage);
+        DocInFilter filter = new DocInFilter(request);
+        model.addAttribute("filter", filter.getFiltersStr());
+        Page<DocInDto> page = docInService.findAllByPagingAndFiltering(filter.getSpecification(), PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"))
+                .map(d -> convertToDTO(d));
+        model.addAttribute("docs", page);
+        model.addAttribute("states", stateService.findAllStates());
+        model.addAttribute("docTypes", docTypeService.findAllDocTypes());
+        model.addAttribute("departments", departmentService.findAllDepartments());
     }
 }

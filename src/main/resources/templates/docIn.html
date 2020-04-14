@@ -13,7 +13,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-<!--    <script src=/javascript/docIn.js></script>-->
+    <script src=/javascript/docIn.js></script>
 </head>
 <body>
 
@@ -123,119 +123,6 @@
     </div>
 </div>
 
-
-<!--После добавления всех скриптов вынесу в отдельный файл, при разработке удобнее работать в одном окне-->
-<script th:inline="javascript">
-    $.dateCut = function(date) {
-        var d = new Date(date);
-        var day = d.getDate();
-        var month = d.getMonth() + 1;
-        var year = d.getFullYear();
-        if (day < 10) {
-            day = "0" + day;
-        }
-        if (month < 10) {
-            month = "0" + month;
-        }
-        var date = year + "-" + month + "-" + day;
-        return date;
-    };
-
-    function deleteDoc(id){
-        $.ajax({
-            url: "/docs/in/card/" + id,
-            success: function (doc) {
-                $('#delIdDocIn').val(doc.id);
-                addDelTxt('.txtDocIn', 'Входящий документ №' + doc.regNumber + ' будет удален, вы настаиваете на удалении?');
-                if (doc.taskId != null) {
-                    $('#delIdTask').val(doc.taskId);
-                    addDelTxt('.txtTask', 'Входящий документ №:' + doc.regNumber + ' имеет связанное поручение №' + doc.taskId);
-                }
-                if (doc.docOutId != null) {
-                    $('#delIdDocOut').val(doc.docOutId);
-                    addDelTxt('.txtDocOut', 'Входящий документ №:' + doc.regNumber + ' имеет связанный исходящий документ №' + doc.docOutNumber);
-                }
-            }
-        });
-    }
-
-    function addDelTxt(dest, txt) {
-        $(dest).empty();
-        $(dest).append('<h5 class="modal-title">' + txt + '</h5>');
-    }
-
-    function clearFilter() {
-        $('.reset').val('');
-<!--        $('.reset').prop('checked', false);-->
-    }
-
-    function closeModal() {
-        var modal  = document.querySelector('#showDoc');
-        modal.classList.toggle('show');
-        modal.style.display = "none";
-    }
-
-    function openModal(id){
-            var modal  = document.querySelector('#showDoc');
-            modal.classList.toggle('show');
-            modal.style.display = "block";
-        $.ajax({
-            url: "/docs/in/card/" + id,
-            success: function (doc) {
-                if (doc.id == null) {
-                    $('#titleM').text('Входящий документ');
-                    $('#regDateT').text($.dateCut(new Date()));
-                } else {
-                    $('#titleM').text('Входящий документ №:' + doc.regNumber + ' ' + doc.stateName);
-                    $('#regDate').val(doc.regDate);
-                    $('#regDateT').text($.dateCut(doc.regDate));
-                    $('#outgoingDate').val($.dateCut(doc.outgoingDate));
-                }
-                $('#id').val(doc.id);
-                $('#stateId').val(doc.stateId);
-                $('#regNumber').val(doc.regNumber);
-                $('#userId').val(doc.userId);
-                $('#userFIO').text(doc.userFIO);
-                $('#departmentId').val(doc.departmentId);
-                $('#docTypeId').val(doc.docTypeId);
-                $('#sender').val(doc.sender);
-                $('#outgoingNumber').val(doc.outgoingNumber);
-                $('#content').text(doc.content);
-                $('#pages').val(doc.pages);
-                $('#appendix').val(doc.appendix);
-                $('#note').val(doc.note);
-                if (doc.id != null) {
-                    $('#communication').text('Связи');
-                    if (doc.taskId != null) {
-                        addButton('.addBtnTask', 'taskBtn', '/tasks/card/' + doc.taskId, 'Поручение', doc.taskId);
-                    } else {
-                        addButton('.addBtnTask', 'taskBtn', '/tasks/card/?type=1&docId=' + doc.id, 'Поручение', 'Создать');
-                    }
-                    if (doc.docOutId != null) {
-                        addButton('.addBtnDO', 'docOutBtn', '/docs/out/' + doc.id, 'Ответ', doc.docOutId);<!-- добавить ссыль на нужный метод -->
-                    } else {
-                        addButton('.addBtnDO', 'docOutBtn', '/docs/out/' + doc.id, 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
-                    }
-                }
-            }
-        });
-    }
-
-    function addButton(dest, linkId, urlMethod, linkTxt, aTxt) {
-            $(dest).empty();
-            $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
-            $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
-    }
-
-    $(document).ready(function() {
-        var url = new URLSearchParams(window.location.search);
-        var openDI = url.get('openDI');
-        if (openDI != null) {
-            openModal(openDI)
-        }
-    });
-</script>
-
 <!-- Modal delete document-->
 <div class="modal fade"
      id="delDoc"
@@ -254,9 +141,9 @@
                 <form th:action="@{/docs/in/del}" method="POST" id="delForm">
 
                     <!-- Hidden inputs -->
-                    <input id="delIdDocIn" name="delIdDocIn" type="hidden" class="form-control">
-                    <input id="delIdDocOut" name="delIdDocOut" type="hidden" class="form-control">
-                    <input id="delIdTask" name="delIdTask" type="hidden" class="form-control">
+                    <input id="delIdDocIn" name="id" type="hidden" class="form-control">
+                    <input id="delIdDocOut" name="docOutId" type="hidden" class="form-control">
+                    <input id="delIdTask" name="taskId" type="hidden" class="form-control">
 
                     <div class="form-row txtDocIn"></div>
                     <div class="form-row txtDocOut"></div>
