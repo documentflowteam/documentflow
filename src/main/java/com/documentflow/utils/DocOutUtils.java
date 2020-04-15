@@ -1,7 +1,6 @@
 package com.documentflow.utils;
 
-import com.documentflow.entities.DTO.DocOutDTO;
-import com.documentflow.entities.DocIn;
+import com.documentflow.entities.dto.DocOutDTO;
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.Task;
 import com.documentflow.entities.User;

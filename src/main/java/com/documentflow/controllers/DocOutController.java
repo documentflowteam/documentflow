@@ -1,9 +1,9 @@
 package com.documentflow.controllers;
 
 
-import com.documentflow.entities.DTO.DocOutDTO;
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.dto.DocOutDTO;
 import com.documentflow.services.*;
 import com.documentflow.utils.DocInUtils;
 import com.documentflow.utils.DocOutFilter;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
