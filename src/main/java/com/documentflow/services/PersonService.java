@@ -45,6 +45,17 @@ public interface PersonService {
     List<Person> findAll(String firstName, String middleName, String lastName);
 
     /**
+     * We search for all employees who meet the search conditions
+     *
+     * @param firstName  first name
+     * @param middleName middle name
+     * @param lastName   last name
+     * @param position   position
+     * @return list of employees
+     */
+    List<ContragentDtoEmployee> findAllEmployee(String firstName, String middleName, String lastName, String position);
+
+    /**
      * We search person who meet the search conditions. Strict search. If the field value is
      * not specifying this field is equal to null in the database query
      *

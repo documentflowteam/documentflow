@@ -24,9 +24,11 @@ public class Organization implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonProperty("id")
     private Long id;
 
     @Column(name = "name")
+    @JsonProperty("name_company")
     @NotBlank(message = "Name company can not be empty")
     private String name;
 

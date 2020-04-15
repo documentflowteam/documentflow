@@ -14,5 +14,4 @@ public interface DocInRepository extends JpaRepository<DocIn, Long>, JpaSpecific
     DocIn findFirstByOrderByIdDesc();
     DocIn findByRegNumber(String regNumber);
     DocIn findByDocOut(DocOut docOut);
-
 }

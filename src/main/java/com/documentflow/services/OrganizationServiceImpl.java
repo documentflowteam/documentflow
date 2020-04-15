@@ -89,7 +89,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             contragentService.save(contragent);
         });
 
-        return organizationRepository.save(organization);
+        return organization;
     }
 
     @Override
@@ -115,13 +115,9 @@ public class OrganizationServiceImpl implements OrganizationService {
             throw new NotFoundOrganizationException();
         }
 
-        Organization organization = optionalOrganization.get();
-
-        //берем список записей, которые не помечены как удаленные
-        List<Contragent> contragents = organization.getContragents().stream()
-                .filter(contragent -> !contragent.getIsDeleted() && contragent.getAddress() != null)
-                .collect(Collectors.toList());
+        List<Contragent> contragents = getListWithNotDeletedContragents(optionalOrganization.get());
         return contragents.stream()
+                .filter( contragent -> contragent.getAddress() != null)
                 //меняем ID адреса на ID контрагента, чтобы на фронте можно было удалить запись
                 .map(contragent -> new Address(contragent.getId(),
                         contragent.getAddress().getIndex(),
@@ -142,20 +138,22 @@ public class OrganizationServiceImpl implements OrganizationService {
             throw new NotFoundOrganizationException();
         }
 
-        Organization organization = optionalOrganization.get();
-
-        //берем список записей, которые не помечены как удаленные и в которых присутствует сущность персоны
-        List<Contragent> contragents = organization.getContragents().stream()
-                .filter(contragent -> !contragent.getIsDeleted())
-                .filter(contragent -> contragent.getPerson() != null)
-                .collect(Collectors.toList());
+        List<Contragent> contragents = getListWithNotDeletedContragents(optionalOrganization.get());
         return contragents.stream()
+                .filter(contragent -> contragent.getPerson() != null)
                 .map(contragent -> new ContragentDtoEmployee(contragent.getId().toString(),
                         contragent.getPerson().getFirstName(),
                         contragent.getPerson().getMiddleName(),
                         contragent.getPerson().getLastName(),
                         contragent.getPersonPosition())
                 )
+                .collect(Collectors.toList());
+    }
+
+    private List<Contragent> getListWithNotDeletedContragents (Organization organization) {
+        //берем список записей, которые не помечены как удаленные
+        return organization.getContragents().stream()
+                .filter(contragent -> !contragent.getIsDeleted())
                 .collect(Collectors.toList());
     }
 }

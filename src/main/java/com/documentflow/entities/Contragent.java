@@ -1,6 +1,7 @@
 package com.documentflow.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,15 +20,19 @@ public class Contragent implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonProperty("id")
     private Long id;
 
     @Column(name = "person_position")
+    @JsonProperty("position")
     private String personPosition;
 
     @Column(name = "search_name")
+    @JsonProperty("search_name")
     private String searchName;
 
     @Column(name = "is_deleted")
+    @JsonProperty("is_deleted")
     private Boolean isDeleted;
 
     @JsonIgnore

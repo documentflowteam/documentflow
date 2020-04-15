@@ -9,12 +9,19 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class ContragentDtoAddress {
 
+    @JsonProperty("id")
     private String id;
+    @JsonProperty("post_index")
     private String postIndex;
+    @JsonProperty("country")
     private String country;
+    @JsonProperty("city")
     private String city;
+    @JsonProperty("street")
     private String street;
+    @JsonProperty("house_number")
     private String houseNumber;
+    @JsonProperty("apartrment_number")
     private String apartrmentNumber;
 
     @JsonCreator
