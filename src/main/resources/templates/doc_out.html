@@ -247,11 +247,11 @@
             });
         }else{
             $.ajax({
-//                method: 'post',
+
                 url: "/docs/out/newcard/" + "?docinid=" + docinid,
 
                 success: function (docOutDTO) {
-//                    $('#idNew').val(docOutDTO.id);
+
                     $('#creatorNew').val(docOutDTO.creator);
                     $('#docTypeIdNew').val(docOutDTO.docTypeId);
                     $('#signerNew').val(docOutDTO.signer);
@@ -285,6 +285,8 @@
         $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
         $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
     }
+
+
 
 
 </script>

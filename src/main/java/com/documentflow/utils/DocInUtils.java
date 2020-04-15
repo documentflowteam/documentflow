@@ -31,7 +31,6 @@ public class DocInUtils {
     private DocTypeService docTypeService;
     private TaskUtils taskUtils;
     private TaskService taskService;
- //   private DocOutUtils docOutUtils;
     private DocOutService docOutService;
     private DocInService docInService;
 
@@ -48,7 +47,6 @@ public class DocInUtils {
         this.docInService = docInService;
         this.taskUtils = taskUtils;
         this.taskService = taskService;
- //       this.docOutUtils = docOutUtils;
     }
 
     public String getRegNumber() {
