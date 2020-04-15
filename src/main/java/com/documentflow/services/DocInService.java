@@ -2,9 +2,7 @@ package com.documentflow.services;
 
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.DocOut;
-import com.documentflow.entities.State;
 import com.documentflow.entities.Task;
-import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.repositories.DocInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -57,6 +55,11 @@ public class DocInService {
 
     public DocIn findByRegNumber(String regNumber) {
         return docInRepository.findByRegNumber(regNumber);
+    }
+
+
+    public DocIn findByDocOut(DocOut docOut) {
+        return docInRepository.findByDocOut(docOut);
     }
 
 }

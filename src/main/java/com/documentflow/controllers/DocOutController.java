@@ -37,10 +37,11 @@ public class DocOutController {
     private TaskService taskService;
 
     @Autowired
-    public void setDocOutService(DocOutService docOutService, DocTypeService docTypeService, UserServiceImpl userService,
+    public void setDocOutService(DocOutService docOutService, DocInService docInService, DocTypeService docTypeService, UserServiceImpl userService,
                                  DocOutUtils docOutUtils, DocInUtils docInUtils, StateService stateService, ContragentServiceImpl contragentService,
                                  TaskService taskService) {
         this.docOutService = docOutService;
+        this.docInService=docInService;
         this.docTypeService = docTypeService;
         this.userService = userService;
         this.docOutUtils = docOutUtils;
@@ -73,41 +74,34 @@ public class DocOutController {
         return "doc_out";
     }
 
-
+    @ResponseBody
     @RequestMapping(value = "/newcard")
-    public ModelAndView createDoc(@RequestParam(name = "idIn", required = false) Long idIn,
-                                  @RequestParam(name = "idTask", required = false) Long idTask) {
-        ModelAndView result = new ModelAndView("doc_out");
-        result.addObject("docOutDTO", new DocOutDTO());
-        result.addObject("creators", userService.getAllUsers());
-        result.addObject("signers", userService.getAllUsers());
-        result.addObject("states", stateService.findAllStates());
-        result.addObject("docTypes", docTypeService.findAllDocTypes());
-        result.addObject("docOutAddress", docTypeService.findAllDocTypes());
-        if(idIn!=null) result.addObject("docIn", docInService.findById(idIn));
-        if(idTask!=null) result.addObject("task", taskService.findOneById(idTask));
-
-        return result;
+    public DocOutDTO createDoc(@RequestParam(value = "docinid", required = false) Long docinid) {
+        DocOutDTO docOutDTO=new DocOutDTO();
+        if(docinid!=null) {
+            DocIn docIn=docInService.findById(docinid);
+            docOutDTO.setDocInId(docinid);
+            docOutDTO.setDocInRegNumber(docIn.getRegNumber());
+        }
+        return docOutDTO;
     }
 
     @RequestMapping(value = "/newcard/submit", method = RequestMethod.POST)
-    public String createDocNew(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO,
-                               @RequestParam(name = "idIn", required = false) Long idIn)  {
+    public String createDocNew(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO) {
 
-        docInUtils.addDocOutToDocIn(idIn, docOutUtils.convertFromDocOutDTO(docOutDTO));
+        if(docOutDTO.getTaskId()!=null) docOutUtils.addTaskToDocOutDTO(docOutDTO.getId(), taskService.findOneById(docOutDTO.getTaskId()));
         docOutUtils.convertFromDocOutDTONew(docOutDTO);
-         return "redirect:/docs/out";
+//        if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
+        return "redirect:/docs/out";
 
     }
 
     @RequestMapping("/card")
-    public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO,
-                             @RequestParam(name = "idIn", required = false) Long idIn,
-                             @RequestParam(name = "idTask", required = false) Long idTask) {
+    public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
         DocOut docOut=docOutUtils.convertFromDocOutDTO(docOutDTO);
-        if(idTask!=null) docOutUtils.addTaskToDocOutDTO(docOutDTO.getId(), taskService.findOneById(idTask));
-        if(idIn!=null)docInUtils.addDocOutToDocIn(idIn, docOut);
+        if(docOutDTO.getTask()!=null) docOutUtils.addTaskToDocOutDTO(docOutDTO.getId(), taskService.save(docOutDTO.getTask()));
 
+ //       DocIn docIn=docInService.findByDocOut(docOutUtils.convertFromDocOutDTO(docOutDTO));
         docOutUtils.saveModifiedDocOut(docOutDTO);
           return "redirect:/docs/out";
 
@@ -115,13 +109,14 @@ public class DocOutController {
 
     @ResponseBody
     @RequestMapping("/card/{id}")
-    public DocOutDTO getCard(@PathVariable("id") Long id,
-                             @RequestParam(name = "idIn", required = false) Long idIn)  {
-
-        if(idIn!=null) {
-            DocIn docIn=docInService.findById(idIn);
+    public DocOutDTO getCard(@PathVariable("id") Long id){
+        DocIn docIn=docInService.findByDocOut(docOutService.findOneById(id));
+        DocOutDTO docOutDTO=docOutUtils.getDocOutDTO(id);
+        if(docIn!=null) {
+            docOutDTO.setDocInRegNumber(docIn.getRegNumber());
+            docOutDTO.setDocInId(docIn.getId());
         }
-        return docOutUtils.getDocOutDTO(id);
+        return docOutDTO;
     }
 
     @PostMapping("/delete")

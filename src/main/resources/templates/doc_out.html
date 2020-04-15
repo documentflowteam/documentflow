@@ -114,8 +114,8 @@
                                     <td th:text= "address"/>
                                     <td th:text="${docOutDTO.appendix}" href="#"/>
                                     <td>
-                                        <a th:if="${docOutDTO.state.Id==2 || docOutDTO.state.Id==5 || docOutDTO.state.Id==6 ||
-                                    docOutDTO.state.Id==7 || docOutDTO.state.Id==10 || docOutDTO.state.Id==12}"
+                                        <a th:if="${docOutDTO.state.id==2 || docOutDTO.state.id==5 || docOutDTO.state.id==6 ||
+                                    docOutDTO.state.id==7 || docOutDTO.state.id==10 || docOutDTO.state.id==12}"
                                            role="button"
                                            aria-pressed="true"
                                            data-toggle="modal"
@@ -188,8 +188,18 @@
         modal1.style.display = "none";
     }
 
-    function openModal(id, idIn, idTask){
-        var modal;
+
+    $(document).ready(function() {
+        var url = new URLSearchParams(window.location.search);
+        var openDO = url.get('openDO');
+        var docinid=url.get('docinid');
+        if (openDO!=null) {
+            openModal(openDO, docinid)
+        }
+    });
+
+    function openModal(id, docinid){
+        var modal
         if(id>0) {
              modal= document.querySelector('#showDoc');
         } else {
@@ -197,10 +207,12 @@
         }
         modal.classList.toggle('show');
         modal.style.display = "block";
+        console.log(docinid);
 
         if(id>0) {
             $.ajax({
-                url: "/docs/out/card/" + id + idIn + idTask,
+                url: "/docs/out/card/" + id,
+
                 docOutDTO: {docOutDTO: 'docOutDTO'},
                 success: function (docOutDTO) {
                     $('#titleM').text('Исходящий №: ' + docOutDTO.number + '   ' + docOutDTO.state.name);
@@ -222,22 +234,24 @@
                     $('#isGenerated').val(docOutDTO.isGenerated);
                     $('#number').val(docOutDTO.number);
 
-                    $('#docInIdT').text(idIn);
-                    $('#docInId').val(idIn);
-                    $('#taskT').text(docOutDTO.taskId);
-                    $('#taskId').val(docOutDTO.taskId);
-
+                    if (docOutDTO.taskId != null || docOutDTO.docInId != null) {
+                        $('#communication').text('Связи');
+                        if (docOutDTO.taskId != null) {
+                            linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                        }
+                        if (docOutDTO.docInId != null) {
+                            linkButton('.linkDocIn', 'docInBtn', '/docs/in?openDI=' + docOutDTO.docInId, 'Входящий', docOutDTO.docInRegNumber);
+                        }
+                    }
                 }
             });
         }else{
             $.ajax({
-                url: "/docs/out/newcard",
-                method: 'post',
-                docOutDTO: {docOutDTO: 'docOutDTO'},
-                docIn: {docIn: 'docIn'},
-                task: {task: 'task'},
+//                method: 'post',
+                url: "/docs/out/newcard/" + "?docinid=" + docinid,
+
                 success: function (docOutDTO) {
-                    $('#idNew').val(docOutDTO.id);
+//                    $('#idNew').val(docOutDTO.id);
                     $('#creatorNew').val(docOutDTO.creator);
                     $('#docTypeIdNew').val(docOutDTO.docTypeId);
                     $('#signerNew').val(docOutDTO.signer);
@@ -249,25 +263,29 @@
                     $('#isGeneratedNew').val(docOutDTO.isGenerated);
                     $('#numberNew').val(docOutDTO.number);
                     $('#stateNew').val(docOutDTO.state);
-                    $('#inIdT').text(docIn.number);
-                    $('#inId').val(docIn.id);
-                    $('#taskTNew').text(idTask);
-                    $('#taskIdNew').val(idTask);
+
+
+                    if (docOutDTO.taskId != null || docinid != null) {
+                        $('#communicates').text('Связи');
+                    }
+                    if (docOutDTO.taskId != null) {
+                        linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                    }
+                    if (docinid != null) {
+                        linkButton('.linkDocInNew', 'docInBtnNew', '/docs/in?openDI=' + docinid, 'Входящий', docOutDTO.docInRegNumber);
+                    }
+                    $('#docInIdNew').val(docOutDTO.docInId);
                 }
             });
         }
     }
 
+    function linkButton(dest, linkId, urlMethod, linkTxt, aTxt) {
+        $(dest).empty();
+        $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
+        $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
+    }
 
-    $(document).ready(function() {
-        var url = new URLSearchParams(window.location.search);
-        var openDO = url.get('openDO');
-       if (openDO>0) {
-            openModal(openDO)
-       } else {
-           openModal(-1);
-       }
-    });
 
 </script>
 
@@ -287,10 +305,9 @@
             <div class="modal-body">
                 <form th:action="'/docs/out/newcard/submit'" method="POST" id="docFormNew">
 
-                    <input id="idNew" name="idNew" type="hidden" class="form-control">
-                    <input id="taskIdNew" name="taskIdNew" type="hidden" class="form-control">
+                    <!--<input id="idNew" name="idNew" type="hidden" class="form-control">-->
                     <input id="stateNew" name="stateNew" type="hidden" class="form-control">
-                    <input id="regDate" name="regDate" type="hidden" class="form-control">
+                    <input id="docInIdNew" name="docInId" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">
                         <h5>ИСХОДЯЩИЙ ДОКУМЕНТ: СОЗДАНИЕ</h5>
@@ -374,24 +391,12 @@
                         </div>
                     </div>
 
-                    <div class="row justify-content-center">
-                        <h5>СВЯЗИ</h5>
+                    <div>
+                        <h5 id="communicates" align="CENTER"></h5>
+                        <div class="form-row linkTaskNew" ></div>
+                        <div class="form-row linkDocInNew" ></div>
                     </div>
 
-                    <div class="form-row">
-                        <label class="col-sm-3 col-form-label">Входящий</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="docInIdT" href="@{'/docs/in?openDI=' + docInId" id="docInId" class="form-control" rows="1"/>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <label class="col-sm-3 col-form-label">Поручение</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="taskT" href="@{'/tasks/card/' + taskId" id="taskId" class="form-control" rows="1"/>
-
-                        </div>
-                    </div>
 
                 </form>
 
@@ -455,12 +460,13 @@
             </div>
             <!-- Modal body -->
             <div class="modal-body">
-                <form th:action="@{/docs/out/card}" method="POST" id="docForm">
+                <form th:action="@{/docs/out/card/}" method="POST" id="docForm">
 
                     <!-- Hidden inputs -->
                     <input id="id" name="id" type="hidden" class="form-control">
                     <input id="createDate" name="createDate" type="hidden" class="form-control">
                     <input id="number" name="number" type="hidden" class="form-control">
+                    <!--<input id="docInId" name="docInId" type="hidden" class="form-control">-->
                     <input id="taskId" name="taskId" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">
@@ -536,7 +542,7 @@
                     });
                     </script>
 
-                    <div th:if="" class="form-row">
+                    <div class="form-row">
                         <label for="content" class="col-sm-3 col-form-label">Краткое Содержание</label>
                         <div class="col-sm-9">
                             <textarea input name="content" class="form-control" id="content" rows="2"></textarea>
@@ -550,26 +556,18 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <label for="stateT" class="col-sm-3 col-form-label">Входящий</label>
-                        <label class="col-sm-6 col-form-label" id="stateT" name="stateT"></label>
-                        <div class="col-sm-9">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <label for="stateT" class="col-sm-3 col-form-label">Поручение</label>
-                        <label class="col-sm-6 col-form-label" id="stateT" name="stateT"></label>
-                        <div class="col-sm-9">
-                        </div>
+                    <div>
+                        <h5 id="communication" align="CENTER"></h5>
+                        <div class="form-row linkTask" ></div>
+                        <div class="form-row linkDocIn" ></div>
                     </div>
 
                 </form>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
-                <button type="submit" class="btn btn-primary" form="docForm">Сохранить и отправить</button>
+                <button if="stateId==2 || stateId==10 || stateId==12" type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
+                <button if="stateId==2 || stateId==10" type="submit" class="btn btn-primary" form="docForm">Сохранить и отправить</button>
                 <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 

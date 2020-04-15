@@ -47,6 +47,8 @@ public class DocOutDTO implements Serializable {
     private Integer stateId;
     private Task task;
     private Long taskId;
+    private Long docInId;
+    private String docInRegNumber;
 
     public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO, String docTypeName,
                      DocType docType, Integer docTypeId, User signer, Integer signerId, String content, Integer pages, String appendix,

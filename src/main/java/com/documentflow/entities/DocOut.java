@@ -61,7 +61,6 @@ public class DocOut implements Serializable {
     @Column(name = "number")
     private String number;
 
-//    @CreationTimestamp
     @Column(name="reg_date")
     private LocalDate regDate;
 
@@ -82,5 +81,16 @@ public class DocOut implements Serializable {
         this.appendix = appendix;
         this.note = note;
         this.state = state;
+    }
+
+    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, Task task) {
+        this.creator = creator;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.state = state;
+        this.task=task;
     }
 }
