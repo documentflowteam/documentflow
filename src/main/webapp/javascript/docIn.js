@@ -87,7 +87,7 @@ function openModal(id){
                 if (doc.docOutId != null) {
                     addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=' + doc.docOutId, 'Ответ', doc.docOutNumber);
                 } else {
-                    addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1', 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
+                    addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1&docinid='+ doc.id, 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
                 }
             }
         }
