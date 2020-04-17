@@ -36,6 +36,11 @@ public class DocInUtils {
     private DocOutUtils docOutUtils;
 
     @Autowired
+    public void setDocOutUtils(DocOutUtils docOutUtils) {
+        this.docOutUtils = docOutUtils;
+    }
+
+    @Autowired
     public DocInUtils(UserService userService, DepartmentService departmentService,
                       StateService stateService, DocTypeService docTypeService,
                       DocOutService docOutService, DocInService docInService,
