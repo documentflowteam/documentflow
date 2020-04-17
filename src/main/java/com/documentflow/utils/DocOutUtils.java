@@ -54,7 +54,7 @@ public class DocOutUtils {
   //              docOut.setId(docOutDTO.getId());
                 docOut.setCreateDate(docOutDTO.getCreateDate());
                 docOut.setCreator(docOutDTO.getCreator());
-                docOut.setDocType(docTypeService.getDocTypeById(docOutDTO.getDocTypeId()));
+                docOut.setDocType(docOutDTO.getDocType());
                 docOut.setSigner(docOutDTO.getSigner());
                 docOut.setContent(docOutDTO.getContent());
                 docOut.setPages(docOutDTO.getPages());
@@ -77,7 +77,7 @@ public class DocOutUtils {
         //docOut.setId(docOutDTO.getId());
         docOut.setCreateDate(docOutDTO.getCreateDate());
         docOut.setCreator(docOutDTO.getCreator());
-        docOut.setDocType(docTypeService.getDocTypeById(docOutDTO.getDocTypeId()));
+        docOut.setDocType(docOutDTO.getDocType());
         docOut.setSigner(docOutDTO.getSigner());
         docOut.setContent(docOutDTO.getContent());
         docOut.setPages(docOutDTO.getPages());
@@ -103,9 +103,7 @@ public class DocOutUtils {
                 getUserFIO(docOut.getCreator()),
                 docOut.getDocType().getName(),
                 docOut.getDocType(),
-                docOut.getDocType().getId(),
                 docOut.getSigner(),
-                docOut.getSigner().getId(),
                 docOut.getContent(),
                 docOut.getPages(),
                 docOut.getAppendix(),

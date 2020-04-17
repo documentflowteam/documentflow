@@ -73,7 +73,6 @@
                                 <tbody>
                                 <tr>
                                     <form th:action="@{/docs/out}"  method="GET">
-                                        <!--<td></td>-->
                                         <td><input th:value="${param.number != null} ? ${param.number}" class="form-control" th:name="number" type="text"></td>
                                         <td class="inline">
                                             <input th:value="${param.createDateMin != null} ? ${param.createDateMin}" class="form-control col-sm-3" th:name="createDateMin" type="date">
@@ -90,7 +89,7 @@
                                         <td>
                                             <select class="form-control" th:name="stateId">
                                                 <option th:text="' '" th:value="null"/>
-                                                <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
+                                                <option th:if="${state.id != 6}" th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
                                             </select>
                                         </td>
                                         <td><input th:value="${param.address != null} ? ${param.address}" class="form-control" th:name="address" type="text"></td>

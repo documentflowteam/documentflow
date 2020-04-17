@@ -69,12 +69,12 @@ function openModal(id, docinid){
                 $('#id').val(docOutDTO.id);
                 $('#creator').val(docOutDTO.creator);
                 $('#creatorFIO').text(docOutDTO.creatorFIO);
-                $('#docTypeId').val(docOutDTO.docTypeId);
+                $('#docTypeId').val(docOutDTO.docType.id);
                 $('#stateT').text(docOutDTO.state.name);
                 $('#stateS').val(docOutDTO.state);
                 $('#stateId').val(docOutDTO.stateId);
                 $('#signer').val(docOutDTO.signer);
-                $('#signerId').val(docOutDTO.signerId);
+                $('#signerId').val(docOutDTO.signer.id);
                 $('#content').val(docOutDTO.content);
                 $('#pages').val(docOutDTO.pages);
                 $('#appendix').val(docOutDTO.appendix);
@@ -101,7 +101,7 @@ function openModal(id, docinid){
             success: function (docOutDTO) {
 
                 $('#creatorNew').val(docOutDTO.creator);
-                $('#docTypeIdNew').val(docOutDTO.docTypeId);
+                $('#docTypeIdNew').val(docOutDTO.docType.id);
                 $('#signerNew').val(docOutDTO.signer);
                 $('#contentNew').val(docOutDTO.content);
                 $('#pagesNew').val(docOutDTO.pages);
