@@ -71,7 +71,7 @@ public interface ContragentService {
      * Link the employee to the organization
      *
      * @param idOrganization id organization
-     * @param employee       employee DTO
+     * @param employee       employee Dto
      * @return ContragentDtoEmployee
      */
     ContragentDtoEmployee bindEmployeeWithOrganization(Long idOrganization, ContragentDtoEmployee employee);

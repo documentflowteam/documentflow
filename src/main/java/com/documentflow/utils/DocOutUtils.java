@@ -2,7 +2,9 @@ package com.documentflow.utils;
 
 import com.documentflow.entities.dto.DocOutDTO;
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,11 +16,14 @@ import java.time.LocalDate;
 @Component
 public class DocOutUtils {
 
+    private DocOut docOut;
+    private DocOutDTO docOutDTO;
     private UserServiceImpl userService;
     private StateService stateService;
     private DocTypeService docTypeService;
     private TaskService taskService;
     private DocOutService docOutService;
+    private DocInUtils docInUtils;
 
     @Autowired
     public DocOutUtils(UserServiceImpl userService, StateService stateService, DocTypeService docTypeService,
@@ -31,6 +36,10 @@ public class DocOutUtils {
 
     }
 
+    @Autowired
+    public void setDocInUtils(DocInUtils docInUtils) {
+        this.docInUtils = docInUtils;
+    }
 
     public String getRegOutNumber() {
         Page<DocOut> docOutList= docOutService.findAll(Pageable.unpaged());
@@ -41,46 +50,52 @@ public class DocOutUtils {
 
     public DocOut convertFromDocOutDTO(DocOutDTO docOutDTO) {
 
-        DocOut docOut = new DocOut();
-                docOut.setId(docOutDTO.getId());
+         docOut = new DocOut();
+  //              docOut.setId(docOutDTO.getId());
                 docOut.setCreateDate(docOutDTO.getCreateDate());
                 docOut.setCreator(docOutDTO.getCreator());
-                docOut.setDocType(docTypeService.getDocTypeById(docOutDTO.getDocTypeId()));
-      //          docOut.setDocType(docOutDTO.getDocType());
-      //          docOut.setDocTypeId(docTypeService.getDocTypeById(1));
+                docOut.setDocType(docOutDTO.getDocType());
                 docOut.setSigner(docOutDTO.getSigner());
                 docOut.setContent(docOutDTO.getContent());
-        docOut.setPages(docOutDTO.getPages());
-        docOut.setAppendix(docOutDTO.getAppendix());
-        docOut.setNote(docOutDTO.getNote());
+                docOut.setPages(docOutDTO.getPages());
+                docOut.setAppendix(docOutDTO.getAppendix());
+                docOut.setNote(docOutDTO.getNote());
         if (docOutDTO.getIsGenerated()==null) {
             docOut.setIsGenerated(false);
         } else docOut.setIsGenerated(docOutDTO.getIsGenerated());
 
-        if (docOutDTO.getNumber()==null) {
-            docOut.setNumber("б/н");
-        } else docOut.setNumber(docOutDTO.getNumber());
-//        docOut.setNumber(docOutDTO.getNumber());
-
+        docOut.setNumber(docOutDTO.getNumber());
         docOut.setRegDate(docOutDTO.getRegDate());
-
-//        if (docOutDTO.getState() ==null) {
-//            docOut.setState(stateService.getStateById(1));
-//        } else {docOut.setState(docOutDTO.getState());
-//        }
- //       docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
         docOut.setState(docOutDTO.getState());
-        docOut.setTask(docOutDTO.getTask());
+        docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+        return docOut;
+    }
 
+    public DocOut convertFromDocOutDTONew(DocOutDTO docOutDTO) {
 
-//        if (docOutDTO.getTask() != null) {
-//            docOutDTO.setTask(taskService.findOneById(docOutDTO.getTaskId()));
-//        } else docOutDTO.setTask(null);
+        docOut = new DocOut();
+        //docOut.setId(docOutDTO.getId());
+        docOut.setCreateDate(docOutDTO.getCreateDate());
+        docOut.setCreator(docOutDTO.getCreator());
+        docOut.setDocType(docOutDTO.getDocType());
+        docOut.setSigner(docOutDTO.getSigner());
+        docOut.setContent(docOutDTO.getContent());
+        docOut.setPages(docOutDTO.getPages());
+        docOut.setAppendix(docOutDTO.getAppendix());
+        docOut.setNote(docOutDTO.getNote());
+        docOut.setIsGenerated(false);
+        docOut.setNumber("б/н");
+        docOut.setRegDate(null);
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
+
+        if(docOutDTO.getTaskId()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+        docOutService.save(docOut);
+        if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
         return docOut;
     }
 
     public DocOutDTO convertFromDocOut(DocOut docOut) {
-        DocOutDTO docOutDTO = new DocOutDTO(
+         docOutDTO = new DocOutDTO(
                 docOut.getId(),
                 docOut.getCreateDate(),
                 docOut.getCreator(),
@@ -88,7 +103,6 @@ public class DocOutUtils {
                 getUserFIO(docOut.getCreator()),
                 docOut.getDocType().getName(),
                 docOut.getDocType(),
-                docOut.getDocType().getId(),
                 docOut.getSigner(),
                 docOut.getContent(),
                 docOut.getPages(),
@@ -98,7 +112,6 @@ public class DocOutUtils {
                 docOut.getNumber(),
                 docOut.getRegDate(),
                 docOut.getState());
- //               docOut.getState().getId());
 
         if (docOut.getTask() != null) {
             docOutDTO.setTask(docOut.getTask());
@@ -109,14 +122,73 @@ public class DocOutUtils {
 
     public String getUserFIO(User user) {
         return user.getLastName() + " " +
-                user.getFirstName().substring(0, 1) + "." +
-                user.getMiddleName().substring(0, 1);
+                user.getFirstName()+" " +
+                user.getMiddleName();
     }
 
+
     public DocOutDTO getDocOutDTO(Long id) {
-        DocOutDTO docOutDTO = convertFromDocOut(docOutService.findOneById(id));
+        docOutDTO = convertFromDocOut(docOutService.findOneById(id));
        return docOutDTO;
     }
 
+    public void addTaskToDocOutDTO(Long id, Task task) {
+      docOut = docOutService.findOneById(id);
+        docOutDTO.setTask(task);
+        docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+        docOutService.save(docOut);
+    }
+
+
+    public void setNewDocOut() {
+        LocalDate localDate=null;
+        docOut.setRegDate(localDate);
+        docOut.setNumber("б/н");
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
+        docOutService.save(docOut);
+    }
+
+    public void delDocOut(Long id){
+        docOut=docOutService.findOneById(id);
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.DELETED.toString()));
+        docOutService.save(docOut);
+    }
+
+    public DocOut saveModifiedDocOut(DocOutDTO docOutDTO){
+        docOut=docOutService.findOneById(docOutDTO.getId());
+        docOut.setDocType(docOutDTO.getDocType());
+        docOut.setSigner(docOutDTO.getSigner());
+        docOut.setContent(docOutDTO.getContent());
+        docOut.setPages(docOutDTO.getPages());
+        docOut.setAppendix(docOutDTO.getAppendix());
+        docOut.setNote(docOutDTO.getNote());
+        docOut.setNumber("б/н");
+        docOut.setRegDate(docOutDTO.getRegDate());
+        docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+        docOutService.save(docOut);
+        return docOut;
+    }
+
+   public void generateDocOut(DocOutDTO docOutDTO){
+       docOut=docOutService.findOneById(docOutDTO.getId());
+       getRegOutNumber();
+       docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.GENERATED.toString()));
+   }
+
+   public void refuseDocOut(DocOutDTO docOutDTO){
+       docOut=docOutService.findOneById(docOutDTO.getId());
+       docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.RECALLED.toString()));
+   }
+
+   public void sendDocOut(DocOutDTO docOutDTO){
+       docOut=docOutService.findOneById(docOutDTO.getId());
+       docOut.setRegDate(LocalDate.now());
+       docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.APPROVING.toString()));
+   }
+
+    public void isSent(DocOutDTO docOutDTO){
+        docOut=docOutService.findOneById(docOutDTO.getId());
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.SENT.toString()));
+    }
 }
 
