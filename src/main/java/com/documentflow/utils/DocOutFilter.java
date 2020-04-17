@@ -72,11 +72,6 @@ public class DocOutFilter {
             filtersString.append("&note=" + request.getParameter("note"));
         }
 
-//        if (request.getParameter("docInId") != null && !request.getParameter("docInId").isEmpty()) {
-//            specification = getSpecification().and(DocOutSpecifications.noteContains(request.getParameter("docInId")));
-//            filtersString.append("&docInId=" + request.getParameter("docInId"));
-//        }
-
         if (request.getParameter("taskId") != null && !request.getParameter("taskId").isEmpty()) {
             specification = getSpecification().and(DocOutSpecifications.taskId(Integer.valueOf(request.getParameter("taskId"))));
             filtersString.append("&taskId=" + request.getParameter("taskId"));

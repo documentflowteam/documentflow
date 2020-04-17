@@ -31,9 +31,9 @@ public class DocInUtils {
     private DocTypeService docTypeService;
     private TaskUtils taskUtils;
     private TaskService taskService;
-    private DocOutUtils docOutUtils;
     private DocOutService docOutService;
     private DocInService docInService;
+    private DocOutUtils docOutUtils;
 
     @Autowired
     public void setDocOutUtils(DocOutUtils docOutUtils) {
@@ -53,6 +53,11 @@ public class DocInUtils {
         this.docInService = docInService;
         this.taskUtils = taskUtils;
         this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setDocOutUtils(DocOutUtils docOutUtils) {
+        this.docOutUtils = docOutUtils;
     }
 
     public String getRegNumber() {

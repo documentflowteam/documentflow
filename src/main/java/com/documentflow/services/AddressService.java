@@ -10,7 +10,7 @@ public interface AddressService {
     /**
      * Adds addresses to the database
      *
-     * @param addresses array of addresses wrapped in DTO
+     * @param addresses array of addresses wrapped in Dto
      * @return list of addresses or null
      */
     List<Address> save(ContragentDtoAddress[] addresses);

@@ -79,7 +79,7 @@
                     <label for="endDate" class="col-sm-3 col-form-label">Документ</label>
                     <div class="col-sm-9">
                         <a th:if="${ docIn != null }" th:text="${docIn.regNumber}" th:href="@{'/docs/in?openDI=' + ${docIn.getId()}}"/>
-                        <a th:if="${ docOut != null }" th:text="${docOut.number}" th:href="@{'/docs/out'}"/>
+                        <a th:if="${ docOut != null }" th:text="${docOut.number}" th:href="@{'/docs/out?openDO=' + ${docOut.getId()}}"/>
                     </div>
                 </div>
                 <div class="form-row">
