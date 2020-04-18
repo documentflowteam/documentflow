@@ -33,6 +33,7 @@ public class DocInUtils {
     private TaskService taskService;
     private DocOutService docOutService;
     private DocInService docInService;
+    private DocOutUtils docOutUtils;
 
     @Autowired
     public DocInUtils(UserService userService, DepartmentService departmentService,
@@ -47,6 +48,11 @@ public class DocInUtils {
         this.docInService = docInService;
         this.taskUtils = taskUtils;
         this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setDocOutUtils(DocOutUtils docOutUtils) {
+        this.docOutUtils = docOutUtils;
     }
 
     public String getRegNumber() {
@@ -188,7 +194,7 @@ public class DocInUtils {
             taskUtils.setAsRecalled(docInService.findById(docInDto.getId()).getTask());
         }
         if (docInDto.getDocOutId() != null) {
-//            docOutUtils.delDocOut(docInDto.getDocOutId());
+            docOutUtils.delDocOut(docInDto.getDocOutId());
         }
     }
 

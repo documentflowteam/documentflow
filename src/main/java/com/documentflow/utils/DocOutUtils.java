@@ -27,15 +27,18 @@ public class DocOutUtils {
 
     @Autowired
     public DocOutUtils(UserServiceImpl userService, StateService stateService, DocTypeService docTypeService,
-                       TaskService taskService, DocOutService docOutService, DocInUtils docInUtils) {
+                       TaskService taskService, DocOutService docOutService) {
         this.docOutService = docOutService;
         this.userService = userService;
         this.stateService = stateService;
         this.docTypeService = docTypeService;
         this.taskService = taskService;
-        this.docInUtils=docInUtils;
     }
 
+    @Autowired
+    public void setDocInUtils(DocInUtils docInUtils) {
+        this.docInUtils = docInUtils;
+    }
 
     public String getRegOutNumber() {
         Page<DocOut> docOutList= docOutService.findAll(Pageable.unpaged());
