@@ -1,5 +1,4 @@
 
-
 $.dateCut = function(date) {
     var d = new Date(date);
     var day = d.getDate();
@@ -34,6 +33,10 @@ function closeModal() {
     var modal1 = document.querySelector('#newDoc');
     modal1.classList.toggle('show');
     modal1.style.display = "none";
+
+    var modal2 = document.querySelector('#address');
+    modal2.classList.toggle('show');
+    modal2.style.display = "none";
 }
 
 
@@ -47,7 +50,7 @@ $(document).ready(function() {
 });
 
 function openModal(id, docinid){
-    var modal
+    var modal;
     if(id>0) {
         modal= document.querySelector('#showDoc');
     } else {
@@ -69,7 +72,7 @@ function openModal(id, docinid){
                 $('#id').val(docOutDTO.id);
                 $('#creator').val(docOutDTO.creator);
                 $('#creatorFIO').text(docOutDTO.creatorFIO);
-                $('#docTypeId').val(docOutDTO.docType.id);
+                $('#docTypeId').val(docOutDTO.docTypeId);
                 $('#stateT').text(docOutDTO.state.name);
                 $('#stateS').val(docOutDTO.state);
                 $('#stateId').val(docOutDTO.stateId);
@@ -82,27 +85,30 @@ function openModal(id, docinid){
                 $('#isGenerated').val(docOutDTO.isGenerated);
                 $('#number').val(docOutDTO.number);
 
+
                 if (docOutDTO.taskId != null || docOutDTO.docInId != null) {
                     $('#communication').text('Связи');
-                    if (docOutDTO.taskId != null) {
-                        linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
-                    }
-                    if (docOutDTO.docInId != null) {
-                        linkButton('.linkDocIn', 'docInBtn', '/docs/in?openDI=' + docOutDTO.docInId, 'Входящий', docOutDTO.docInRegNumber);
-                    }
                 }
+                if (docOutDTO.taskId != null) {
+                    linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                }
+                if (docOutDTO.docInId != null) {
+                    linkButton('.linkDocIn', 'docInBtn', '/docs/in?openDI=' + docOutDTO.docInId, 'Входящий', docOutDTO.docInRegNumber);
+                }
+                //            $('#docInIdN').val(docOutDTO.docInId);
             }
         });
     }else{
         $.ajax({
 
-            url: "/docs/out/newcard/" + "?docinid=" + docinid,
+            url: "/docs/out/newcard" + "?docinid=" + docinid,
 
             success: function (docOutDTO) {
 
                 $('#creatorNew').val(docOutDTO.creator);
-                $('#docTypeIdNew').val(docOutDTO.docType.id);
+                $('#docTypeIdNew').val(docOutDTO.docTypeId);
                 $('#signerNew').val(docOutDTO.signer);
+                $('#signerIdNew').val(docOutDTO.signerId);
                 $('#contentNew').val(docOutDTO.content);
                 $('#pagesNew').val(docOutDTO.pages);
                 $('#regDate').val(docOutDTO.regDate);

@@ -72,27 +72,27 @@
 
                                 <tbody>
                                 <tr>
-                                    <form th:action="@{/docs/out}"  method="GET">
-                                        <td><input th:value="${param.number != null} ? ${param.number}" class="form-control" th:name="number" type="text"></td>
+                                    <form id="filterForm" th:action="@{/docs/out}"  method="GET">
+                                        <td><input th:value="${param.number != null} ? ${param.number}" class="form-control reset" th:name="number" type="text"></td>
                                         <td class="inline">
-                                            <input th:value="${param.createDateMin != null} ? ${param.createDateMin}" class="form-control col-sm-3" th:name="createDateMin" type="date">
-                                            <input th:value="${param.createDateMax != null} ? ${param.createDateMax}" class="form-control col-sm-3" th:name="createDateMax" type="date">
+                                            <input th:value="${param.createDateMin != null} ? ${param.createDateMin}" class="form-control reset" th:name="createDateMin" type="date">
+                                            <input th:value="${param.createDateMax != null} ? ${param.createDateMax}" class="form-control reset" th:name="createDateMax" type="date">
                                         </td>
                                         <td>
-                                            <select class="form-control" th:name="docTypeId">
+                                            <select class="form-control reset" th:name="docTypeId">
                                                 <option th:text="' '" th:value="null"/>
                                                 <option th:each="docT : ${docTypes}" th:text="${docT.name}" th:value="${docT.id}" th:selected="${{param.docTypeId}} == ${{docT.id}}" />
                                             </select>
                                         </td>
 
-                                        <td><input th:value="${param.creator != null} ? ${param.creator}" class="form-control" th:name="creator" type="text"></td>
+                                        <td><input th:value="${param.creator != null} ? ${param.creator}" class="form-control reset" th:name="creator" type="text"></td>
                                         <td>
-                                            <select class="form-control" th:name="stateId">
+                                            <select class="form-control reset" th:name="stateId">
                                                 <option th:text="' '" th:value="null"/>
                                                 <option th:if="${state.id != 6}" th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
                                             </select>
                                         </td>
-                                        <td><input th:value="${param.address != null} ? ${param.address}" class="form-control" th:name="address" type="text"></td>
+                                        <td><input th:value="${param.address != null} ? ${param.address}" class="form-control reset" th:name="address" type="text"></td>
                                         <td></td>
                                         <td><button type="submit" class="btn btn-primary">Применить</button></td>
                                     </form>
@@ -135,7 +135,7 @@
                                         <a th:class="page-link" th:href="@{'/docs/out?currentPage=' + ${docs.getNumber()}}" th:text="prev"/>
                                     </li>
                                     <li class="page-item" th:classappend="${docs.getNumber() + 1 == i ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, docs.getTotalPages())}">
-                                        <a class="page-link" th:href="@{'/docs/out?currentPage=' + ${i}}" th:text=${i} />
+                                        <a class="page-link" th:href="@{'/docs/out?currentPage=' + ${i}}" th:text="${i}" />
                                     </li>
                                     <li class="page-item" th:classappend="${!(docs.getNumber() < docs.getTotalPages() - 1) ? 'disabled' : ''}">
                                         <a th:class="page-link" th:href="@{'/docs/out?currentPage=' + ${docs.getNumber() + 2} }" th:text="next"/>
@@ -150,6 +150,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade"
      id="newDoc"
@@ -209,7 +210,6 @@
                                 <option th:each="signer : ${signers}"
                                         th:text="${signer.lastName}+' '+ ${signer.firstName} +' '+ ${signer.middleName}"
                                         th:value="${signer.id}"/>
-
                             </select>
                         </div>
                     </div>
@@ -250,6 +250,21 @@
                         <label for="noteNew" class="col-sm-3 col-form-label">Примечание</label>
                         <div class="col-sm-9">
                             <input type="text" name="note" class="form-control" id="noteNew" rows="2" required/>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Адресат</label>
+                        <div class="col-sm-6">
+                            <textarea input class="form-control" rows="1"></textarea>
+                        </div>
+                        <div class="col-sm-3">
+                            <a role="button"
+                               aria-pressed="true"
+                               class="btn btn-secondary"
+                               data-toggle="modal"
+                               href="#address">Выбрать</a>
                         </div>
                     </div>
 
@@ -328,8 +343,9 @@
                     <input id="id" name="id" type="hidden" class="form-control">
                     <input id="createDate" name="createDate" type="hidden" class="form-control">
                     <input id="number" name="number" type="hidden" class="form-control">
-                    <!--<input id="docInId" name="docInId" type="hidden" class="form-control">-->
+                    <!--<input id="docInIdN" name="docInId" type="hidden" class="form-control">-->
                     <input id="taskId" name="taskId" type="hidden" class="form-control">
+                    <input id="docTypeId" name="docTypeId" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">
                         <h5 class="modal-title" id="titleM"></h5>
@@ -390,18 +406,18 @@
                     <div class="form-row">
                         <label for="appendix" class="col-sm-3 col-form-label">Приложение</label>
                         <div class="col-sm-9">
-                           <div class="custom-file">
-                               <input type="text" id="appendix" name="appendix" class="custom-file-input"/>
-                               <label class="custom-file-label" for="appendix"></label>
-                           </div>
+                            <div class="custom-file">
+                                <input type="text" id="appendix" name="appendix" class="custom-file-input"/>
+                                <label class="custom-file-label" for="appendix"></label>
+                            </div>
                         </div>
                     </div>
 
                     <script>
-                    $('.custom-file-input').on('change', function() {
-                    let fileName = $(this).val().split('\\').pop();
-                    $(this).next('.custom-file-label').addClass("selected").html(fileName);
-                    });
+                        $('.custom-file-input').on('change', function() {
+                            let fileName = $(this).val().split('\\').pop();
+                            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                        });
                     </script>
 
                     <div class="form-row">
@@ -415,6 +431,21 @@
                         <label for="noteN" class="col-sm-3 col-form-label">Примечания</label>
                         <div class="col-sm-9">
                             <textarea input id="noteN" name="note" class="form-control"  rows="2"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Адресат</label>
+                        <div class="col-sm-6">
+                            <textarea input class="form-control" rows="1"></textarea>
+                        </div>
+                        <div class="col-sm-3">
+                            <a role="button"
+                               aria-pressed="true"
+                               class="btn btn-secondary"
+                               data-toggle="modal"
+                               href="#address">Выбрать</a>
                         </div>
                     </div>
 
@@ -437,9 +468,40 @@
     </div>
 </div>
 
+
+<div class="modal fade"
+     id="address"
+     tabindex="-1"
+     aria-hidden="true"
+     data-backdrop="static"
+     data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <a role="button" aria-pressed="true" data-dismiss="modal" class="close">x</a>
+            </div>
+
+            <div class="modal-body">
+                <form th:action="@{/docs/out/card/}" method="POST" id="addressForm">
+                    <div class="row justify-content-center">
+                        <h5>Выберите контрагента</h5>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="addressForm">Сохранить</button>
+                <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary">Отменить</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 </body>
 </html>
-
 
 
 
