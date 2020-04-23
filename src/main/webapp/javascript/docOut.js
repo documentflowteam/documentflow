@@ -64,7 +64,7 @@ function openModal(id, docinid){
         $.ajax({
             url: "/docs/out/card/" + id,
 
-            docOutDTO: {docOutDTO: 'docOutDTO'},
+ //           docOutDTO: {docOutDTO: 'docOutDTO'},
             success: function (docOutDTO) {
                 $('#titleM').text('Исходящий №: ' + docOutDTO.number + '   ' + docOutDTO.state.name);
                 $('#createDate').val(docOutDTO.createDate);
@@ -95,7 +95,6 @@ function openModal(id, docinid){
                 if (docOutDTO.docInId != null) {
                     linkButton('.linkDocIn', 'docInBtn', '/docs/in?openDI=' + docOutDTO.docInId, 'Входящий', docOutDTO.docInRegNumber);
                 }
-                //            $('#docInIdN').val(docOutDTO.docInId);
             }
         });
     }else{

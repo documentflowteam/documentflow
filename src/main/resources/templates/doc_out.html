@@ -86,6 +86,13 @@
                                         </td>
 
                                         <td><input th:value="${param.creator != null} ? ${param.creator}" class="form-control reset" th:name="creator" type="text"></td>
+                                        <!--<td>-->
+                                            <!--<select class="form-control reset" th:name="creator">-->
+                                                <!--<option th:text="' '" th:value="null"/>-->
+                                                <!--<option th:each="author : ${creators}" th:text="${author.lastName}+' '+ ${author.firstName} +' '+ ${author.middleName}" th:value="${author.id}" th:selected="${{param.creator}} == ${{author.id}}" />-->
+                                            <!--</select>-->
+                                        <!--</td>-->
+
                                         <td>
                                             <select class="form-control reset" th:name="stateId">
                                                 <option th:text="' '" th:value="null"/>
@@ -459,8 +466,9 @@
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <button if="stateId==2 || stateId==10 || stateId==12" type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
-                <button if="stateId==2 || stateId==10" type="submit" class="btn btn-primary" form="docForm">Сохранить и отправить</button>
+                <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
+                <!--th:if="${stateId ==2 || stateId ==10 || stateId ==12}"-->
+                <button type="submit" class="btn btn-primary" form="docForm">Сохранить и отправить</button>
                 <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
@@ -487,6 +495,31 @@
                     <div class="row justify-content-center">
                         <h5>Выберите контрагента</h5>
                     </div>
+
+                    <div class="form-row">
+                        <label for="signerId" class="col-sm-3 col-form-label">Согласующий</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="signerId" name="signer" required>
+                                <option th:text="' '" th:value="null"/>
+                                <option th:each="chief : ${signers}"
+                                        th:text="${chief.lastName}+' '+ ${chief.firstName} +' '+ ${chief.middleName}"
+                                        th:value="${chief.id}"/>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="signerId" class="col-sm-3 col-form-label">Согласующий</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="signerId" name="signer" required>
+                                <option th:if="${signerId == null}" th:text="' '" th:value="null"/>
+                                <option th:each="chief : ${signers}"
+                                        th:text="${chief.lastName}+' '+ ${chief.firstName} +' '+ ${chief.middleName}"
+                                        th:value="${chief.id}"/>
+                            </select>
+                        </div>
+                    </div>
+
                 </form>
             </div>
 
