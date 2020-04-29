@@ -85,18 +85,18 @@
                                             </select>
                                         </td>
 
-                                        <td><input th:value="${param.creator != null} ? ${param.creator}" class="form-control reset" th:name="creator" type="text"></td>
-                                        <!--<td>-->
-                                            <!--<select class="form-control reset" th:name="creator">-->
-                                                <!--<option th:text="' '" th:value="null"/>-->
-                                                <!--<option th:each="author : ${creators}" th:text="${author.lastName}+' '+ ${author.firstName} +' '+ ${author.middleName}" th:value="${author.id}" th:selected="${{param.creator}} == ${{author.id}}" />-->
-                                            <!--</select>-->
-                                        <!--</td>-->
+                                        <!--<td><input th:value="${param.creator != null} ? ${param.creator}" class="form-control reset" th:name="creator" type="text"></td>-->
+                                        <td>
+                                            <select class="form-control reset" th:name="creator">
+                                                <option th:text="' '" th:value="null"/>
+                                                <option th:each="author : ${creators}" th:text="${author.lastName}+' '+ ${author.firstName} +' '+ ${author.middleName}" th:value="${author.id}" th:selected="${{param.creator}} == ${{author.id}}" />
+                                            </select>
+                                        </td>
 
                                         <td>
                                             <select class="form-control reset" th:name="stateId">
                                                 <option th:text="' '" th:value="null"/>
-                                                <option th:if="${state.id != 6}" th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
+                                                <option th:each="state : ${states}" th:text="${state.name}" th:value="${state.id}" th:selected="${{param.stateId}} == ${{state.id}}" />
                                             </select>
                                         </td>
                                         <td><input th:value="${param.address != null} ? ${param.address}" class="form-control reset" th:name="address" type="text"></td>
@@ -113,7 +113,6 @@
                                            href="#showDoc"
                                            th:text="${docOutDTO.number}"
                                            th:onclick="'javascript:openModal(\'' + ${docOutDTO.id} + '\');'"/>
-
                                     </td>
                                     <td th:text="${docOutDTO.createDate}" />
                                     <td th:text="${docOutDTO.docTypeName}" />
@@ -199,7 +198,7 @@
                     <div class="form-row">
                         <label for="docTypeIdNew" class="col-sm-3 col-form-label">Тип документа</label>
                         <div class="col-sm-9">
-                            <select class="form-control reset" id="docTypeIdNew" name="docTypeId" required>
+                            <select class="form-control reset" id="docTypeIdNew" name="docType" required>
                                 <option th:text="' '" th:value="null"/>
                                 <option th:each="docType : ${docTypes}"
                                         th:text="${docType.name}"
@@ -351,7 +350,7 @@
                     <input id="createDate" name="createDate" type="hidden" class="form-control">
                     <input id="number" name="number" type="hidden" class="form-control">
                     <!--<input id="docInIdN" name="docInId" type="hidden" class="form-control">-->
-                    <input id="taskId" name="taskId" type="hidden" class="form-control">
+                    <!--<input id="taskIdN" name="taskId" type="hidden" class="form-control">-->
                     <input id="docTypeId" name="docTypeId" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">

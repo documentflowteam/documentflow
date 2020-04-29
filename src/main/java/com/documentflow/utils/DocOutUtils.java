@@ -1,5 +1,6 @@
 package com.documentflow.utils;
 
+import com.documentflow.entities.DocIn;
 import com.documentflow.entities.dto.DocOutDTO;
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.Task;
@@ -24,6 +25,7 @@ public class DocOutUtils {
     private TaskService taskService;
     private DocOutService docOutService;
     private DocInUtils docInUtils;
+    private DocInService docInService;
 
     @Autowired
     public DocOutUtils(UserServiceImpl userService, StateService stateService, DocTypeService docTypeService,
@@ -33,11 +35,18 @@ public class DocOutUtils {
         this.stateService = stateService;
         this.docTypeService = docTypeService;
         this.taskService = taskService;
+
     }
 
     @Autowired
     public void setDocInUtils(DocInUtils docInUtils) {
         this.docInUtils = docInUtils;
+    }
+
+
+    @Autowired
+    public void setDocInService(DocInService docInService) {
+        this.docInService = docInService;
     }
 
     public String getRegOutNumber() {
@@ -50,7 +59,7 @@ public class DocOutUtils {
     public DocOut convertFromDocOutDTO(DocOutDTO docOutDTO) {
 
         docOut = new DocOut();
-        //              docOut.setId(docOutDTO.getId());
+        //docOut.setId(docOutDTO.getId());
         docOut.setCreateDate(docOutDTO.getCreateDate());
         docOut.setCreator(docOutDTO.getCreator());
         docOut.setDocType(docOutDTO.getDocType());
@@ -73,7 +82,7 @@ public class DocOutUtils {
     public DocOut convertFromDocOutDTONew(DocOutDTO docOutDTO) {
 
         docOut = new DocOut();
-        //docOut.setId(docOutDTO.getId());
+   //     docOut.setId(docOutDTO.getId());
         docOut.setCreateDate(docOutDTO.getCreateDate());
         docOut.setCreator(docOutDTO.getCreator());
         docOut.setDocType(docOutDTO.getDocType());
@@ -94,6 +103,7 @@ public class DocOutUtils {
     }
 
     public DocOutDTO convertFromDocOut(DocOut docOut) {
+        DocIn docIn=docInService.findByDocOut(docOut);
         docOutDTO = new DocOutDTO(
                 docOut.getId(),
                 docOut.getCreateDate(),
@@ -104,7 +114,6 @@ public class DocOutUtils {
                 docOut.getDocType(),
                 docOut.getDocType().getId(),
                 docOut.getSigner(),
-                //             docOut.getSigner().getId(),
                 docOut.getContent(),
                 docOut.getPages(),
                 docOut.getAppendix(),
@@ -117,6 +126,10 @@ public class DocOutUtils {
         if (docOut.getTask() != null) {
             docOutDTO.setTask(docOut.getTask());
             docOutDTO.setTaskId(docOut.getTask().getId());
+        }
+        if(docIn!=null) {
+            docOutDTO.setDocInId(docIn.getId());
+            docOutDTO.setDocInRegNumber(docIn.getRegNumber());
         }
         return docOutDTO;
     }
@@ -133,11 +146,20 @@ public class DocOutUtils {
         return docOutDTO;
     }
 
-    public void addTaskToDocOutDTO(Long id, Task task) {
+//    public void addTaskToDocOutDTO(Long id, Task task) {
+//        docOut = docOutService.findOneById(id);
+//        DocOutDTO docOutDTO = convertFromDocOut(docOutService.findOneById(id));
+//        docOutDTO.setTask(task);
+//        docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+//        docOutService.save(docOut);
+//    }
+
+    public void addTaskToDocOut(Long id, Task task) {
         docOut = docOutService.findOneById(id);
-        docOutDTO.setTask(task);
-        docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+        docOut.setTask(task);
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
         docOutService.save(docOut);
+
     }
 
 
@@ -167,6 +189,7 @@ public class DocOutUtils {
         docOut.setRegDate(docOutDTO.getRegDate());
         if(docOutDTO.getTaskId()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
         docOutService.save(docOut);
+        if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
         return docOut;
     }
 
