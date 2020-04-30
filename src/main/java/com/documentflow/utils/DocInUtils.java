@@ -8,13 +8,9 @@ import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,41 +19,30 @@ import java.util.Date;
 @Component
 public class DocInUtils {
 
+    private String storagePath = "/in/";
     private DocIn docIn;
     private DocInDto docInDto;
+
     private UserService userService;
     private DepartmentService departmentService;
     private StateService stateService;
     private DocTypeService docTypeService;
-    private TaskUtils taskUtils;
     private TaskService taskService;
     private DocOutService docOutService;
     private DocInService docInService;
-    private DocOutUtils docOutUtils;
-
-    @Autowired
-    public void setDocOutUtils(DocOutUtils docOutUtils) {
-        this.docOutUtils = docOutUtils;
-    }
 
     @Autowired
     public DocInUtils(UserService userService, DepartmentService departmentService,
                       StateService stateService, DocTypeService docTypeService,
                       DocOutService docOutService, DocInService docInService,
-                      TaskUtils taskUtils, TaskService taskService) {
+                      TaskService taskService) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.stateService = stateService;
         this.docTypeService = docTypeService;
         this.docOutService = docOutService;
         this.docInService = docInService;
-        this.taskUtils = taskUtils;
         this.taskService = taskService;
-    }
-
-    @Autowired
-    public void setDocOutUtils(DocOutUtils docOutUtils) {
-        this.docOutUtils = docOutUtils;
     }
 
     public String getRegNumber() {
@@ -73,15 +58,18 @@ public class DocInUtils {
         return regNumber;
     }
 
-    public DocInDto getDocIn(Long id, String login) {
-        docInDto = new DocInDto();
-        if (id > 0) {
-            docInDto = convertToDTO(docInService.findById(id));
-        } else {
-            docInDto.setUserFIO(getUserFIO(userService.getCurrentUser(1)));
-            docInDto.setUserId(userService.getCurrentUser(1).getId()); //Заменить на релаьно авторизованного юзера
-        }
-        return docInDto;
+    public String getPath(String regNumber, String filename) {
+        StringBuilder path = new StringBuilder();
+        path.append(storagePath);
+        path.append(regNumber.substring(regNumber.length()-2) + File.separator);
+        path.append(regNumber.replace('/', '-') + '_' + filename);
+        return path.toString();
+    }
+
+    public String getUserFIO(User user) {
+        return user.getLastName() + " " +
+                user.getFirstName().substring(0, 1) + "." +
+                user.getMiddleName().substring(0, 1);
     }
 
     private LocalDateTime convertToLocalDate(Date date) {
@@ -96,12 +84,6 @@ public class DocInUtils {
             return null;
         }
         return Timestamp.valueOf(date);
-    }
-
-    public String getUserFIO(User user) {
-        return user.getLastName() + " " +
-                user.getFirstName().substring(0, 1) + "." +
-                user.getMiddleName().substring(0, 1);
     }
 
     public DocIn convertFromDTO(DocInDto docInDto) {
@@ -182,39 +164,5 @@ public class DocInUtils {
         docIn.setDocOut(docOut);
         docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
         docInService.save(docIn);
-    }
-
-    public void saveDocIn(DocInDto docInDto) {
-        docIn = convertFromDTO(docInDto);
-        if (docIn.getId() == null) {
-            docIn.setRegNumber(getRegNumber());
-            docIn.setState(stateService.getStateByBusinessKey(BusinessKeyState.REGISTERED.name()));
-        }
-        docInService.save(docIn);
-    }
-
-    public void deleteDocIn(DocInDto docInDto) {
-        editState(docInDto.getId(), BusinessKeyState.DELETED);
-        if (docInDto.getTaskId() != null) {
-            taskUtils.setAsRecalled(docInService.findById(docInDto.getId()).getTask());
-        }
-        if (docInDto.getDocOutId() != null) {
-            docOutUtils.delDocOut(docInDto.getDocOutId());
-        }
-    }
-
-    public void showInDocs(Model model, Integer currentPage, HttpServletRequest request) {
-        if (currentPage == null || currentPage < 1) {
-            currentPage = 1;
-        }
-        model.addAttribute("currentPage", currentPage);
-        DocInFilter filter = new DocInFilter(request);
-        model.addAttribute("filter", filter.getFiltersStr());
-        Page<DocInDto> page = docInService.findAllByPagingAndFiltering(filter.getSpecification(), PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"))
-                .map(d -> convertToDTO(d));
-        model.addAttribute("docs", page);
-        model.addAttribute("states", stateService.findAllStates());
-        model.addAttribute("docTypes", docTypeService.findAllDocTypes());
-        model.addAttribute("departments", departmentService.findAllDepartments());
     }
 }

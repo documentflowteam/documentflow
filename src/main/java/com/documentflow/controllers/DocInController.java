@@ -1,9 +1,8 @@
 package com.documentflow.controllers;
 
 import com.documentflow.entities.dto.DocInDto;
-import com.documentflow.utils.DocInUtils;
+import com.documentflow.utils.DocInControllerFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,35 +14,35 @@ import java.security.Principal;
 @RequestMapping("/docs/in")
 public class DocInController {
 
-    private DocInUtils docInUtils;
+    private DocInControllerFacade dicFacade;
 
     @Autowired
-    public DocInController(DocInUtils docInUtils) {
-        this.docInUtils = docInUtils;
+    public DocInController(DocInControllerFacade dicFacade) {
+        this.dicFacade = dicFacade;
     }
 
     @GetMapping()
     public String showIn(Model model, HttpServletRequest request,
             @RequestParam(value = "currentPage", required = false) Integer currentPage) {
-        docInUtils.showInDocs(model, currentPage, request);
+        dicFacade.showInDocs(model, currentPage, request);
         return "docIn";
     }
 
     @ResponseBody
     @RequestMapping("/card/{id}")
     public DocInDto getCard(@PathVariable("id") Long id, Principal principal) {
-        return docInUtils.getDocIn(id, principal.getName());
+        return dicFacade.getDocIn(id, principal.getName());
     }
 
     @PostMapping("/card")
     public String regEditDoc(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        docInUtils.saveDocIn(docInDto);
+        dicFacade.saveDocIn(docInDto);
         return "redirect:/docs/in";
     }
 
     @PostMapping("/del")
     public String delete(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        docInUtils.deleteDocIn(docInDto);
+        dicFacade.deleteDocIn(docInDto);
         return "redirect:/docs/in";
     }
 }

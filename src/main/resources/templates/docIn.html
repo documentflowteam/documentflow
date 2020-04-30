@@ -175,7 +175,7 @@
             </div>
             <!-- Modal body -->
             <div class="modal-body">
-                <form th:action="@{/docs/in/card}" method="POST" id="docForm">
+                <form th:action="@{/docs/in/card}" method="POST" id="docForm" enctype="multipart/form-data">
 
                     <!-- Hidden inputs -->
                     <input id="id" name="id" type="hidden" class="form-control">
@@ -185,6 +185,7 @@
                     <input id="regDate" name="regDate" type="hidden" class="form-control">
                     <input id="taskId" name="taskId" type="hidden" class="form-control">
                     <input id="docOutId" name="docOutId" type="hidden" class="form-control">
+                    <input id="appendix" name="appendix" type="hidden" class="form-control">
 
                     <div class="form-row">
                         <h5 class="modal-title" id="titleM"></h5>
@@ -241,11 +242,21 @@
                             <input name="pages" type="number" class="form-control" id="pages" />
                         </div>
                         <div class="col-sm-2"></div>
-                        <label for="appendix" class="col-sm-2 col-form-label">Приложение</label>
+<!--                        <label for="appendix1" class="col-sm-2 col-form-label">Приложение</label>-->
+<!--                        <div class="col-sm-3">-->
+<!--                            <div class="custom-file">-->
+<!--                                <input name="appendix1" type="text" class="custom-file-input" id="appendix1" />-->
+<!--                                <label class="custom-file-label" for="appendix1">Выбрать файл</label>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="form-row">
+                        <label class="col-sm-3 col-form-label">Приложение</label>
+                        <label class="col-sm-2 col-form-label" id="appendixT" name="appendixT"></label>
+                        <div class="col-sm-2"></div>
                         <div class="col-sm-3">
                             <div class="custom-file">
-                                <input name="appendix" type="file" class="custom-file-input" id="appendix" />
-                                <label class="custom-file-label" for="appendix">Choose file</label>
+                                <input name="file" type="file" id="file" value="Выбрать файл" />
                             </div>
                         </div>
                     </div>

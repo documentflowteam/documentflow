@@ -74,7 +74,12 @@ function openModal(id){
             $('#outgoingNumber').val(doc.outgoingNumber);
             $('#content').text(doc.content);
             $('#pages').val(doc.pages);
-            $('#appendix').val(doc.appendix);
+            if (doc.appendix != null) {
+                $('#appendix').val(doc.appendix);
+                $('#appendixT').text(doc.appendix);
+            } else {
+                $('#appendixT').text('Пусто');
+            }
             $('#note').val(doc.note);
             deleteButton();
             if (doc.id != null) {
@@ -87,7 +92,7 @@ function openModal(id){
                 if (doc.docOutId != null) {
                     addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=' + doc.docOutId, 'Ответ', doc.docOutNumber);
                 } else {
-                    addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1&docinid='+ doc.id, 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
+                    addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1&docinid='+ doc.id, 'Ответ', 'Создать');
                 }
             }
         }
