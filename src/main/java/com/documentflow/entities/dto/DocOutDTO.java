@@ -23,7 +23,6 @@ public class DocOutDTO implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate createDate;
     private User creator;
-    private Integer creatorId;
     private String creatorFIO;
     private DocType docType;
     private User signer;
@@ -38,9 +37,7 @@ public class DocOutDTO implements Serializable {
     private LocalDate regDate;
 
     private State state;
-    private Integer stateId;
     private Task task;
-    private Long taskId;
     private Long docInId;
     private String docInRegNumber;
 //    private Contragent contragent;
@@ -48,13 +45,12 @@ public class DocOutDTO implements Serializable {
 //    private Organization organization;
 //    private Long organizationId;
 
-    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO,
+    public DocOutDTO(Long id, LocalDate createDate, User creator, String creatorFIO,
                      DocType docType, User signer, String content, Integer pages, String appendix,
                      String note, Boolean isGenerated, String number, LocalDate regDate, State state) {
         this.id = id;
         this.createDate = createDate;
         this.creator=creator;
-        this.creatorId = creatorId;
         this.creatorFIO = creatorFIO;
         this.docType = docType;
         this.signer = signer;

@@ -73,7 +73,7 @@ function openModal(id, docinid){
                 $('#docTypeId').val(docOutDTO.docType.id);
                 $('#stateT').text(docOutDTO.state.name);
                 $('#stateS').val(docOutDTO.state);
-                $('#stateId').val(docOutDTO.stateId);
+                $('#stateId').val(docOutDTO.state.id);
                 $('#signer').val(docOutDTO.signer);
                 $('#signerId').val(docOutDTO.signer.id);
                 $('#content').val(docOutDTO.content);
@@ -84,10 +84,10 @@ function openModal(id, docinid){
                 $('#number').val(docOutDTO.number);
 
                 deleteButton();
-                if (docOutDTO.taskId != null || docOutDTO.docInId != null) {
+                if (docOutDTO.task != null || docOutDTO.docInId != null) {
                     $('#communication').text('Связи');
-                    if (docOutDTO.taskId != null) {
-                        linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                    if (docOutDTO.task != null) {
+                        linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.task.id, 'Поручение', docOutDTO.task.taskName);
                     }
                     if (docOutDTO.docInId != null) {
                         linkButton('.linkDocIn', 'docInBtn', '/docs/in?openDI=' + docOutDTO.docInId, 'Входящий', docOutDTO.docInRegNumber);
@@ -115,11 +115,11 @@ function openModal(id, docinid){
                 $('#stateNew').val(docOutDTO.state);
 
 
-                if (docOutDTO.taskId != null || docinid != null) {
+                if (docOutDTO.task != null || docinid != null) {
                     $('#communicates').text('Связи');
                 }
-                if (docOutDTO.taskId != null) {
-                    linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                if (docOutDTO.task!= null) {
+                    linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.task.id, 'Поручение', docOutDTO.task.taskName);
                 }
                 if (docinid != null) {
                     linkButton('.linkDocInNew', 'docInBtnNew', '/docs/in?openDI=' + docinid, 'Входящий', docOutDTO.docInRegNumber);

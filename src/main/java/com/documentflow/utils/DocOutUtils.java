@@ -75,7 +75,7 @@ public class DocOutUtils {
         docOut.setNumber(docOutDTO.getNumber());
         docOut.setRegDate(docOutDTO.getRegDate());
         docOut.setState(docOutDTO.getState());
-        if(docOutDTO.getTaskId()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+        if(docOutDTO.getTask()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTask().getId()));
         return docOut;
     }
 
@@ -96,7 +96,7 @@ public class DocOutUtils {
         docOut.setRegDate(null);
         docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
 
-        if(docOutDTO.getTaskId()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+        if(docOutDTO.getTask()!=null) docOut.setTask(docOutDTO.getTask());
         docOutService.save(docOut);
         if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
         return docOut;
@@ -108,7 +108,6 @@ public class DocOutUtils {
                 docOut.getId(),
                 docOut.getCreateDate(),
                 docOut.getCreator(),
-                docOut.getCreator().getId(),
                 getUserFIO(docOut.getCreator()),
                 docOut.getDocType(),
                 docOut.getSigner(),
@@ -123,7 +122,6 @@ public class DocOutUtils {
 
         if (docOut.getTask() != null) {
             docOutDTO.setTask(docOut.getTask());
-            docOutDTO.setTaskId(docOut.getTask().getId());
         }
         if(docIn!=null) {
             docOutDTO.setDocInId(docIn.getId());
@@ -185,7 +183,7 @@ public class DocOutUtils {
         docOut.setNote(docOutDTO.getNote());
         docOut.setNumber("б/н");
         docOut.setRegDate(docOutDTO.getRegDate());
-        if(docOutDTO.getTaskId()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTaskId()));
+        if(docOutDTO.getTask()!=null) docOut.setTask(docOutDTO.getTask());
         docOutService.save(docOut);
         if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
         return docOut;
