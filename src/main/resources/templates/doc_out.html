@@ -115,7 +115,7 @@
                                            th:onclick="'javascript:openModal(\'' + ${docOutDTO.id} + '\');'"/>
                                     </td>
                                     <td th:text="${docOutDTO.createDate}" />
-                                    <td th:text="${docOutDTO.docTypeName}" />
+                                    <td th:text="${docOutDTO.docType.name}" />
                                     <td th:text="${docOutDTO.creatorFIO}" />
                                     <td th:text="${docOutDTO.state.name}" />
                                     <td th:text= "address"/>

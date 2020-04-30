@@ -102,12 +102,7 @@ public class DocOutController {
     @ResponseBody
     @RequestMapping("/card/{id}")
     public DocOutDTO getCard(@PathVariable("id") Long id){
-        DocOutDTO docOutDTO=docOutUtils.convertFromDocOut(docOutService.findOneById(id));//DocOutDTO docOutDTO=docOutUtils.getDocOutDTO(id);
-//        DocIn docIn=docInService.findByDocOut(docOutService.findOneById(id));
-//        if(docIn!=null) {
-//            docOutDTO.setDocInRegNumber(docIn.getRegNumber());
-//            docOutDTO.setDocInId(docIn.getId());
-//        }
+        DocOutDTO docOutDTO=docOutUtils.convertFromDocOut(docOutService.findOneById(id));
         return docOutDTO;
     }
 

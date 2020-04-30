@@ -10,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -71,6 +73,12 @@ public class DocOut implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id")
     private Task task;
+
+//    @ManyToMany
+//    @JoinTable(name = "doc_out_contragents",
+//            joinColumns = @JoinColumn(name = "doc_out_id"),
+//            inverseJoinColumns = @JoinColumn(name = "contragent_id"))
+//    private List<Contragent> contragents = new ArrayList<>();
 
 
     public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state) {

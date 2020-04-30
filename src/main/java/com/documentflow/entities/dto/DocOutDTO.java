@@ -1,9 +1,6 @@
 package com.documentflow.entities.dto;
 
-import com.documentflow.entities.DocType;
-import com.documentflow.entities.State;
-import com.documentflow.entities.Task;
-import com.documentflow.entities.User;
+import com.documentflow.entities.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,11 +25,8 @@ public class DocOutDTO implements Serializable {
     private User creator;
     private Integer creatorId;
     private String creatorFIO;
-    private String docTypeName;
     private DocType docType;
-    private Integer docTypeId;
     private User signer;
-    //    private Integer signerId;
     private String content;
     private Integer pages;
     private String appendix;
@@ -49,20 +43,21 @@ public class DocOutDTO implements Serializable {
     private Long taskId;
     private Long docInId;
     private String docInRegNumber;
+//    private Contragent contragent;
+//    private Long contragentId;
+//    private Organization organization;
+//    private Long organizationId;
 
-    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO, String docTypeName,
-                     DocType docType, Integer docTypeId, User signer, String content, Integer pages, String appendix,
+    public DocOutDTO(Long id, LocalDate createDate, User creator, Integer creatorId, String creatorFIO,
+                     DocType docType, User signer, String content, Integer pages, String appendix,
                      String note, Boolean isGenerated, String number, LocalDate regDate, State state) {
         this.id = id;
         this.createDate = createDate;
         this.creator=creator;
         this.creatorId = creatorId;
         this.creatorFIO = creatorFIO;
-        this.docTypeName = docTypeName;
         this.docType = docType;
-        this.docTypeId = docTypeId;
         this.signer = signer;
-        //       this.signerId=signerId;
         this.content = content;
         this.pages = pages;
         this.appendix = appendix;
