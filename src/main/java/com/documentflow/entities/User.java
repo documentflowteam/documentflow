@@ -1,12 +1,15 @@
 package com.documentflow.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "sys_users")
@@ -43,6 +46,7 @@ public class User {
     @JoinColumn(name = "department_id")
     private Department department;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "sys_users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

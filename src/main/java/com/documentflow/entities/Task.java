@@ -3,9 +3,10 @@ package com.documentflow.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
@@ -21,8 +22,9 @@ public class Task {
     @Column(name = "name")
     private String taskName;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @ManyToOne
     @JoinColumn(name = "author_id")

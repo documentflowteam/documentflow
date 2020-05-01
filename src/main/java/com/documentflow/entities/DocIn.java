@@ -66,11 +66,27 @@ public class DocIn implements Serializable {
     @JoinColumn(name = "state_id")
     private State state;
 
-//    @OneToOne
-//    @JoinColumn(name = "doc_out_id")
-//    private DocOut docOut;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "doc_out_id")
+    private DocOut docOut;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_id")
     private Task task;
+
+    public DocIn(Long id, String regNumber, LocalDateTime regDate, User user, DocType docType, Department department, String sender, String outgoingNumber, LocalDateTime outgoingDate, String content, Integer pages, String appendix, String note) {
+        this.id = id;
+        this.regNumber = regNumber;
+        this.regDate = regDate;
+        this.user = user;
+        this.docType = docType;
+        this.department = department;
+        this.sender = sender;
+        this.outgoingNumber = outgoingNumber;
+        this.outgoingDate = outgoingDate;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+    }
 }

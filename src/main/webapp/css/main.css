@@ -19,3 +19,56 @@
     padding-left: 5px;
     list-style: none;
 }
+
+.contragent-main-caption h3 {
+    text-align: center;
+}
+
+.contragent-list-radio-buttons {
+    display: block;
+}
+
+.contragent-command-button {
+    display: flex;
+    justify-content: center;
+}
+
+.contragent-table-found-values {
+    background-color: azure;
+    padding: 10px;
+}
+
+.contragent-command-button button {
+    margin: 5px;
+}
+
+.edit-button, .delete-button {
+    margin: 2px;
+}
+
+/*login */
+.login-parent {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: auto;
+}
+
+#login-box {
+    width: 360px;
+    height: 450px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+
+/*end login*/
+
+.inline {
+    display: flex;
+}

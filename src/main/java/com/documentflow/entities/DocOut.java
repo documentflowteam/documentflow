@@ -1,19 +1,23 @@
 package com.documentflow.entities;
 
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 @Entity
 @Table(name = "doc_out")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class DocOut implements Serializable {
 
     private static final long serialVersionUID = 6L;
@@ -25,7 +29,7 @@ public class DocOut implements Serializable {
 
     @CreationTimestamp
     @Column(name="create_date")
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "creator_id")
@@ -54,12 +58,11 @@ public class DocOut implements Serializable {
     @Column(name = "is_generated")
     private Boolean isGenerated;
 
-    @Column(name = "reg_number")
-    private String regNumber;
+    @Column(name = "number")
+    private String number;
 
-    @CreationTimestamp
     @Column(name="reg_date")
-    private LocalDateTime regDate;
+    private LocalDate regDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "state_id")
@@ -69,4 +72,25 @@ public class DocOut implements Serializable {
     @JoinColumn(name = "task_id")
     private Task task;
 
+
+    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state) {
+        this.creator = creator;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.state = state;
+    }
+
+    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, Task task) {
+        this.creator = creator;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.state = state;
+        this.task=task;
+    }
 }

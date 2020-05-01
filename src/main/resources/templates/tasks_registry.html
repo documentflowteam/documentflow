@@ -61,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:attr="data-document-id=${task.id}" th:each="task : ${tasks}">
+                    <tr th:attr="data-document-id=${task.id}" th:each="task : ${tasks.getContent()}">
                         <td th:text="${task.id}"/>
                         <td th:text="${task.taskType.name}"/>
                         <td th:text="${#temporals.format(task.endDate, 'dd-MM-yyyy')}"/>
@@ -69,11 +69,24 @@
                         <td th:text="${task.taskName}"/>
                         <td th:text="${task.state.name}"/>
                         <td class="text-center">
-                            <a class="fas fa-eye" href="#"></a>
+                            <a class="fas fa-eye" th:href="@{'/tasks/card/'+${task.id}}"></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${!(tasks.getNumber() > 0) ? 'disabled' : ''}">
+                        <a th:class="page-link" th:href="@{'__${#httpServletRequest.requestURI}__?currentPage=' + ${tasks.getNumber()}}" th:text="Пред."/>
+                    </li>
+                    <li class="page-item" th:classappend="${tasks.getNumber() + 1 == i ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, tasks.getTotalPages())}">
+                        <a class="page-link" th:href="@{'__${#httpServletRequest.requestURI}__?currentPage=' + ${i}}" th:text="${i}" />
+                    </li>
+                    <li class="page-item" th:classappend="${!(tasks.getNumber() < tasks.getTotalPages() - 1) ? 'disabled' : ''}">
+                        <a th:class="page-link" th:href="@{'__${#httpServletRequest.requestURI}__?currentPage=' + ${tasks.getNumber() + 2} }" th:text="След."/>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
     </div>

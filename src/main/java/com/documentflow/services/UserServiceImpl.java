@@ -3,8 +3,10 @@ package com.documentflow.services;
 import com.documentflow.entities.Department;
 import com.documentflow.entities.Role;
 import com.documentflow.entities.User;
+import com.documentflow.exceptions.UserNotActiveException;
 import com.documentflow.repositories.UserRepository;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 " " +
                 user.getFirstName().toUpperCase().charAt(0) +
                 ". " +
-                (Objects.isNull(user.getMiddleName()) ? "" : user.getMiddleName().toUpperCase().charAt(0) + ".");
+                (StringUtils.isEmpty(user.getMiddleName()) ? "" : user.getMiddleName().toUpperCase().charAt(0) + ".");
     }
 
     @Override
@@ -85,12 +86,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findOneById(int id) {
         return userRepository.findOneById(id);
-    }
-
-    // TODO: вынести дефолтный пароль в application.properties, подставлять его, если у пользователя нет пароля
-    public User saveOrUpdate(User user) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
     }
 
     @Override
@@ -107,7 +102,7 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("invalid username or password");
         }
         if (!user.isActive()) {
-            throw new RuntimeException("user isn't active");//custom exception need
+            throw new UserNotActiveException("user isn't active");
         }
     }
 

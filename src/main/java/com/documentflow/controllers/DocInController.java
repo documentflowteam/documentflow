@@ -1,93 +1,49 @@
 package com.documentflow.controllers;
 
-import com.documentflow.entities.DTO.DocInDTO;
-import com.documentflow.entities.Department;
-import com.documentflow.entities.DocIn;
-import com.documentflow.entities.DocType;
-import com.documentflow.entities.State;
-import com.documentflow.model.enums.BusinessKeyState;
-import com.documentflow.services.*;
+import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.utils.DocInUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/docs/in")
 public class DocInController {
 
-    private DocInService docInService;
-    private DocTypeService docTypeService;
-    private DepartmentService departmentService;
-    private UserService userService;
     private DocInUtils docInUtils;
-    private StateService stateService;
 
     @Autowired
-    public DocInController(DocInService docInService, DocTypeService docTypeService,
-                           DepartmentService departmentService, UserService userService,
-                           DocInUtils docInUtils, StateService stateService) {
-        this.docInService = docInService;
-        this.docTypeService = docTypeService;
-        this.departmentService = departmentService;
-        this.userService = userService;
+    public DocInController(DocInUtils docInUtils) {
         this.docInUtils = docInUtils;
-        this.stateService = stateService;
     }
 
     @GetMapping()
-    public String showIn(
-            Model model,
+    public String showIn(Model model, HttpServletRequest request,
             @RequestParam(value = "currentPage", required = false) Integer currentPage) {
-        if (currentPage == null || currentPage < 1) {
-            currentPage = 1;
-        }
-        model.addAttribute("currentPage", currentPage);
-        Page<DocIn> page = docInService.findAll(PageRequest.of(currentPage-1,20, Sort.Direction.ASC, "regDate"));
-        Page<DocInDTO> pageDTOs = page.map(d -> new DocInDTO(d));
-        pageDTOs.stream().map(d -> model.addAttribute(d));
-        model.addAttribute("docs", pageDTOs);
-
-        DocInDTO docIn = new DocInDTO();
-        docIn.setDepartmentId(-1);
-        docIn.setDocTypeId(-1);
-        docIn.setUser(userService.getCurrentUser(1));//Заменить на релаьно авторизованного юзера
-        model.addAttribute("newDocIn", docIn);
-
-        model.addAttribute("docTypes", docTypeService.findAllDocTypes());
-        model.addAttribute("departments", departmentService.findAllDepartments());
+        docInUtils.showInDocs(model, currentPage, request);
         return "docIn";
     }
 
-//    @GetMapping("/card")
-//    public String registrationDoc(
-//            @RequestParam(name = "id", required = false) Long id,
-//            Model model) {
-//        DocIn docIn = new DocIn();
-//        if (id != null) {
-//            docIn = docInService.findById(id);
-//        }
-//        model.addAttribute("docIn", docIn);
-//        return "regDoc";
-//    }
+    @ResponseBody
+    @RequestMapping("/card/{id}")
+    public DocInDto getCard(@PathVariable("id") Long id, Principal principal) {
+        return docInUtils.getDocIn(id, principal.getName());
+    }
 
     @PostMapping("/card")
-    public String registrationDoc(@ModelAttribute(name = "newDocIn") DocInDTO docInDTO) {
-        DocIn docIn = docInDTO.convertToDocIn(docTypeService.getDocTypeById(docInDTO.getDocTypeId()),
-                departmentService.getDepartmentById(docInDTO.getDepartmentId()));
-        docIn.setRegNumber(docInUtils.getRegNumber());
-        State state = stateService.getStateById(1);//Переключиться на BusinessKey когда он заработает.
-//        State state = stateService.getStateByBusinessKey(BusinessKeyState.REGISTRATED.toString());
-        docIn.setState(state);
-        docInService.save(docIn);
+    public String regEditDoc(@ModelAttribute(name = "doc") DocInDto docInDto) {
+        docInUtils.saveDocIn(docInDto);
         return "redirect:/docs/in";
     }
 
-//    @GetMapping("/del")
-//    public void delete() {
-//    }
+    @PostMapping("/del")
+    public String delete(@ModelAttribute(name = "doc") DocInDto docInDto) {
+        docInUtils.deleteDocIn(docInDto);
+        return "redirect:/docs/in";
+    }
 }
