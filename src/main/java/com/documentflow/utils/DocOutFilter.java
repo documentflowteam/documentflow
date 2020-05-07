@@ -1,8 +1,12 @@
 package com.documentflow.utils;
 
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.User;
+import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.repositories.specifications.DocOutSpecifications;
+import com.documentflow.services.UserServiceImpl;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +16,12 @@ import java.time.LocalDateTime;
 public class DocOutFilter {
     private Specification<DocOut> specification;
     private StringBuilder filtersString;
+    private UserServiceImpl userService;
+
+    @Autowired
+    public void setUserService(UserServiceImpl userService) {
+        this.userService = userService;
+    }
 
     public DocOutFilter(HttpServletRequest request) {
         filtersString = new StringBuilder();
@@ -48,9 +58,14 @@ public class DocOutFilter {
         }
 
         if (request.getParameter("creator") != null && !request.getParameter("creator").isEmpty()) {
-            specification = getSpecification().and(DocOutSpecifications.creatorContains(request.getParameter("creator")));
+            specification = getSpecification().and(DocOutSpecifications.creatorId(Integer.valueOf(request.getParameter("creator"))));
             filtersString.append("&creator=" + request.getParameter("creator"));
         }
+
+//        if (request.getParameter("creator") != null && !request.getParameter("creator").isEmpty()) {
+//            specification = getSpecification().and(DocOutSpecifications.creatorContains(request.getParameter("creator")));
+//            filtersString.append("&creator=" + request.getParameter("creator"));
+//        }
 
         if (request.getParameter("signer") != null && !request.getParameter("signer").isEmpty()) {
             specification = getSpecification().and(DocOutSpecifications.signerContains(request.getParameter("signer")));
@@ -60,6 +75,8 @@ public class DocOutFilter {
         if (request.getParameter("stateId") != null && !request.getParameter("stateId").isEmpty()) {
             specification = getSpecification().and(DocOutSpecifications.stateId(Integer.valueOf(request.getParameter("stateId"))));
             filtersString.append("&stateId=" + request.getParameter("stateId"));
+        } else {
+            specification = getSpecification().and(DocOutSpecifications.stateIdNotEqual(BusinessKeyState.DELETED));
         }
 
         if (request.getParameter("content") != null && !request.getParameter("content").isEmpty()) {

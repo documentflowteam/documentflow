@@ -55,11 +55,6 @@ public class DocInUtils {
         this.taskService = taskService;
     }
 
-    @Autowired
-    public void setDocOutUtils(DocOutUtils docOutUtils) {
-        this.docOutUtils = docOutUtils;
-    }
-
     public String getRegNumber() {
         String regNumber;
         DocIn prevDocIn = docInService.findFirstByOrderByIdDesc();
