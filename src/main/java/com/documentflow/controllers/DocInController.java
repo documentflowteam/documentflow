@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
 @Controller
@@ -32,6 +33,12 @@ public class DocInController {
     @RequestMapping("/card/{id}")
     public DocInDto getCard(@PathVariable("id") Long id, Principal principal) {
         return dicFacade.getDocIn(id, principal.getName());
+    }
+
+    @ResponseBody
+    @RequestMapping("/file/{id}")
+    public void getFile(@PathVariable("id") Long id, HttpServletResponse response) {
+        dicFacade.getFile(id, response);
     }
 
     @PostMapping("/card")

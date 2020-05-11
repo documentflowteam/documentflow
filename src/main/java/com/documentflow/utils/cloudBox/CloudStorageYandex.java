@@ -4,12 +4,13 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Primary
+//@Primary
 @Component
 public class CloudStorageYandex implements FileStorageService {
 
@@ -21,22 +22,22 @@ public class CloudStorageYandex implements FileStorageService {
     @Override
     public void upload(MultipartFile file, String path) {
         Path tempPath = Paths.get(path).getParent();
-        if (Files.notExists(tempPath)) {
-            try {
-                Files.createDirectory(tempPath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            bytes = file.getBytes();
-            stream = new BufferedOutputStream(new FileOutputStream(new File(path)));
-            stream.write(bytes);
-            stream.flush();
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        if (Files.notExists(tempPath)) {
+//            try {
+//                Files.createDirectory(tempPath);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        try {
+//            bytes = file.getBytes();
+//            stream = new BufferedOutputStream(new FileOutputStream(new File(path)));
+//            stream.write(bytes);
+//            stream.flush();
+//            stream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 //        uploadFile = new File(path);
 //
@@ -58,6 +59,11 @@ public class CloudStorageYandex implements FileStorageService {
 //                System.out.print("Upload error" + t.getMessage());
 //            }
 //        });
+    }
+
+    @Override
+    public void download(String path, HttpServletResponse response) {
+
     }
 
 }

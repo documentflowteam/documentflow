@@ -1,6 +1,7 @@
 package com.documentflow.utils;
 
 import com.documentflow.entities.DocIn;
+import com.documentflow.entities.User;
 import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
@@ -13,12 +14,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Paths;
 
 @Component
 public class DocInControllerFacade {
 
     private DocIn docIn;
     private DocInDto docInDto;
+    private User user;
 
     private UserService userService;
     private DepartmentService departmentService;
@@ -51,10 +55,16 @@ public class DocInControllerFacade {
         if (id > 0) {
             docInDto = docInUtils.convertToDTO(docInService.findById(id));
         } else {
-            docInDto.setUserFIO(docInUtils.getUserFIO(userService.getCurrentUser(1)));
-            docInDto.setUserId(userService.getCurrentUser(1).getId()); //Заменить на релаьно авторизованного юзера
+//            user = userService.getCurrentUser(1);
+            user = userService.getUserByUsername(login);
+            docInDto.setUserFIO(docInUtils.getUserFIO(user));
+            docInDto.setUserId(user.getId());
         }
         return docInDto;
+    }
+
+    public void getFile(Long id, HttpServletResponse response) {
+        fileStorageService.download(docInUtils.getPath(docInService.findById(id).getAppendix()), response);
     }
 
     public void saveDocIn(DocInDto docInDto) {
@@ -65,7 +75,7 @@ public class DocInControllerFacade {
         }
         if (docInDto.getFile() != null) {
             String path = docInUtils.getPath(docIn.getRegNumber(), docInDto.getFile().getOriginalFilename());
-            docIn.setAppendix(path);
+            docIn.setAppendix(Paths.get(path).getFileName().toString());
             fileStorageService.upload(docInDto.getFile(), path);
         }
         docInService.save(docIn);

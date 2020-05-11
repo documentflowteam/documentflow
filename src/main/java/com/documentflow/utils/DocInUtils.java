@@ -19,9 +19,10 @@ import java.util.Date;
 @Component
 public class DocInUtils {
 
-    private String storagePath = "/in/";
+    private String storagePath = "d:\\tmp\\in\\";
     private DocIn docIn;
     private DocInDto docInDto;
+    private StringBuilder path;
 
     private UserService userService;
     private DepartmentService departmentService;
@@ -58,11 +59,27 @@ public class DocInUtils {
         return regNumber;
     }
 
+    public String getFileExtension(String filename) {
+        if (filename.contains(".tar.gz")) {
+            return ".tar.gz";
+        }
+        int ext = filename.lastIndexOf('.');
+        return ext > 0 ? filename.substring(ext) : "";
+    }
+
     public String getPath(String regNumber, String filename) {
-        StringBuilder path = new StringBuilder();
+        path = new StringBuilder();
         path.append(storagePath);
         path.append(regNumber.substring(regNumber.length()-2) + File.separator);
-        path.append(regNumber.replace('/', '-') + '_' + filename);
+        path.append(regNumber.replace('/', '-') + getFileExtension(filename));
+        return path.toString();
+    }
+
+    public String getPath(String filename) {
+        path = new StringBuilder();
+        path.append(storagePath);
+        path.append(filename.substring(5, 7) + File.separator);
+        path.append(filename);
         return path.toString();
     }
 

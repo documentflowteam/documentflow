@@ -13,7 +13,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <script src=/javascript/docIn.js></script>
+    <script charset="utf-8" src=/javascript/docIn.js></script>
 </head>
 <body>
 
@@ -90,7 +90,15 @@
                                 <td th:text="${docIn.docTypeName}" />
                                 <td th:text="${docIn.sender}" />
                                 <td th:text="${docIn.stateName}" />
-                                <td><i th:if="${docIn.appendix != null}" class="far fa-file-pdf"></i></td>
+                                <td>
+                                    <a th:if="${docIn.appendix != null && docIn.appendix != ''}"
+                                       role="button"
+                                       aria-pressed="true"
+                                       href="#"
+                                       th:onclick="'javascript:getFile(\'' + ${docIn.id} + '\');'" >
+                                        <i class="far fa-file-pdf"></i>
+                                    </a>
+                                </td>
                                 <td>
                                     <a role="button"
                                        aria-pressed="true"
@@ -242,18 +250,11 @@
                             <input name="pages" type="number" class="form-control" id="pages" />
                         </div>
                         <div class="col-sm-2"></div>
-<!--                        <label for="appendix1" class="col-sm-2 col-form-label">Приложение</label>-->
-<!--                        <div class="col-sm-3">-->
-<!--                            <div class="custom-file">-->
-<!--                                <input name="appendix1" type="text" class="custom-file-input" id="appendix1" />-->
-<!--                                <label class="custom-file-label" for="appendix1">Выбрать файл</label>-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
                     <div class="form-row">
                         <label class="col-sm-3 col-form-label">Приложение</label>
-                        <label class="col-sm-2 col-form-label" id="appendixT" name="appendixT"></label>
-                        <div class="col-sm-2"></div>
+                        <div class="col-sm-4 addAppendix" ></div>
+
                         <div class="col-sm-3">
                             <div class="custom-file">
                                 <input name="file" type="file" id="file" value="Выбрать файл" />
