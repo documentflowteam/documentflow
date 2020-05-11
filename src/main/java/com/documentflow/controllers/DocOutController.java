@@ -68,7 +68,7 @@ public class DocOutController {
         model.addAttribute("states", stateService.findAllStates());
         model.addAttribute("tasks", taskService.findAll(Pageable.unpaged()));
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
-        model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
+ //       model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
 
         return "doc_out";
     }
@@ -87,20 +87,13 @@ public class DocOutController {
 
     @RequestMapping(value = "/newcard/submit", method = RequestMethod.POST)
     public String createDocNew(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO) {
-
-        if(docOutDTO.getTaskId()!=null) docOutUtils.addTaskToDocOutDTO(docOutDTO.getId(), taskService.findOneById(docOutDTO.getTaskId()));
         docOutUtils.convertFromDocOutDTONew(docOutDTO);
-//        if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
         return "redirect:/docs/out";
 
     }
 
     @RequestMapping("/card")
     public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
-        DocOut docOut=docOutUtils.convertFromDocOutDTO(docOutDTO);
-        if(docOutDTO.getTask()!=null) docOutUtils.addTaskToDocOutDTO(docOutDTO.getId(), taskService.save(docOutDTO.getTask()));
-
- //       DocIn docIn=docInService.findByDocOut(docOutUtils.convertFromDocOutDTO(docOutDTO));
         docOutUtils.saveModifiedDocOut(docOutDTO);
           return "redirect:/docs/out";
 
@@ -109,12 +102,7 @@ public class DocOutController {
     @ResponseBody
     @RequestMapping("/card/{id}")
     public DocOutDTO getCard(@PathVariable("id") Long id){
-        DocIn docIn=docInService.findByDocOut(docOutService.findOneById(id));
-        DocOutDTO docOutDTO=docOutUtils.getDocOutDTO(id);
-        if(docIn!=null) {
-            docOutDTO.setDocInRegNumber(docIn.getRegNumber());
-            docOutDTO.setDocInId(docIn.getId());
-        }
+        DocOutDTO docOutDTO=docOutUtils.convertFromDocOut(docOutService.findOneById(id));
         return docOutDTO;
     }
 

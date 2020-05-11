@@ -1,5 +1,4 @@
 
-
 $.dateCut = function(date) {
     var d = new Date(date);
     var day = d.getDate();
@@ -31,9 +30,11 @@ function closeModal() {
     modal.classList.toggle('show');
     modal.style.display = "none";
 
+
     var modal1 = document.querySelector('#newDoc');
     modal1.classList.toggle('show');
     modal1.style.display = "none";
+
 }
 
 
@@ -72,7 +73,7 @@ function openModal(id, docinid){
                 $('#docTypeId').val(docOutDTO.docType.id);
                 $('#stateT').text(docOutDTO.state.name);
                 $('#stateS').val(docOutDTO.state);
-                $('#stateId').val(docOutDTO.stateId);
+                $('#stateId').val(docOutDTO.state.id);
                 $('#signer').val(docOutDTO.signer);
                 $('#signerId').val(docOutDTO.signer.id);
                 $('#content').val(docOutDTO.content);
@@ -82,10 +83,11 @@ function openModal(id, docinid){
                 $('#isGenerated').val(docOutDTO.isGenerated);
                 $('#number').val(docOutDTO.number);
 
-                if (docOutDTO.taskId != null || docOutDTO.docInId != null) {
+                deleteButton();
+                if (docOutDTO.task != null || docOutDTO.docInId != null) {
                     $('#communication').text('Связи');
-                    if (docOutDTO.taskId != null) {
-                        linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                    if (docOutDTO.task != null) {
+                        linkButton('.linkTask', 'taskBtn', '/tasks/card/' + docOutDTO.task.id, 'Поручение', docOutDTO.task.taskName);
                     }
                     if (docOutDTO.docInId != null) {
                         linkButton('.linkDocIn', 'docInBtn', '/docs/in?openDI=' + docOutDTO.docInId, 'Входящий', docOutDTO.docInRegNumber);
@@ -113,11 +115,11 @@ function openModal(id, docinid){
                 $('#stateNew').val(docOutDTO.state);
 
 
-                if (docOutDTO.taskId != null || docinid != null) {
+                if (docOutDTO.task != null || docinid != null) {
                     $('#communicates').text('Связи');
                 }
-                if (docOutDTO.taskId != null) {
-                    linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.taskId, 'Поручение', docOutDTO.task.taskName);
+                if (docOutDTO.task!= null) {
+                    linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.task.id, 'Поручение', docOutDTO.task.taskName);
                 }
                 if (docinid != null) {
                     linkButton('.linkDocInNew', 'docInBtnNew', '/docs/in?openDI=' + docinid, 'Входящий', docOutDTO.docInRegNumber);
@@ -129,11 +131,13 @@ function openModal(id, docinid){
 }
 
 function linkButton(dest, linkId, urlMethod, linkTxt, aTxt) {
-    $(dest).empty();
+
     $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
     $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
 }
 
-
-
-
+function deleteButton() {
+    $('#communication').text('');
+    $('.linkTask').empty();
+    $('.linkDocIn').empty();
+}
