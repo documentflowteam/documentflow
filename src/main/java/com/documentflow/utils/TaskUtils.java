@@ -14,20 +14,40 @@ import java.time.LocalDate;
 
 @Component
 public class TaskUtils {
-    private final TaskService taskService;
-    private final TaskHistoryService taskHistoryService;
-    private final TaskTypeService taskTypeService;
-    private final StateService stateService;
-    private final DocInUtils docInUtils;
-    private final DocOutUtils docOutUtils;
+    private TaskService taskService;
+    private TaskHistoryService taskHistoryService;
+    private TaskTypeService taskTypeService;
+    private StateService stateService;
+    private DocInUtils docInUtils;
+    private DocOutUtils docOutUtils;
 
     @Autowired
-    public TaskUtils(TaskService taskService, TaskHistoryService taskHistoryService, TaskTypeService taskTypeService, StateService stateService, DocInUtils docInUtils, DocOutUtils docOutUtils) {
+    public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setTaskHistoryService(TaskHistoryService taskHistoryService) {
         this.taskHistoryService = taskHistoryService;
+    }
+
+    @Autowired
+    public void setTaskTypeService(TaskTypeService taskTypeService) {
         this.taskTypeService = taskTypeService;
+    }
+
+    @Autowired
+    public void setStateService(StateService stateService) {
         this.stateService = stateService;
+    }
+
+    @Autowired
+    public void setDocInUtils(DocInUtils docInUtils) {
         this.docInUtils = docInUtils;
+    }
+
+    @Autowired
+    public void setDocOutUtils(DocOutUtils docOutUtils) {
         this.docOutUtils = docOutUtils;
     }
 
