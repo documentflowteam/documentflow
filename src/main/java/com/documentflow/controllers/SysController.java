@@ -51,6 +51,15 @@ public class SysController {
         result.addObject("user", new User());
         return result;
     }
+    @RequestMapping(value = "/users/card/delete/{id}",method = RequestMethod.GET)
+    public String deleteCard(@PathVariable int id) {
+        User currentUser = userService.findOneById(id);
+
+        if(currentUser != null) {
+            userService.delete(currentUser);
+        }
+        return "redirect:/sys/users";
+    }
 
     @RequestMapping(value = "/users/card/submit", method = RequestMethod.POST)
     public String userCardSubmit(@ModelAttribute User user) {
