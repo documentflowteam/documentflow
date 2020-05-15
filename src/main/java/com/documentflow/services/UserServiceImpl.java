@@ -35,8 +35,21 @@ public class UserServiceImpl implements UserService {
     }
 
     public User saveOrUpdate(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        if(userRepository.existsUserByUsername(user.getUsername())) {
+            User currentUser = userRepository.findUserByUsername(user.getUsername());
+            currentUser.setLastName(user.getLastName());
+            currentUser.setFirstName(user.getFirstName());
+            currentUser.setMiddleName(user.getMiddleName());
+            currentUser.setDepartment(user.getDepartment());
+            currentUser.setBoss(user.getBoss());
+            currentUser.setPassword(user.getPassword());
+            return userRepository.save(currentUser);
+        }else{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return userRepository.save(user);
+        }
+
+
     }
 
     @Override
