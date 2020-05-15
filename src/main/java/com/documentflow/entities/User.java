@@ -14,6 +14,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Table(name = "sys_users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
