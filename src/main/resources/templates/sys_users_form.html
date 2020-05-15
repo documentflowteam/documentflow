@@ -22,84 +22,85 @@
         <div th:replace="~{header}" />
     </div>
 
-    <div class="wrapper">
+<div class="wrapper">
 
-        <div id="menu">
-            <div th:replace="~{sidebar}" />
-        </div>
+    <div id="menu">
+        <div th:replace="~{sidebar}" />
+    </div>
 
-        <div id="content" class="container-fluid">
+    <div id="content" class="container-fluid">
 
-            <div class="d-flex py-2"></div> <!-- Меню над таблицей -->
+        <div class="d-flex py-2"></div> <!-- Меню над таблицей -->
 
-            <div class="container-fluid text-center">
-                <div class="row content">
-                    <div class="col-sm-8 text-left">
-                        <form th:action="'/sys/users/card/submit'" th:object="${user}" method="post">
+        <div class="container-fluid text-center">
+            <div class="row content">
+                <div class="col-sm-8 text-left">
+                    <form th:action="'/sys/users/card/submit'" th:object="${user}" method="post">
 
-                            <input type="hidden" name="id" th:value="${user.id}"/>
+                        <input type="hidden" name="id" th:value="${user.id}"/>
 
-                            <div class="form-group">
-                                <label for="lastName">Фамилия</label>
-                                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
-                            </div>
+                          <div class="form-group">
+                            <label for="lastName">Фамилия</label>
+                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                          </div>
 
-                            <div class="form-group">
-                                <label for="firstName">Имя</label>
-                                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
-                            </div>
+                          <div class="form-group">
+                            <label for="firstName">Имя</label>
+                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+                          </div>
 
-                            <div class="form-group">
-                                <label for="middleName">Отчество</label>
-                                <input type="text" class="form-control" id="middleName" th:field="*{middleName}">
-                            </div>
+                          <div class="form-group">
+                            <label for="middleName">Отчество</label>
+                            <input type="text" class="form-control" id="middleName" th:field="*{middleName}">
+                          </div>
 
-                            <div class="form-group">
-                                <label for="department">Подразделение</label>
-                                <input type="hidden" th:name="${user.department}" th:value="${user.department}"/>
-                                <select id="department" th:field="${user.department}" class="form-control">
-                                    <option th:each="department : ${departments}"
-                                            th:value="${department.id}"
-                                            th:text="${department.name}"
-                                            th:selected="${department == user.department}"/>
-                                </select>
-                            </div>
+                          <div class="form-group">
+                              <label for="department">Подразделение</label>
+                              <input type="hidden" th:name="${user.department}" th:value="${user.department}"/>
+                              <select id="department" th:field="${user.department}" class="form-control">
+                                  <option th:each="department : ${departments}"
+                                          th:value="${department.id}"
+                                          th:text="${department.name}"
+                                          th:selected="${department == user.department}"/>
+                              </select>
+                          </div>
 
-                            <div class="form-group">
-                                <label for="boss">Руководитель</label>
-                                <input type="hidden" th:name="${user.boss}" th:value="${user.boss}"/>
-                                <select id="boss" th:field="${user.boss}" class="form-control">
-                                    <option th:value=null>Отсутствует</option>
-                                    <option th:each="userFromList : ${usersList}"
-                                            th:value="${userFromList.id}"
-                                            th:text="${userFromList.lastName} + ' ' + ${userFromList.firstName}"
-                                            th:selected="${userFromList == user.boss}"/>
-                                </select>
-                            </div>
+                          <div class="form-group">
+                              <label for="boss">Руководитель</label>
+                              <input type="hidden" th:name="${user.boss}" th:value="${user.boss}"/>
+                              <select id="boss" th:field="${user.boss}" class="form-control">
+                                  <option th:value=null>Отсутствует</option>
+                                  <option th:each="userFromList : ${usersList}"
+                                          th:value="${userFromList.id}"
+                                          th:text="${userFromList.lastName} + ' ' + ${userFromList.firstName}"
+                                          th:selected="${userFromList == user.boss}"/>
+                              </select>
+                          </div>
 
-                            <div class="form-group">
-                                <label for="username">Логин</label>
-                                <input type="text" class="form-control" id="username" th:field="*{username}">
-                            </div>
+                          <div class="form-group">
+                            <label for="username">Логин</label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}">
+                          </div>
 
-                            <!-- TODO: убрать поле с вводом пароля при создании, оно должно быть у пользователя в ЛК-->
-                            <div class="form-group">
-                                <label for="pass">Пароль (ВРЕМЕННО :) для отладки)</label>
-                                <input type="text" class="form-control" id="pass" th:field="*{password}" value="" required>
-                            </div>
+                          <!-- TODO: убрать поле с вводом пароля при создании, оно должно быть у пользователя в ЛК-->
+                          <div class="form-group">
+                            <label for="pass">Пароль (ВРЕМЕННО :) для отладки)</label>
+                            <input type="text" class="form-control" id="pass" th:field="*{password}" value="" required>
+                          </div>
 
-                            <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="isActive" th:field="*{active}">
-                                <label class="form-check-label" for="isActive">Активен</label>
-                            </div>
+                          <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="isActive" th:field="*{active}">
+                            <label class="form-check-label" for="isActive">Активен</label>
+                          </div>
 
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                          <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </form>
 
-                        </form>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
