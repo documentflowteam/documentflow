@@ -68,9 +68,17 @@
                             <a role="button"
                                aria-pressed="true"
                                data-toggle="modal"
-                               href="#delDocOut"
+                               href="#"
                                th:onclick="'javascript:deleteUser(\'' + ${user.id} + '\');'">
                                 <i class="fas fa-trash-alt"></i>
+                            </a>
+
+                            <a role="button"
+                               aria-pressed="true"
+                               data-toggle="modal"
+                               href="#"
+                               th:onclick="'javascript:editUser(\'' + ${user.id} + '\');'">
+                                <i class="fas fa-edit"></i>
                             </a>
                         </td>
                     </tr>
