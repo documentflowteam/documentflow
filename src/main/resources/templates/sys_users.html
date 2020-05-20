@@ -33,7 +33,7 @@
     <div id="content" class="container-fluid">
 
         <div class="d-flex py-2"> <!-- Меню над таблицей -->
-            <form action="/sys/users/card/" method="get">
+            <form action="/old/sys/users/card/" method="get">
                 <button type="submit" class="btn btn-success">Создать</button>
             </form>
 
@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                     <tr th:attr="data-document-id=${user.id}" th:each="user : ${users}">
-                        <td><a th:href="@{'/sys/users/card/' + ${user.id}}" th:text="${user.id}"></a></td>
+                        <td><a th:href="@{'/old/sys/users/card/' + ${user.id}}" th:text="${user.id}"></a></td>
                         <td th:text="${user.lastName}"/>
                         <td th:text="${user.firstName}"/>
                         <td th:text="${user.middleName}"/>

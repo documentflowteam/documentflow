@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/docs/in")
+@RequestMapping("old/docs/in")
 public class DocInController {
 
     private DocInUtils docInUtils;

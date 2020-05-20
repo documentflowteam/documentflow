@@ -33,3 +33,7 @@ build/
 /database.properties
 /src/main/resources/database.properties
 lib/
+
+### Front ###
+frontend/node_modules/
+frontend/dist/

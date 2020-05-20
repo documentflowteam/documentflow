@@ -1,8 +1,8 @@
-const URL_USER_CARD = "/sys/users/card/"
+const URL_USER_CARD = "/old/sys/users/card/"
 
 function deleteUser(id){
     $.ajax({
-        url: "/sys/users/card/delete/" + id,
+        url: "/old/sys/users/card/delete/" + id,
         success: function (id) {
             $('#delTitle').text('Удалить пользователя c ID ' + id + ' ?');
             $('#delId').val(id);

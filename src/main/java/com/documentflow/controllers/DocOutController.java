@@ -22,7 +22,7 @@ import java.time.LocalDate;
 
 
 @Controller
-@RequestMapping("/docs/out")
+@RequestMapping("old/docs/out")
 public class DocOutController {
 
     private DocOutService docOutService;

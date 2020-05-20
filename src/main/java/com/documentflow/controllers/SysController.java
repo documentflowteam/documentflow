@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/sys")
+@RequestMapping("old/sys")
 public class SysController {
 
     @Setter(onMethod_ = {@Autowired})
@@ -58,12 +58,17 @@ public class SysController {
         if(currentUser != null) {
             userService.delete(currentUser);
         }
-        return "redirect:/sys/users";
+        return "redirect:/old/sys/users";
     }
 
     @RequestMapping(value = "/users/card/submit", method = RequestMethod.POST)
     public String userCardSubmit(@ModelAttribute User user) {
         userService.saveOrUpdate(user);
-        return "redirect:/sys/users";
+        return "redirect:/old/sys/users";
+    }
+
+    @RequestMapping(value = "{_:^(?!index\\.html|api).*$}")
+    public String redirectApi() {
+        return "forward:/";
     }
 }
