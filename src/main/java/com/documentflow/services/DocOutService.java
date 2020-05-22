@@ -1,5 +1,6 @@
 package com.documentflow.services;
 
+import com.documentflow.entities.Contragent;
 import com.documentflow.entities.DocOut;
 import com.documentflow.entities.Task;
 import com.documentflow.entities.User;
@@ -37,7 +38,7 @@ public class DocOutService {
         return docOutRepository.findAll(pageable);
     }
 
-    public User getByCreator(User user){
+    public List<DocOut> getByCreator(User user){
         return docOutRepository.getByCreator(user);
     }
 
@@ -53,15 +54,16 @@ public class DocOutService {
         return docOutRepository.findByTask(task);
     }
 
-    public void deleteById (Long id){
-        docOutRepository.deleteById(id);
-    }
+//    public void deleteById (Long id){
+//        docOutRepository.deleteById(id);
+//    }
 
     public void delete(DocOut docOut){
         docOutRepository.delete(docOut);
     }
 
-
+    public Page<DocOut> findAllByContragents(Pageable pageable, Contragent contragent){
+        return docOutRepository.findAllByContragents(pageable, contragent);}
 }
 
 

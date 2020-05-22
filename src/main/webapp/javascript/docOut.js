@@ -115,12 +115,12 @@ function openModal(id, docinid){
                 $('#stateNew').val(docOutDTO.state);
 
 
-                if (docOutDTO.task != null || docinid != null) {
+                if (docinid != null) {
                     $('#communicates').text('Связи');
                 }
-                if (docOutDTO.task!= null) {
-                    linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.task.id, 'Поручение', docOutDTO.task.taskName);
-                }
+                // if (docOutDTO.task!= null) {
+                //     linkButton('.linkTaskNew', 'taskBtnNew', '/tasks/card/' + docOutDTO.task.id, 'Поручение', docOutDTO.task.taskName);
+                // }
                 if (docinid != null) {
                     linkButton('.linkDocInNew', 'docInBtnNew', '/docs/in?openDI=' + docinid, 'Входящий', docOutDTO.docInRegNumber);
                 }

@@ -41,17 +41,20 @@ public class DocInUtils {
     }
 
     @Autowired
+    public void setTaskUtils(TaskUtils taskUtils) {
+        this.taskUtils = taskUtils;
+    }
+
+    @Autowired
     public DocInUtils(UserService userService, DepartmentService departmentService,
                       StateService stateService, DocTypeService docTypeService,
-                      DocOutService docOutService, DocInService docInService,
-                      TaskUtils taskUtils, TaskService taskService) {
+                      DocOutService docOutService, DocInService docInService, TaskService taskService) {
         this.userService = userService;
         this.departmentService = departmentService;
         this.stateService = stateService;
         this.docTypeService = docTypeService;
         this.docOutService = docOutService;
         this.docInService = docInService;
-        this.taskUtils = taskUtils;
         this.taskService = taskService;
     }
 

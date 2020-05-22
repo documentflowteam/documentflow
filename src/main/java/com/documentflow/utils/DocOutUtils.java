@@ -26,6 +26,7 @@ public class DocOutUtils {
     private DocOutService docOutService;
     private DocInUtils docInUtils;
     private DocInService docInService;
+    private TaskUtils taskUtils;
 
     @Autowired
     public DocOutUtils(UserServiceImpl userService, StateService stateService, DocTypeService docTypeService,
@@ -43,6 +44,10 @@ public class DocOutUtils {
         this.docInUtils = docInUtils;
     }
 
+    @Autowired
+    public void setTaskUtils(TaskUtils taskUtils) {
+        this.taskUtils = taskUtils;
+    }
 
     @Autowired
     public void setDocInService(DocInService docInService) {
@@ -59,7 +64,6 @@ public class DocOutUtils {
     public DocOut convertFromDocOutDTO(DocOutDTO docOutDTO) {
 
         docOut = new DocOut();
-        //docOut.setId(docOutDTO.getId());
         docOut.setCreateDate(docOutDTO.getCreateDate());
         docOut.setCreator(docOutDTO.getCreator());
         docOut.setDocType(docOutDTO.getDocType());
@@ -82,7 +86,6 @@ public class DocOutUtils {
     public DocOut convertFromDocOutDTONew(DocOutDTO docOutDTO) {
 
         docOut = new DocOut();
-   //     docOut.setId(docOutDTO.getId());
         docOut.setCreateDate(docOutDTO.getCreateDate());
         docOut.setCreator(docOutDTO.getCreator());
         docOut.setDocType(docOutDTO.getDocType());
@@ -96,7 +99,7 @@ public class DocOutUtils {
         docOut.setRegDate(null);
         docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.PROJECT.toString()));
 
-        if(docOutDTO.getTask()!=null) docOut.setTask(docOutDTO.getTask());
+        if(docOutDTO.getTask()!=null) docOut.setTask(taskService.findOneById(docOutDTO.getTask().getId()));
         docOutService.save(docOut);
         if(docOutDTO.getDocInId()!=null) docInUtils.addDocOutToDocIn(docOutDTO.getDocInId(), docOut);
         return docOut;
@@ -142,18 +145,15 @@ public class DocOutUtils {
         return docOutDTO;
     }
 
-//    public void addTaskToDocOutDTO(Long id, Task task) {
-//        docOut = docOutService.findOneById(id);
-//        DocOutDTO docOutDTO = convertFromDocOut(docOutService.findOneById(id));
-//        docOutDTO.setTask(task);
-//        docOutDTO.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
-//        docOutService.save(docOut);
-//    }
+    public void addApprovingTask(DocOut docOut) {
+        taskUtils.createApprovingTask(docOut);//(docOut.getCreator(), docOut.getSigner(), "На согласование", docOut.getCreateDate().plusDays(5), docOut.getNote());
+
+    }
 
     public void addTaskToDocOut(Long id, Task task) {
         docOut = docOutService.findOneById(id);
         docOut.setTask(task);
-        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.EXECUTION.toString()));
+        docOut.setState(stateService.getStateByBusinessKey(BusinessKeyState.APPROVING.toString()));
         docOutService.save(docOut);
 
     }

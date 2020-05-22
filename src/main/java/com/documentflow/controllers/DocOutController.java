@@ -3,11 +3,13 @@ package com.documentflow.controllers;
 
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.DocOut;
+import com.documentflow.entities.Task;
 import com.documentflow.entities.dto.DocOutDTO;
 import com.documentflow.services.*;
 import com.documentflow.utils.DocInUtils;
 import com.documentflow.utils.DocOutFilter;
 import com.documentflow.utils.DocOutUtils;
+import com.documentflow.utils.TaskUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,26 +30,62 @@ public class DocOutController {
     private DocOutService docOutService;
     private DocInService docInService;
     private DocTypeService docTypeService;
-    private UserServiceImpl userService;
+    private UserService userService;
     private DocOutUtils docOutUtils;
     private DocInUtils docInUtils;
     private StateService stateService;
-    private ContragentServiceImpl contragentService;
+    private ContragentService contragentService;
     private TaskService taskService;
+    private TaskUtils taskUtils;
 
     @Autowired
-    public void setDocOutService(DocOutService docOutService, DocInService docInService, DocTypeService docTypeService, UserServiceImpl userService,
-                                 DocOutUtils docOutUtils, DocInUtils docInUtils, StateService stateService, ContragentServiceImpl contragentService,
-                                 TaskService taskService) {
+    public void setDocOutService(DocOutService docOutService) {
         this.docOutService = docOutService;
-        this.docInService=docInService;
+    }
+
+    @Autowired
+    public void setDocInService(DocInService docInService) {
+        this.docInService = docInService;
+    }
+
+    @Autowired
+    public void setDocTypeService(DocTypeService docTypeService) {
         this.docTypeService = docTypeService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setDocOutUtils(DocOutUtils docOutUtils) {
         this.docOutUtils = docOutUtils;
-        this.docInUtils=docInUtils;
+    }
+
+    @Autowired
+    public void setDocInUtils(DocInUtils docInUtils) {
+        this.docInUtils = docInUtils;
+    }
+
+    @Autowired
+    public void setStateService(StateService stateService) {
         this.stateService = stateService;
-        this.contragentService=contragentService;
-        this.taskService=taskService;
+    }
+
+    @Autowired
+    public void setContragentService(ContragentService contragentService) {
+        this.contragentService = contragentService;
+    }
+
+    @Autowired
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    @Autowired
+    public void setTaskUtils(TaskUtils taskUtils) {
+        this.taskUtils = taskUtils;
     }
 
     @GetMapping()
@@ -68,7 +106,7 @@ public class DocOutController {
         model.addAttribute("states", stateService.findAllStates());
         model.addAttribute("tasks", taskService.findAll(Pageable.unpaged()));
         model.addAttribute("docTypes", docTypeService.findAllDocTypes());
- //       model.addAttribute("docOutAddress", docTypeService.findAllDocTypes());
+
 
         return "doc_out";
     }
@@ -86,15 +124,21 @@ public class DocOutController {
     }
 
     @RequestMapping(value = "/newcard/submit", method = RequestMethod.POST)
-    public String createDocNew(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO) {
-        docOutUtils.convertFromDocOutDTONew(docOutDTO);
+    public String createDocNew(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO,
+                               @ModelAttribute(name = "check") String check) {
+        DocOut docOut=docOutUtils.convertFromDocOutDTONew(docOutDTO);
+        if (check!=null) taskUtils.createApprovingTask(docOut);//docOutUtils.addApprovingTask(docOut);
+
         return "redirect:/docs/out";
 
     }
 
+
     @RequestMapping("/card")
-    public String regEditDoc(@ModelAttribute(name = "docOutDTO") DocOutDTO docOutDTO) {
-        docOutUtils.saveModifiedDocOut(docOutDTO);
+    public String regEditDoc(@ModelAttribute (name = "docOutDTO") DocOutDTO docOutDTO,
+                             @ModelAttribute(name = "check") String check) {
+        DocOut docOut=docOutUtils.saveModifiedDocOut(docOutDTO);
+        if (check!=null) taskUtils.createApprovingTask(docOut);//docOutUtils.addApprovingTask(docOut);
           return "redirect:/docs/out";
 
     }

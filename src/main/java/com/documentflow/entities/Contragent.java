@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.print.Doc;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -49,6 +52,7 @@ public class Contragent implements Serializable {
     @ManyToOne()
     @JoinColumn(name = "organiztion_id")
     private Organization organization;
+
 
     public static class Builder {
         private Long id;
@@ -93,6 +97,7 @@ public class Contragent implements Serializable {
             this.organization = organization;
             return this;
         }
+
 
         public Contragent build() {
             Contragent contragent = new Contragent();

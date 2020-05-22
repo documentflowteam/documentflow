@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -74,11 +75,11 @@ public class DocOut implements Serializable {
     @JoinColumn(name = "task_id")
     private Task task;
 
-//    @ManyToMany
-//    @JoinTable(name = "doc_out_contragents",
-//            joinColumns = @JoinColumn(name = "doc_out_id"),
-//            inverseJoinColumns = @JoinColumn(name = "contragent_id"))
-//    private List<Contragent> contragents = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "doc_out_contragents",
+            joinColumns = @JoinColumn(name = "doc_out_id"),
+            inverseJoinColumns = @JoinColumn(name = "contragent_id"))
+    private Collection<Contragent> contragents;
 
 
     public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state) {
@@ -100,5 +101,28 @@ public class DocOut implements Serializable {
         this.note = note;
         this.state = state;
         this.task=task;
+    }
+
+    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, List<Contragent> contragents) {
+        this.creator = creator;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.state = state;
+        this.contragents = contragents;
+    }
+
+    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, Task task, List<Contragent> contragents) {
+        this.creator = creator;
+        this.signer = signer;
+        this.content = content;
+        this.pages = pages;
+        this.appendix = appendix;
+        this.note = note;
+        this.state = state;
+        this.task = task;
+        this.contragents = contragents;
     }
 }

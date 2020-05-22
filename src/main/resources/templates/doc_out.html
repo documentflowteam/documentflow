@@ -121,8 +121,8 @@
                                     <td th:text= "address"/>
                                     <td th:text="${docOutDTO.appendix}" href="#"/>
                                     <td>
-                                        <a th:if="${docOutDTO.state.id==2 || docOutDTO.state.id==5 || docOutDTO.state.id==6 ||
-                                    docOutDTO.state.id==7 || docOutDTO.state.id==10 || docOutDTO.state.id==12}"
+                                        <a th:if="${docOutDTO.state.id==2 or docOutDTO.state.id==5 or docOutDTO.state.id==6 or
+                                    docOutDTO.state.id==7 or docOutDTO.state.id==10 or docOutDTO.state.id==12}"
                                            role="button"
                                            aria-pressed="true"
                                            data-toggle="modal"
@@ -174,8 +174,6 @@
             <div class="modal-body">
                 <form th:action="'/docs/out/newcard/submit'" method="POST" id="docFormNew">
 
-                    <!--<input id="idNew" name="idNew" type="hidden" class="form-control">-->
-                    <!--<input id="stateNew" name="stateNew" type="hidden" class="form-control">-->
                     <input id="docInIdNew" name="docInId" type="hidden" class="form-control">
 
                     <div class="row justify-content-center">
@@ -276,7 +274,7 @@
 
                     <div>
                         <h5 id="communicates" align="CENTER"></h5>
-                        <div class="form-row linkTaskNew" ></div>
+                        <!--<div class="form-row linkTaskNew" ></div>-->
                         <div class="form-row linkDocInNew" ></div>
                     </div>
 
@@ -286,8 +284,11 @@
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
+                <input class="form-check-input-center" type="checkbox" name="check" th:checked="*{check}" id="checkN">
+                <label class="form-check-label" for="checkN">
+                    Сохранить и отправить
+                </label>
                 <button type="submit" class="btn btn-primary" form="docFormNew">Сохранить</button>
-                <button type="submit" class="btn btn-primary" form="docFormNew">Сохранить и отправить</button>
                 <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 
@@ -349,7 +350,7 @@
                     <input id="id" name="id" type="hidden" class="form-control">
                     <input id="createDate" name="createDate" type="hidden" class="form-control">
                     <input id="number" name="number" type="hidden" class="form-control">
-                    <!--<input id="docTypeId" name="docType" type="hidden" class="form-control">-->
+
 
                     <div class="row justify-content-center">
                         <h5 class="modal-title" id="titleM"></h5>
@@ -463,9 +464,14 @@
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
+                <div th:if="${stateId ==1 or stateId ==3 or stateId ==5 or stateId ==7 or stateId ==8
+                 or stateId ==9 or stateId ==11 or stateId ==12}">
+                <input class="form-check-input-center" type="checkbox" name="check" th:checked="*{check}" id="check">
+                <label class="form-check-label" for="check">
+                    Сохранить и отправить
+                </label>
                 <button type="submit" class="btn btn-primary" form="docForm">Сохранить</button>
-                <!--th:if="${stateId ==2 || stateId ==10 || stateId ==12}"-->
-                <button type="submit" class="btn btn-primary" form="docForm">Сохранить и отправить</button>
+                </div>
                 <a role="button" aria-pressed="true" data-dismiss="modal" href="#" class="btn btn-secondary" th:onclick="'javascript:closeModal();'">Отменить</a>
             </div>
 

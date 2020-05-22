@@ -5,10 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 @Getter
@@ -40,10 +44,9 @@ public class DocOutDTO implements Serializable {
     private Task task;
     private Long docInId;
     private String docInRegNumber;
-//    private Contragent contragent;
-//    private Long contragentId;
-//    private Organization organization;
-//    private Long organizationId;
+
+    private Collection<Contragent> contragents;
+
 
     public DocOutDTO(Long id, LocalDate createDate, User creator, String creatorFIO,
                      DocType docType, User signer, String content, Integer pages, String appendix,
