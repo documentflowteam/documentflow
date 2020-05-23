@@ -22,12 +22,11 @@ public class TaskUtils {
     private DocOutUtils docOutUtils;
 
     @Autowired
-    public TaskUtils(TaskService taskService, TaskHistoryService taskHistoryService, TaskTypeService taskTypeService, StateService stateService, DocOutUtils docOutUtils) {
+    public TaskUtils(TaskService taskService, TaskHistoryService taskHistoryService, TaskTypeService taskTypeService, StateService stateService) {
         this.taskService = taskService;
         this.taskHistoryService = taskHistoryService;
         this.taskTypeService = taskTypeService;
         this.stateService = stateService;
-        this.docOutUtils = docOutUtils;
     }
 
     @Autowired
@@ -35,10 +34,6 @@ public class TaskUtils {
         this.docInUtils = docInUtils;
     }
 
-//    @Autowired
-//    public void setDocOutUtils(DocOutUtils docOutUtils) {
-//        this.docOutUtils = docOutUtils;
-//    }
 
     public Task setAsRecalled(Task task) {
         task.setState(stateService.getStateByBusinessKey(BusinessKeyState.RECALLED.name()));
@@ -66,14 +61,12 @@ public class TaskUtils {
         return createTask(task, taskHistory);
     }
 
-    public Task createApprovingTask(DocOut docOut){//(Long docId, User author, User executor, String taskName, LocalDate endDate, String note) {
+    public Task createApprovingTask(DocOut docOut){
 
         Task task=new Task();
         TaskHistory taskHistory = new TaskHistory();
         TaskType taskType = taskTypeService.getTaskTypeByBusinessKey(BusinessKeyTask.APPROVING.name());
         State taskState = stateService.getStateByBusinessKey(BusinessKeyState.APPROVING.name());
-//        Task task = createTask(taskType, docOut.getCreator(), docOut.getSigner(),
-//                "На согласование", docOut.getCreateDate().plusDays(5), taskState, docOut.getNote());
         task.setTaskType(taskType);
         task.setAuthor(docOut.getCreator());
         task.setExecutor(docOut.getSigner());
