@@ -82,47 +82,5 @@ public class DocOut implements Serializable {
     private Collection<Contragent> contragents;
 
 
-    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state) {
-        this.creator = creator;
-        this.signer = signer;
-        this.content = content;
-        this.pages = pages;
-        this.appendix = appendix;
-        this.note = note;
-        this.state = state;
-    }
 
-    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, Task task) {
-        this.creator = creator;
-        this.signer = signer;
-        this.content = content;
-        this.pages = pages;
-        this.appendix = appendix;
-        this.note = note;
-        this.state = state;
-        this.task=task;
-    }
-
-    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, List<Contragent> contragents) {
-        this.creator = creator;
-        this.signer = signer;
-        this.content = content;
-        this.pages = pages;
-        this.appendix = appendix;
-        this.note = note;
-        this.state = state;
-        this.contragents = contragents;
-    }
-
-    public DocOut(User creator, User signer, String content, Integer pages, String appendix, String note, State state, Task task, List<Contragent> contragents) {
-        this.creator = creator;
-        this.signer = signer;
-        this.content = content;
-        this.pages = pages;
-        this.appendix = appendix;
-        this.note = note;
-        this.state = state;
-        this.task = task;
-        this.contragents = contragents;
-    }
 }
