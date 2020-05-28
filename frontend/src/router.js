@@ -1,11 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import MainPage from '@/page/MainPage'
-import Service from '@/components/Service'
-import Bootstrap from '@/components/Bootstrap'
-import User from '@/components/User'
-import Login from '@/components/Login'
-import Protected from '@/components/Protected'
+
 
 import store from './store'
 
