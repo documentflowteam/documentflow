@@ -11,18 +11,6 @@ const router = new Router({
     mode: 'history',
     routes: [
         { path: '/', component: MainPage },
-        { path: '/callservice', component: Service },
-        { path: '/bootstrap', component: Bootstrap },
-        { path: '/user', component: User },
-        { path: '/login', component: Login },
-        {
-            path: '/protected',
-            component: Protected,
-            meta: {
-                requiresAuth: true
-            }
-        },
-
         { path: '*', redirect: '/' }
     ]
 });
