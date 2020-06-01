@@ -1,4 +1,4 @@
-package com.documentflow.utils.cloudBox;
+package com.documentflow.utils.fileStorage;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

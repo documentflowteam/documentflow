@@ -5,7 +5,7 @@ import com.documentflow.entities.User;
 import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
-import com.documentflow.utils.cloudBox.FileStorageService;
+import com.documentflow.utils.fileStorage.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

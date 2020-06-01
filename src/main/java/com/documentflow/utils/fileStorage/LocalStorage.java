@@ -1,4 +1,4 @@
-package com.documentflow.utils.cloudBox;
+package com.documentflow.utils.fileStorage;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;

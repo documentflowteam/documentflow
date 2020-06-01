@@ -1,12 +1,11 @@
-package com.documentflow.utils.cloudBox;
+package com.documentflow.utils.fileStorage;
 
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -15,7 +14,9 @@ import java.nio.file.Paths;
 public class CloudStorageYandex implements FileStorageService {
 
     private CloudStorageYandexRet service = RetrofitInstance.getRetrofitInstance().create(CloudStorageYandexRet.class);
-    private final String token = "OAuth AgAAAAANwDryAAZNOj4RaCvG2kvXl1VWBkpwO1Q";
+
+    @Value("${cloudStorage.yandex.token}")
+    private String token;
     private byte[] bytes;
     private BufferedOutputStream stream;
 

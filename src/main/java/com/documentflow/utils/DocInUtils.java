@@ -8,6 +8,7 @@ import com.documentflow.entities.User;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -19,7 +20,8 @@ import java.util.Date;
 @Component
 public class DocInUtils {
 
-    private String storagePath = "d:\\tmp\\in\\";
+    @Value("${localStorage.storagePath}")
+    private String storagePath;
     private DocIn docIn;
     private DocInDto docInDto;
     private StringBuilder path;

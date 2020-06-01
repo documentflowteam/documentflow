@@ -1,4 +1,4 @@
-package com.documentflow.utils.cloudBox;
+package com.documentflow.utils.fileStorage;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
