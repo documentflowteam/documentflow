@@ -1,3 +1,5 @@
+var filename = null;
+
 $.dateCut = function(date) {
     var d = new Date(date);
     var day = d.getDate();
@@ -74,9 +76,14 @@ function openModal(id){
             $('#outgoingNumber').val(doc.outgoingNumber);
             $('#content').text(doc.content);
             $('#pages').val(doc.pages);
-            $('#appendix').val(doc.appendix);
-            $('#note').val(doc.note);
             deleteButton();
+            if (doc.appendix == null || doc.appendix == '') {
+                addAppendix('Пустро', -1);
+            } else {
+                $('#appendix').val(doc.appendix);
+                addAppendix(doc.appendix, doc.id);
+            }
+            $('#note').val(doc.note);
             if (doc.id != null) {
                 $('#communication').text('Связи');
                 if (doc.taskId != null) {
@@ -87,7 +94,7 @@ function openModal(id){
                 if (doc.docOutId != null) {
                     addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=' + doc.docOutId, 'Ответ', doc.docOutNumber);
                 } else {
-                    addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1&docinid='+ doc.id, 'Ответ', 'Создать');<!-- добавить ссыль на нужный метод -->
+                    addButton('.addBtnDO', 'docOutBtn', '/docs/out?openDO=-1&docinid='+ doc.id, 'Ответ', 'Создать');
                 }
             }
         }
@@ -98,11 +105,20 @@ function deleteButton() {
     $('#communication').text('');
     $('.addBtnTask').empty();
     $('.addBtnDO').empty();
+    $('.addAppendix').empty();
+}
+
+function addAppendix(name, id) {
+    if (id == -1) {
+        $('.addAppendix').append('<label class="col-form-label">' + name + '</label>');
+    } else {
+        $('.addAppendix').append('<a role="button" aria-pressed="true" href="#" onclick="javascript:getFile(' + id + ');" >' + name + '</a>');
+    }
 }
 
 function addButton(dest, linkId, urlMethod, linkTxt, aTxt) {
-        $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
-        $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
+    $(dest).append('<label for="' + linkId + '" class="col-sm-3 col-form-label">' + linkTxt + '</label>');
+    $(dest).append('<a id="' + linkId + '" href="' + urlMethod + '" role="button" aria-pressed="true">' + aTxt + '</a>');
 }
 
 $(document).ready(function() {
@@ -112,3 +128,26 @@ $(document).ready(function() {
         openModal(openDI)
     }
 });
+
+function getFile(id) {
+    fetch('/docs/in/file/' + id)
+        .then(function(response) {
+            filename = decodeURI(response.headers.get('Filename'));
+            return response.blob();
+        })
+        .then(function(data) {
+            var link = document.createElement('a');
+            var url = window.URL.createObjectURL(data);
+            if (/image.*/.test(data.type) || /application.pdf/.test(data.type)) {
+                link.href = url;
+                window.open(link);
+            } else {
+                link.style.display = 'none';
+                link.href = url;
+                document.body.appendChild(link);
+                link.download = filename;
+                link.click();
+                window.URL.revokeObjectURL(url);
+            }
+        });
+}

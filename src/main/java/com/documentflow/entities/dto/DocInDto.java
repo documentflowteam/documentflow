@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,6 +33,7 @@ public class DocInDto implements Serializable {
     private String content;
     private Integer pages;
     private String appendix;
+    private MultipartFile file;
     private String note;
     private String stateName;
     private Integer stateId;
