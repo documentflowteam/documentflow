@@ -55,7 +55,6 @@ public class DocInControllerFacade {
         if (id > 0) {
             docInDto = docInUtils.convertToDTO(docInService.findById(id));
         } else {
-//            user = userService.getCurrentUser(1);
             user = userService.getUserByUsername(login);
             docInDto.setUserFIO(docInUtils.getUserFIO(user));
             docInDto.setUserId(user.getId());

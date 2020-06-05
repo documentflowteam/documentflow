@@ -29,5 +29,7 @@ public class StateService {
         return stateRepository.findAll();
     }
 
-
+    public boolean existById(int id) {
+        return stateRepository.existsById(id);
+    }
 }

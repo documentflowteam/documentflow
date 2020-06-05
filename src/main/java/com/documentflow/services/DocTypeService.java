@@ -1,9 +1,7 @@
 package com.documentflow.services;
 
 import com.documentflow.entities.DocType;
-import com.documentflow.entities.State;
 import com.documentflow.repositories.DocTypeRepository;
-import com.documentflow.repositories.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +29,7 @@ public class DocTypeService {
         return docTypeRepository.findAll();
     }
 
-
+    public boolean existById(int id) {
+        return docTypeRepository.existsById(id);
+    }
 }
