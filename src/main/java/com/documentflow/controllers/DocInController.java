@@ -46,9 +46,9 @@ public class DocInController {
         return "redirect:/docs/in";
     }
 
-    @PostMapping("/del")
-    public String delete(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        dicFacade.deleteDocIn(docInDto);
+    @GetMapping("/del/{id}")
+    public String deleteDocIn(@PathVariable("id") Long id) {
+        dicFacade.deleteDocIn(id);
         return "redirect:/docs/in";
     }
 }

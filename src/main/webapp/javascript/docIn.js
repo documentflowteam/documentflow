@@ -19,14 +19,12 @@ function deleteDoc(id){
     $.ajax({
         url: "/docs/in/card/" + id,
         success: function (doc) {
-            $('#delIdDocIn').val(doc.id);
+            document.getElementById('delete').href = '/docs/in/del/' + id;
             addDelTxt('.txtDocIn', 'Входящий документ №' + doc.regNumber + ' будет удален, вы настаиваете на удалении?');
             if (doc.taskId != null) {
-                $('#delIdTask').val(doc.taskId);
                 addDelTxt('.txtTask', 'Входящий документ №:' + doc.regNumber + ' имеет связанное поручение №' + doc.taskId);
             }
             if (doc.docOutId != null) {
-                $('#delIdDocOut').val(doc.docOutId);
                 addDelTxt('.txtDocOut', 'Входящий документ №:' + doc.regNumber + ' имеет связанный исходящий документ №' + doc.docOutNumber);
             }
         }
@@ -40,7 +38,7 @@ function addDelTxt(dest, txt) {
 
 function clearFilter() {
     $('.reset').val('');
-<!--        $('.reset').prop('checked', false);-->
+//        $('.reset').prop('checked', false);
 }
 
 function closeModal() {
