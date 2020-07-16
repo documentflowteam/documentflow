@@ -5,12 +5,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,13 +23,14 @@ public class LocalStorage implements FileStorageService {
     private String filename;
 
     @Override
-    public void upload(MultipartFile file, String path) {
+    public void upload(MultipartFile file, String path) throws FileSystemException {
         tempPath = Paths.get(path).getParent();
         if (Files.notExists(tempPath)) {
             try {
                 Files.createDirectory(tempPath);
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new FileSystemException("Unable to create a directory " + tempPath);
             }
         }
         try {
@@ -42,11 +41,12 @@ public class LocalStorage implements FileStorageService {
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();
+            throw new FileSystemException("Unable to save the file");
         }
     }
 
     @Override
-    public void download(String path, HttpServletResponse response) {
+    public void download(String path, HttpServletResponse response) throws FileNotFoundException {
         filePath = Paths.get(path);
         filename = filePath.getFileName().toString();
         if (Files.exists(filePath)) {
@@ -58,6 +58,7 @@ public class LocalStorage implements FileStorageService {
                 response.getOutputStream().flush();
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new FileNotFoundException();
             }
         }
     }

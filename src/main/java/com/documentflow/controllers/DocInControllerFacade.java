@@ -19,6 +19,8 @@ import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Paths;
 
 @Component
@@ -66,11 +68,11 @@ public class DocInControllerFacade {
         return docInDto;
     }
 
-    public void getFile(Long id, HttpServletResponse response) {
+    public void getFile(Long id, HttpServletResponse response) throws FileNotFoundException {
         fileStorageService.download(docInUtils.getPath(docInService.findById(id).getAppendix()), response);
     }
 
-    public void saveDocIn(DocInDto docInDto) {
+    public void saveDocIn(DocInDto docInDto) throws FileSystemException {
         docIn = docInUtils.convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(docInUtils.getRegNumber());
