@@ -25,5 +25,7 @@ public class DepartmentService {
         return departmentRepository.findAllByOrderByName();
     }
 
-
+    public boolean existById(int id) {
+        return departmentRepository.existsById(id);
+    }
 }
