@@ -1,10 +1,14 @@
-package com.documentflow.utils;
+package com.documentflow.controllers;
 
 import com.documentflow.entities.DocIn;
 import com.documentflow.entities.User;
 import com.documentflow.entities.dto.DocInDto;
 import com.documentflow.model.enums.BusinessKeyState;
 import com.documentflow.services.*;
+import com.documentflow.utils.DocInFilter;
+import com.documentflow.utils.DocInUtils;
+import com.documentflow.utils.DocOutUtils;
+import com.documentflow.utils.TaskUtils;
 import com.documentflow.utils.fileStorage.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,13 +84,14 @@ public class DocInControllerFacade {
         docInService.save(docIn);
     }
 
-    public void deleteDocIn(DocInDto docInDto) {
-        docInUtils.editState(docInDto.getId(), BusinessKeyState.DELETED);
-        if (docInDto.getTaskId() != null) {
-            taskUtils.setAsRecalled(docInService.findById(docInDto.getId()).getTask());
+    public void deleteDocIn(Long id) {
+        docIn = docInService.findById(id);
+        docInUtils.editState(docIn.getId(), BusinessKeyState.DELETED);
+        if (docIn.getTask() != null) {
+            taskUtils.setAsRecalled(docIn.getTask());
         }
-        if (docInDto.getDocOutId() != null) {
-            docOutUtils.delDocOut(docInDto.getDocOutId());
+        if (docIn.getDocOut() != null) {
+            docOutUtils.delDocOut(docIn.getDocOut().getId());
         }
     }
 

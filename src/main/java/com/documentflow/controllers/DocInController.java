@@ -1,7 +1,6 @@
 package com.documentflow.controllers;
 
 import com.documentflow.entities.dto.DocInDto;
-import com.documentflow.utils.DocInControllerFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,9 +46,9 @@ public class DocInController {
         return "redirect:/docs/in";
     }
 
-    @PostMapping("/del")
-    public String delete(@ModelAttribute(name = "doc") DocInDto docInDto) {
-        dicFacade.deleteDocIn(docInDto);
+    @GetMapping("/del/{id}")
+    public String deleteDocIn(@PathVariable("id") Long id) {
+        dicFacade.deleteDocIn(id);
         return "redirect:/docs/in";
     }
 }
