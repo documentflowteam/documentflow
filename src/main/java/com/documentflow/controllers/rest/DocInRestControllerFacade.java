@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Paths;
 
 @Component
@@ -75,7 +77,7 @@ public class DocInRestControllerFacade {
         return new  ResponseEntity<>(docInDto, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> saveDocIn(DocInDto docInDto) {
+    public ResponseEntity<?> saveDocIn(DocInDto docInDto) throws FileSystemException {
         docIn = docInUtils.convertFromDTO(docInDto);
         if (docIn.getId() == null) {
             docIn.setRegNumber(docInUtils.getRegNumber());
@@ -102,7 +104,7 @@ public class DocInRestControllerFacade {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    public void getFile(Long id, HttpServletResponse response) {
+    public void getFile(Long id, HttpServletResponse response) throws FileNotFoundException {
         fileStorageService.download(docInUtils.getPath(docInService.findById(id).getAppendix()), response);
     }
 }
