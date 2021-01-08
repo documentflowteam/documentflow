@@ -27,6 +27,8 @@ public interface UserService extends UserDetailsService {
 
     User findOneById(int id);
 
+    void delete(User user);
+
     User saveOrUpdate(User user);
 
 //    boolean save(SystemUser systemUser);

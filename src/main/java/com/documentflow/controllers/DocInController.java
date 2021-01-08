@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/docs/in")
+@RequestMapping("old/docs/in")
 public class DocInController {
 
     private DocInControllerFacade dicFacade;

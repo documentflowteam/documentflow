@@ -39,15 +39,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/docs/in/**").hasAnyRole("DOC_IN_READ")
-                .antMatchers("/docs/out/**").hasAnyRole("DOC_OUT_READ")
-                .antMatchers("/tasks/**").hasRole("TASKS_READ")
-                .antMatchers("/sys/**").hasRole("SYS_READ")
-                .antMatchers("/profile/**").authenticated()
+                .antMatchers("/").authenticated()
+                .antMatchers("/api/**").authenticated()
+                .antMatchers("old/docs/in/**").hasAnyRole("DOC_IN_READ")
+                .antMatchers("old/docs/out/**").hasAnyRole("DOC_OUT_READ")
+                .antMatchers("old/tasks/**").hasRole("TASKS_READ")
+                .antMatchers("old/sys/**").hasRole("SYS_READ")
+                .antMatchers("old/profile/**").authenticated()
+// контроль за роутингами на стороне фронта, после перехода на /
+// кроме login, logout, perform_login, api/**
+// тут необходимо прописывать пермишены для получения данных по апи после переделки апи
+// получать заглушку при отсутсвии прав на рест с той или иной страницы
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/profile", false)
+                .defaultSuccessUrl("/", false)
                 .loginProcessingUrl("/perform_login").permitAll()
                 .and()
                 .logout()

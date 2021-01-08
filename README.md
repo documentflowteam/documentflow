@@ -39,7 +39,6 @@ spring.datasource.password=YOUR_DB_PASSWORD
 ```
 3. migrate db by flyway
 4. run ```public static void main(String[] args)``` in DocumentflowApplication.java
+5. front migrate to vue cd /frontend run build/serve for prod/dev
 
-???
-
-4. PROFIT
+6. PROFIT

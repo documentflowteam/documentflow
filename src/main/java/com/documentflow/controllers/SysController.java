@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/sys")
+@RequestMapping("old/sys")
 public class SysController {
 
     @Setter(onMethod_ = {@Autowired})
@@ -51,10 +51,24 @@ public class SysController {
         result.addObject("user", new User());
         return result;
     }
+    @RequestMapping(value = "/users/card/delete/{id}",method = RequestMethod.GET)
+    public String deleteCard(@PathVariable int id) {
+        User currentUser = userService.findOneById(id);
+
+        if(currentUser != null) {
+            userService.delete(currentUser);
+        }
+        return "redirect:/old/sys/users";
+    }
 
     @RequestMapping(value = "/users/card/submit", method = RequestMethod.POST)
     public String userCardSubmit(@ModelAttribute User user) {
         userService.saveOrUpdate(user);
-        return "redirect:/sys/users";
+        return "redirect:/old/sys/users";
+    }
+
+    @RequestMapping(value = "{_:^(?!index\\.html|api).*$}")
+    public String redirectApi() {
+        return "forward:/";
     }
 }

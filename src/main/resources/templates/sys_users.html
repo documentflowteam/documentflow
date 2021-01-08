@@ -14,6 +14,8 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src=/javascript/sysUsers.js></script>
 </head>
 
 <body>
@@ -31,7 +33,7 @@
     <div id="content" class="container-fluid">
 
         <div class="d-flex py-2"> <!-- Меню над таблицей -->
-            <form action="/sys/users/card/" method="get">
+            <form action="/old/sys/users/card/" method="get">
                 <button type="submit" class="btn btn-success">Создать</button>
             </form>
 
@@ -48,11 +50,12 @@
                         <th>Подразделение</th>
                         <th>Логин</th>
                         <th>Активно?</th>
+                        <th>Редактировать</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:attr="data-document-id=${user.id}" th:each="user : ${users}">
-                        <td><a th:href="@{'/sys/users/card/' + ${user.id}}" th:text="${user.id}"></a></td>
+                        <td><a th:href="@{'/old/sys/users/card/' + ${user.id}}" th:text="${user.id}"></a></td>
                         <td th:text="${user.lastName}"/>
                         <td th:text="${user.firstName}"/>
                         <td th:text="${user.middleName}"/>
@@ -60,6 +63,23 @@
                         <td th:text="${user.username}"/>
                         <td>
                             <i th:if="${user.isActive()}" class="fas fa-check"></i>
+                        </td>
+                        <td>
+                            <a role="button"
+                               aria-pressed="true"
+                               data-toggle="modal"
+                               href="#"
+                               th:onclick="'javascript:deleteUser(\'' + ${user.id} + '\');'">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+
+                            <a role="button"
+                               aria-pressed="true"
+                               data-toggle="modal"
+                               href="#"
+                               th:onclick="'javascript:editUser(\'' + ${user.id} + '\');'">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         </td>
                     </tr>
                 </tbody>

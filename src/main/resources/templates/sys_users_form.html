@@ -35,9 +35,9 @@
         <div class="container-fluid text-center">
             <div class="row content">
                 <div class="col-sm-8 text-left">
-                    <form th:action="'/sys/users/card/submit'" th:object="${user}" method="post">
+                    <form th:action="'/old/sys/users/card/submit'" th:object="${user}" method="post">
 
-                        <input type="hidden" name="id" th:value="${user.id}"/>
+                        <input type="hidden" name="id" th:field="${user.id}"/>
 
                           <div class="form-group">
                             <label for="lastName">Фамилия</label>
@@ -85,7 +85,7 @@
                           <!-- TODO: убрать поле с вводом пароля при создании, оно должно быть у пользователя в ЛК-->
                           <div class="form-group">
                             <label for="pass">Пароль (ВРЕМЕННО :) для отладки)</label>
-                            <input type="text" class="form-control" id="pass" th:name="*{password}" value="" required>
+                            <input type="text" class="form-control" id="pass" th:field="*{password}" value="" required>
                           </div>
 
                           <div class="form-group form-check">

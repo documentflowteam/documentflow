@@ -35,13 +35,29 @@ public class UserServiceImpl implements UserService {
     }
 
     public User saveOrUpdate(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(user.getId() == null ){
+            if (userRepository.existsUserByUsername(user.getUsername())){
+                throw new IllegalArgumentException("Попытка создания не уникального логина");
+            }
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }else{
+            //поле логин наверн лучше сделать уникальным, чтоб не страдать
+            User currentUser = userRepository.findUserByUsername(user.getUsername());
+            User oldUser = userRepository.findOneById(user.getId());
+            if(currentUser.getId() != user.getId()){
+                user.setUsername(oldUser.getUsername());
+            }
+        }
         return userRepository.save(user);
     }
 
     @Override
     public User getCurrentUser(int userId) {
         return userRepository.findOneById(userId);
+    }
+
+    public void delete(User user) {
+        userRepository.delete(user);
     }
 
     @Override
